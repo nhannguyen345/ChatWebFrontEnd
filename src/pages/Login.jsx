@@ -1,12 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BackgroundImage from "../assets/6764486_3433814.jpg";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "../schema/validationSchema";
 import { BsEye } from "react-icons/bs";
 import { BsEyeSlash } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
+import { ImSpinner } from "react-icons/im";
+import { userLogin } from "../features/auth/authAction";
+import { resetState } from "../features/auth/authSlice";
 const Login = () => {
+  const { loading, userInfo, error, success } = useSelector(
+    (state) => state.auth
+  );
+  const dispatch = useDispatch();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const {
     register,
     handleSubmit,
@@ -16,16 +31,28 @@ const Login = () => {
     resolver: yupResolver(loginSchema),
   });
 
+  const navigate = useNavigate();
+
   const onSubmitHandler = (data) => {
     console.log({ data });
+    dispatch(userLogin(data));
+    // if (success && userInfo) {
+    //   notify();
+    //   setTimeout(() => navigate("/"), 1500);
+    // }
+    setTimeout(() => navigate("/"), 1500);
     reset();
   };
 
-  const [showPassword, setShowPassword] = useState(false);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  useEffect(() => {
+    if (success) {
+      toast.success("Login successful!");
+      dispatch(resetState());
+    } else if (error) {
+      toast.error(error);
+      dispatch(resetState());
+    }
+  }, [success, error]);
 
   return (
     <div
@@ -99,8 +126,12 @@ const Login = () => {
           </Link>
         </div>
 
-        <button className="w-full text-[14px] text-[#fff] bg-[#665dfe] hover:bg-[#4237fe] leading-[1.5] font-semibold py-[14px] px-9 mt-4 outline-none rounded">
-          SIGN IN
+        <button className="w-full flex justify-center items-center text-[14px] text-[#fff] bg-[#665dfe] hover:bg-[#4237fe] leading-[1.5] font-semibold py-[14px] px-9 mt-4 outline-none rounded">
+          {loading ? (
+            <ImSpinner className="animate-spin h-[18px] w-[18px]" />
+          ) : (
+            "SIGN IN"
+          )}
         </button>
 
         <p className="text-[14px] mt-6">
@@ -113,6 +144,7 @@ const Login = () => {
           </Link>
         </p>
       </form>
+      <ToastContainer position="top-center" />
     </div>
   );
 };

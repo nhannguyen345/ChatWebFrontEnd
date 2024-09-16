@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Route, Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
+const PrivateRoute = () => {
   const auth = useSelector((state) => state.auth);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+
   useEffect(() => {
-    let token = localStorage.getItem("toobiauth");
+    let token = localStorage.getItem("auth-tk-webchat");
     if (token) {
       let tokenExpiration = jwtDecode(token).exp;
       let dateNow = new Date();
@@ -19,21 +21,13 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     } else {
       setIsAuthenticated(false);
     }
-    // eslint-disable-next-line
   }, [auth]);
 
   if (isAuthenticated === null) {
-    return <></>;
+    return <></>; // Có thể thay bằng một loading spinner
   }
 
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        !isAuthenticated ? <Redirect to="/login" /> : <Component {...props} />
-      }
-    />
-  );
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;
