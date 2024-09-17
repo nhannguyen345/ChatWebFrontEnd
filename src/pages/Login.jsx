@@ -36,10 +36,6 @@ const Login = () => {
   const onSubmitHandler = (data) => {
     console.log({ data });
     dispatch(userLogin(data));
-    // if (success && userInfo) {
-    //   notify();
-    //   setTimeout(() => navigate("/"), 1500);
-    // }
     setTimeout(() => navigate("/"), 1500);
     reset();
   };
