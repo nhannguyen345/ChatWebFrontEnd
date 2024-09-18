@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
+import ProfilePanel from "./leftPanelViews/ProfilePanel";
+import ContactsPanel from "./leftPanelViews/ContactsPanel";
+import CallsPanel from "./leftPanelViews/CallsPanel";
+import ChatsPanel from "./leftPanelViews/ChatsPanel";
 // import { setShowChat } from "../features/showchat/showchatSlice";
-import ChatsPanel from "./LeftPanelViews/ChatsPanel";
-import ProfilePanel from "./LeftPanelViews/ProfilePanel";
-import ContactsPanel from "./LeftPanelViews/ContactsPanel";
-import CallsPanel from "./LeftPanelViews/CallsPanel";
+
 // import HeaderOfLeftBar from "./HeaderOfLeftBar";
 // import ResponsiveMenu from "./ResponsiveMenu";
 

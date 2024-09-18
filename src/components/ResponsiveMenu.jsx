@@ -19,7 +19,7 @@ const ResponsiveMenu = () => {
   const avatarRef = useRef(null); // Tạo ref cho avatar, mục đích để giải quyết vấn đề khi click vào bên ngoài menu cụ thể là avatar để đóng menu
   return (
     <div
-      className="h-screen w-[65px] bg-[#665dfe] flex flex-col gap-11 items-center justify-center py-4
+      className="h-screen w-[90px] bg-[#665dfe] flex flex-col gap-11 items-center justify-center py-4
     max-sm:h-[70px] max-sm:w-screen max-sm:absolute max-sm:bottom-0 max-sm:flex-row max-sm:justify-evenly max-sm:py-4 max-sm:z-30"
     >
       <div className="group p-1 rounded-md bg-[#f8f9fa] relative flex justify-center max-sm:hidden">
