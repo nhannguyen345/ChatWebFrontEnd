@@ -8,6 +8,8 @@ import { IoIosSearch } from "react-icons/io";
 import {
   openNotificationModal,
   closeNotificationModal,
+  openInviteModal,
+  openCreateGroupModal,
 } from "../features/modal/modalSlice";
 import { useRef, useState } from "react";
 import useClickOutside from "../hooks/useClickOutside";
@@ -75,10 +77,16 @@ const HeaderOfLeftPanel = () => {
               className="absolute right-0 mt-2 w-[140px] bg-white border shadow-lg rounded-lg z-10"
             >
               <ul className="py-2 text-[14px] text-[#495057cc]">
-                <li className="px-4 py-2 hover:bg-gray-100 hover:text-[#3d4349] cursor-pointer">
+                <li
+                  className="px-4 py-2 hover:bg-gray-100 hover:text-[#3d4349] cursor-pointer"
+                  onClick={() => dispatch(openCreateGroupModal())}
+                >
                   Create Group
                 </li>
-                <li className="px-4 py-2 hover:bg-gray-100 hover:text-[#3d4349] cursor-pointer">
+                <li
+                  className="px-4 py-2 hover:bg-gray-100 hover:text-[#3d4349] cursor-pointer"
+                  onClick={() => dispatch(openInviteModal())}
+                >
                   Invite Others
                 </li>
               </ul>

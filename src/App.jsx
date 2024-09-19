@@ -5,6 +5,8 @@ import Register from "./pages/Register";
 import PrivateRoute from "./components/PrivateRoute";
 import Dashboard from "./pages/Dashboard";
 import "react-toastify/dist/ReactToastify.css";
+import ResetPassword from "./pages/ResetPassword";
+import NoPage from "./pages/NoPage";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<Dashboard />} />
         </Route>
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="*" element={<NoPage />} />
       </Routes>
     </BrowserRouter>
   );
