@@ -1,17 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { closeInviteModal } from "../features/modal/modalSlice";
 import { IoMdClose } from "react-icons/io";
+import { useStompClient } from "react-stomp-hooks";
 
 const InviteModal = () => {
   const [isVisible, setIsVisible] = useState(false); // Quản lý trạng thái hiển thị của modal
   const modal = useSelector((state) => state.modal.isInviteModalOpen);
+  const user = useSelector((state) => state.auth.userInfo);
   const dispatch = useDispatch();
+  const stompClient = useStompClient();
+  const subscriptionRef = useRef(null);
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    stompClient.publish({
+      destination: "/app/create-friend-request",
+      body: JSON.stringify({
+        userId: user.id,
+        emailReceiver: email,
+        inviteMessage: message,
+      }),
+    });
     // Handle invitation logic here
     console.log("Invitation sent to:", email);
   };

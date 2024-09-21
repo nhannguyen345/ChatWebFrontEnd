@@ -7,26 +7,26 @@ const PrivateRoute = () => {
   const auth = useSelector((state) => state.auth);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
-  // useEffect(() => {
-  //   let token = localStorage.getItem("auth-tk-webchat");
-  //   if (token) {
-  //     let tokenExpiration = jwtDecode(token).exp;
-  //     let dateNow = new Date();
+  useEffect(() => {
+    let token = localStorage.getItem("auth-tk-webchat");
+    if (token) {
+      let tokenExpiration = jwtDecode(token).exp;
+      let dateNow = new Date();
 
-  //     if (tokenExpiration < dateNow.getTime() / 1000) {
-  //       setIsAuthenticated(false);
-  //     } else {
-  //       setIsAuthenticated(true);
-  //     }
-  //   } else {
-  //     setIsAuthenticated(false);
-  //   }
-  // }, [auth]);
+      if (tokenExpiration < dateNow.getTime() / 1000) {
+        setIsAuthenticated(false);
+      } else {
+        setIsAuthenticated(true);
+      }
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, [auth]);
 
-  // if (isAuthenticated === null) {
-  //   return <></>;
-  // }
-  return true ? <Outlet /> : <Navigate to="/login" />;
+  if (isAuthenticated === null) {
+    return <></>;
+  }
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;
