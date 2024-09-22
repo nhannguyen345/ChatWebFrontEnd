@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import "react-toastify/dist/ReactToastify.css";
 import ResetPassword from "./pages/ResetPassword";
 import NoPage from "./pages/NoPage";
+import WebSocketProvider from "./components/WebSocketProvider";
 
 function App() {
   return (
@@ -18,7 +19,14 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="*" element={<NoPage />} /> */}
         <Route element={<PrivateRoute />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route
+            path="/"
+            element={
+              <WebSocketProvider>
+                <Dashboard />
+              </WebSocketProvider>
+            }
+          />
         </Route>
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="*" element={<NoPage />} />

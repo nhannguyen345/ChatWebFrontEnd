@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { closeInviteModal } from "../features/modal/modalSlice";
 import { IoMdClose } from "react-icons/io";
 import { useStompClient } from "react-stomp-hooks";
+import { toast, ToastContainer } from "react-toastify";
 
 const InviteModal = () => {
   const [isVisible, setIsVisible] = useState(false); // Quản lý trạng thái hiển thị của modal
@@ -20,12 +21,14 @@ const InviteModal = () => {
       destination: "/app/create-friend-request",
       body: JSON.stringify({
         userId: user.id,
+        userName: user.username,
         emailReceiver: email,
         inviteMessage: message,
       }),
     });
     // Handle invitation logic here
-    console.log("Invitation sent to:", email);
+    toast.info("Invitation sent!");
+    setTimeout(() => dispatch(closeInviteModal()), 800);
   };
 
   useEffect(() => {
@@ -43,7 +46,7 @@ const InviteModal = () => {
         className="fixed inset-0 bg-black opacity-50"
         onClick={() => dispatch(closeInviteModal())}
       ></div>
-
+      <ToastContainer position="top-center" />
       <div
         className={`bg-white flex flex-col sm:min-w-[340px] md:min-w-[420px] rounded-lg z-10 transition-opacity duration-500 ${
           isVisible ? "opacity-100" : "opacity-0"

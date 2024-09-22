@@ -20,27 +20,27 @@ const Dashboard = () => {
     (state) => state.modal.isCreateGroupModalOpen
   );
   const user = useSelector((state) => state.auth.userInfo);
-  // const stompClient = useStompClient();
-  // const subscriptionRef = useRef(null);
+  const stompClient = useStompClient();
+  const subscriptionRef = useRef(null);
 
-  // useEffect(() => {
-  //   if (stompClient) {
-  //     // Đăng ký và lưu trữ subscription
-  //     subscriptionRef.current = stompClient.subscribe(
-  //       `/user/${user.username}/queue/errors`,
-  //       (message) => {
-  //         toast.error(message);
-  //       }
-  //     );
-  //   }
+  useEffect(() => {
+    if (stompClient) {
+      // Đăng ký và lưu trữ subscription
+      subscriptionRef.current = stompClient.subscribe(
+        `/user/${user.username}/queue/errors`,
+        (message) => {
+          toast.error(message);
+        }
+      );
+    }
 
-  //   // Cleanup function để hủy đăng ký
-  //   return () => {
-  //     if (subscriptionRef.current) {
-  //       subscriptionRef.current.unsubscribe();
-  //     }
-  //   };
-  // }, [stompClient]);
+    // Cleanup function để hủy đăng ký
+    return () => {
+      if (subscriptionRef.current) {
+        subscriptionRef.current.unsubscribe();
+      }
+    };
+  }, [stompClient]);
 
   return (
     <WebSocketProvider>
@@ -51,7 +51,7 @@ const Dashboard = () => {
         {notificationModal && <ModalNotification></ModalNotification>}
         {inviteModal && <InviteModal></InviteModal>}
         {createGroupModal && <CreateGroupModal></CreateGroupModal>}
-        <ToastContainer position="top-center" />
+        <ToastContainer className={"z-50"} position="top-center" />
       </div>
     </WebSocketProvider>
   );
