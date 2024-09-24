@@ -115,10 +115,17 @@ const NotificationItem = ({ notification }) => {
 };
 
 const ModalNotification = () => {
-  const { data, loading, error } = useFetchData("http://localhost:8080/");
+  const jwt = localStorage.getItem("auth-tk-webchat");
+  const user =
+    useSelector((state) => state.auth.userInfo) ||
+    JSON.parse(localStorage.getItem("user-info"));
+  const modal = useSelector((state) => state.modal.isNotificationModalOpen);
+  const { data, loading, error } = useFetchData(
+    `http://localhost:8080/notification/get-list-notifications/${user.id}`,
+    { headers: { Authorization: `Bearer ${jwt}` } }
+  );
   const [isVisible, setIsVisible] = useState(false); // Quản lý trạng thái hiển thị của modal
   const dispatch = useDispatch();
-  const modal = useSelector((state) => state.modal.isNotificationModalOpen);
 
   useEffect(() => {
     if (modal) {

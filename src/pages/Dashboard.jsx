@@ -43,17 +43,15 @@ const Dashboard = () => {
   }, [stompClient]);
 
   return (
-    <WebSocketProvider>
-      <div className="flex flex-row overflow-hidden w-screen max-sm:relative">
-        <ResponsiveMenu />
-        <LeftPanel />
-        <MainContentPanel />
-        {notificationModal && <ModalNotification></ModalNotification>}
-        {inviteModal && <InviteModal></InviteModal>}
-        {createGroupModal && <CreateGroupModal></CreateGroupModal>}
-        <ToastContainer className={"z-50"} position="top-center" />
-      </div>
-    </WebSocketProvider>
+    <div className="flex flex-row overflow-hidden w-screen max-sm:relative">
+      <ResponsiveMenu />
+      <LeftPanel />
+      <MainContentPanel />
+      {notificationModal && <ModalNotification></ModalNotification>}
+      {inviteModal && <InviteModal></InviteModal>}
+      {createGroupModal && <CreateGroupModal></CreateGroupModal>}
+      <ToastContainer className={"z-50"} position="top-center" />
+    </div>
   );
 };
 

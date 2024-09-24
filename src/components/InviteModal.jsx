@@ -8,7 +8,9 @@ import { toast, ToastContainer } from "react-toastify";
 const InviteModal = () => {
   const [isVisible, setIsVisible] = useState(false); // Quản lý trạng thái hiển thị của modal
   const modal = useSelector((state) => state.modal.isInviteModalOpen);
-  const user = useSelector((state) => state.auth.userInfo);
+  const user =
+    useSelector((state) => state.auth.userInfo) ||
+    JSON.parse(localStorage.getItem("user-info"));
   const dispatch = useDispatch();
   const stompClient = useStompClient();
   const subscriptionRef = useRef(null);

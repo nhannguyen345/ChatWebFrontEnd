@@ -7,7 +7,7 @@ const useFetchData = (url, options = {}) => {
   const [error, setError] = useState(null);
 
   const { method = "GET", body = null, headers = {} } = options;
-
+  console.log(options);
   useEffect(() => {
     const fecthData = async () => {
       try {
@@ -26,7 +26,7 @@ const useFetchData = (url, options = {}) => {
     };
 
     fecthData();
-  }, [url, method, body, headers]);
+  }, []);
 
   return { data, loading, error };
 };

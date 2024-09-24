@@ -59,6 +59,7 @@ export const userLogin = createAsyncThunk(
       );
 
       localStorage.setItem("auth-tk-webchat", data.jwtToken);
+      localStorage.setItem("user-info", data);
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {
