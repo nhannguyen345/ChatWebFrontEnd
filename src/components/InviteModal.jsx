@@ -20,7 +20,7 @@ const InviteModal = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     stompClient.publish({
-      destination: "/app/create-friend-request",
+      destination: "/app/notification/create-friend-request",
       body: JSON.stringify({
         userId: user.id,
         userName: user.username,

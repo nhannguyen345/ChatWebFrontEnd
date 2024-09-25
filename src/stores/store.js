@@ -4,6 +4,7 @@ import menuSlice from "../features/menu/menuSlice";
 import panelVisibilitySlice from "../features/panelVisibility/panelVisibilitySlice";
 import modalSlice from "../features/modal/modalSlice";
 import showInfoChatSlice from "../features/showInfoChat/showInfoChatSlice";
+import notificationSlice from "../features/notification/notificationSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     modal: modalSlice,
     panelVisibility: panelVisibilitySlice,
     showInfoChat: showInfoChatSlice,
+    notification: notificationSlice,
   },
 });
 

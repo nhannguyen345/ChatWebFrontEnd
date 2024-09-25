@@ -6,57 +6,9 @@ import { FaUserPlus, FaCheckCircle, FaComment, FaImage } from "react-icons/fa";
 import { format } from "date-fns";
 import useFetchData from "../hooks/useFetchData";
 import { ImSpinner } from "react-icons/im";
+import axios from "axios";
 
-const notificationEntities = [
-  {
-    id: 1,
-    receiver: {
-      id: 321, // ID của người nhận
-      username: "Alice Johnson",
-    },
-    sender: {
-      id: 123, // ID của người gửi
-      username: "John Doe",
-    },
-    content: "You have a friend request from John Doe.",
-    notificationType: "FRIEND_REQUEST",
-    read: false,
-    createdAt: new Date("2024-09-09T08:30:00Z"),
-  },
-  {
-    id: 2,
-    receiver: {
-      id: 321,
-      username: "Alice Johnson",
-    },
-    sender: {
-      id: 456,
-      username: "Jane Smith",
-    },
-    content: "Jane Smith has accepted your friend request.",
-    notificationType: "FRIEND_REQUEST",
-    read: false,
-    createdAt: new Date("2024-09-09T09:00:00Z"),
-  },
-  {
-    id: 3,
-    receiver: {
-      id: 321,
-      username: "Alice Johnson",
-    },
-    sender: {
-      id: 789,
-      username: "Emily Johnson",
-    },
-    content: "You have a new message from Emily Johnson.",
-    notificationType: "MESSAGE",
-    read: false,
-    createdAt: new Date("2024-09-09T09:30:00Z"),
-  },
-  // Thêm các thông báo khác nếu cần
-];
-
-const NotificationItem = ({ notification }) => {
+const NotificationItem = ({ notification, jwt }) => {
   // Format date function
   const formatDate = (dateString) => {
     // const date = new Date(dateString);
@@ -65,13 +17,32 @@ const NotificationItem = ({ notification }) => {
 
   // Component contain two button: reject, accept. Use for type friend-request notification
   const renderActionButtons = () => {
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleClickRejectButton = async () => {
+      try {
+        setIsLoading(false);
+        // axios.put(`http://localhost:8080/`)
+      } catch (e) {}
+    };
+
+    const handleClickAcceptButton = () => {};
+
     if (notification.notificationType === "FRIEND_REQUEST") {
       return (
         <div className="w-full flex justify-center items-center gap-4 mt-2">
-          <button className="h-[36px] align-middle text-[#ff337c] bg-white border border-[#ff337c] hover:bg-[#ff337c] hover:text-white px-3 py-1 rounded">
+          <button
+            className="h-[36px] align-middle text-[#ff337c] bg-white border border-[#ff337c] hover:bg-[#ff337c] hover:text-white px-3 py-1 rounded"
+            disabled={notification.disable}
+            onClick={null}
+          >
             Reject
           </button>
-          <button className="h-[36px] bg-[#665dfe] text-white hover:bg-[#4237fe] px-3 py-1 rounded">
+          <button
+            className="h-[36px] bg-[#665dfe] text-white hover:bg-[#4237fe] px-3 py-1 rounded"
+            disabled={notification.disable}
+            onClick={null}
+          >
             Accept
           </button>
         </div>
@@ -174,7 +145,7 @@ const ModalNotification = () => {
             !loading &&
             !error &&
             data.map((item, idx) => (
-              <NotificationItem key={idx} notification={item} />
+              <NotificationItem key={idx} notification={item} jwt={jwt} />
             ))}
         </div>
 

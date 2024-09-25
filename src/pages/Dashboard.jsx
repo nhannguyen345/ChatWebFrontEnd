@@ -21,12 +21,12 @@ const Dashboard = () => {
   );
   const user = useSelector((state) => state.auth.userInfo);
   const stompClient = useStompClient();
-  const subscriptionRef = useRef(null);
+  const subscriptionErrorsRef = useRef(null);
 
   useEffect(() => {
     if (stompClient) {
       // Đăng ký và lưu trữ subscription
-      subscriptionRef.current = stompClient.subscribe(
+      subscriptionErrorsRef.current = stompClient.subscribe(
         `/user/${user.username}/queue/errors`,
         (message) => {
           toast.error(message);
@@ -36,8 +36,8 @@ const Dashboard = () => {
 
     // Cleanup function để hủy đăng ký
     return () => {
-      if (subscriptionRef.current) {
-        subscriptionRef.current.unsubscribe();
+      if (subscriptionErrorsRef.current) {
+        subscriptionErrorsRef.current.unsubscribe();
       }
     };
   }, [stompClient]);

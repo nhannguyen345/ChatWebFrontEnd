@@ -7,26 +7,27 @@ const useFetchData = (url, options = {}) => {
   const [error, setError] = useState(null);
 
   const { method = "GET", body = null, headers = {} } = options;
-  console.log(options);
-  useEffect(() => {
-    const fecthData = async () => {
-      try {
-        const response = await axios({
-          url,
-          method,
-          data: body,
-          headers: { ...headers },
-        });
-        setData(response.data);
-      } catch (err) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fecthData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios({
+        url,
+        method,
+        data: body,
+        headers: { ...headers },
+      });
+      setData(response.data);
+    } catch (err) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    console.log("test call");
     fecthData();
-  }, []);
+  }, [url, method, body, JSON.stringify(headers)]);
 
   return { data, loading, error };
 };
