@@ -13,14 +13,13 @@ const InviteModal = () => {
     JSON.parse(localStorage.getItem("user-info"));
   const dispatch = useDispatch();
   const stompClient = useStompClient();
-  const subscriptionRef = useRef(null);
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     stompClient.publish({
-      destination: "/app/notification/create-friend-request",
+      destination: "/app/create-friend-request",
       body: JSON.stringify({
         userId: user.id,
         userName: user.username,

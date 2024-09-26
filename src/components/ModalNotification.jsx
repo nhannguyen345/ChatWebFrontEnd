@@ -2,88 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { closeNotificationModal } from "../features/modal/modalSlice";
 import { IoMdClose } from "react-icons/io";
-import { FaUserPlus, FaCheckCircle, FaComment, FaImage } from "react-icons/fa";
-import { format } from "date-fns";
 import useFetchData from "../hooks/useFetchData";
 import { ImSpinner } from "react-icons/im";
+import NotificationItem from "./NotificationItem";
+import { fetchNotifications } from "../features/notification/notificationAction";
 import axios from "axios";
-
-const NotificationItem = ({ notification, jwt }) => {
-  // Format date function
-  const formatDate = (dateString) => {
-    // const date = new Date(dateString);
-    return format(dateString, "yyyy-MM-dd h:mma");
-  };
-
-  // Component contain two button: reject, accept. Use for type friend-request notification
-  const renderActionButtons = () => {
-    const [isLoading, setIsLoading] = useState(false);
-
-    const handleClickRejectButton = async () => {
-      try {
-        setIsLoading(false);
-        // axios.put(`http://localhost:8080/`)
-      } catch (e) {}
-    };
-
-    const handleClickAcceptButton = () => {};
-
-    if (notification.notificationType === "FRIEND_REQUEST") {
-      return (
-        <div className="w-full flex justify-center items-center gap-4 mt-2">
-          <button
-            className="h-[36px] align-middle text-[#ff337c] bg-white border border-[#ff337c] hover:bg-[#ff337c] hover:text-white px-3 py-1 rounded"
-            disabled={notification.disable}
-            onClick={null}
-          >
-            Reject
-          </button>
-          <button
-            className="h-[36px] bg-[#665dfe] text-white hover:bg-[#4237fe] px-3 py-1 rounded"
-            disabled={notification.disable}
-            onClick={null}
-          >
-            Accept
-          </button>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  return (
-    <div className="w-full p-3 border-b border-gray-200">
-      <div className="flex items-start ">
-        <div className="mr-4">
-          {/* Replace this with the actual icon based on type */}
-          <div className="rounded-full bg-[#665dfe] w-12 h-12 flex items-center justify-center text-white">
-            {notification.notificationType === "FRIEND_REQUEST" && (
-              <FaUserPlus />
-            )}
-            {notification.notificationType === "FRIEND_REQUEST_ACCEPTED" && (
-              <FaCheckCircle />
-            )}
-            {notification.notificationType === "MESSAGE" && <FaComment />}
-            {notification.notificationType === "profile_update" && <FaImage />}
-          </div>
-        </div>
-
-        <div className="flex-1">
-          <p className="text-gray-700 text-sm">
-            <span className="font-semibold text-blue-500">
-              {notification.sender.username}
-            </span>{" "}
-            {notification.content}
-          </p>
-          <p className="text-gray-400 text-sm">
-            {formatDate(notification.createdAt)}
-          </p>
-        </div>
-      </div>
-      {renderActionButtons()}
-    </div>
-  );
-};
+import { markAllAsRead } from "../features/notification/notificationSlice";
 
 const ModalNotification = () => {
   const jwt = localStorage.getItem("auth-tk-webchat");
@@ -91,20 +15,35 @@ const ModalNotification = () => {
     useSelector((state) => state.auth.userInfo) ||
     JSON.parse(localStorage.getItem("user-info"));
   const modal = useSelector((state) => state.modal.isNotificationModalOpen);
-  const { data, loading, error } = useFetchData(
-    `http://localhost:8080/notification/get-list-notifications/${user.id}`,
-    { headers: { Authorization: `Bearer ${jwt}` } }
+
+  const { loading, error, notifications, unreadCount } = useSelector(
+    (state) => state.notification
   );
+
   const [isVisible, setIsVisible] = useState(false); // Quản lý trạng thái hiển thị của modal
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (modal) {
       setIsVisible(true); // Bắt đầu hiệu ứng khi modal mở
+      if (unreadCount) {
+        async function setReadNotification() {
+          await axios.put(
+            `http://localhost:8080/notification/updateReadStatus/${user.id}`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${jwt}` },
+            }
+          );
+        }
+        setReadNotification();
+      }
+      dispatch(markAllAsRead());
     } else {
       setIsVisible(false); // Khi modal đóng, ẩn hiệu ứng
     }
   }, [modal]);
+
   return (
     <div className={"fixed inset-0 z-50 flex items-center justify-center "}>
       {/* background black */}
@@ -141,10 +80,10 @@ const ModalNotification = () => {
               {error.message} {/* Hiển thị thông báo lỗi */}
             </div>
           )}
-          {data &&
+          {notifications &&
             !loading &&
             !error &&
-            data.map((item, idx) => (
+            notifications.map((item, idx) => (
               <NotificationItem key={idx} notification={item} jwt={jwt} />
             ))}
         </div>

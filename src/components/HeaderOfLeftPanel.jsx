@@ -24,6 +24,7 @@ const HeaderOfLeftPanel = () => {
   // Get state global to make header suitable for content
   const dispatch = useDispatch();
   const menu = useSelector((state) => state.menu.activeTab);
+  const unreadCount = useSelector((state) => state.notification.unreadCount);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -52,9 +53,11 @@ const HeaderOfLeftPanel = () => {
         className="text-[#adb5bd] text-[20px] cursor-pointer hover:text-[#495057]"
         onClick={() => dispatch(openNotificationModal())}
       />
-      <span className="absolute -top-2 -right-1 text-center h-4 w-4 p-px rounded-full bg-red-600 text-white text-[10px] font-bold">
-        2
-      </span>
+      {unreadCount > 0 && (
+        <span className="absolute -top-2 -right-1 text-center h-4 w-4 p-px rounded-full bg-red-600 text-white text-[10px] font-bold">
+          {unreadCount}
+        </span>
+      )}
     </div>
   );
 

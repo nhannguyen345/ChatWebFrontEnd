@@ -2,13 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import ResponsiveMenu from "../components/ResponsiveMenu";
 import LeftPanel from "../components/LeftPanel";
 import MainContentPanel from "../components/MainContentPanel";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ModalNotification from "../components/ModalNotification";
 import InviteModal from "../components/InviteModal";
 import CreateGroupModal from "../components/CreateGroupModal";
-import WebSocketProvider from "../components/WebSocketProvider";
 import { useStompClient } from "react-stomp-hooks";
 import { toast, ToastContainer } from "react-toastify";
+import { fetchNotifications } from "../features/notification/notificationAction";
+import { addNewNotification } from "../features/notification/notificationSlice";
 
 const Dashboard = () => {
   // const [errorMessage, setErrorMessage] = useState();
@@ -21,7 +22,9 @@ const Dashboard = () => {
   );
   const user = useSelector((state) => state.auth.userInfo);
   const stompClient = useStompClient();
+  const dispatch = useDispatch();
   const subscriptionErrorsRef = useRef(null);
+  const subscriptionAddNewNotifRef = useRef(null);
 
   useEffect(() => {
     if (stompClient) {
@@ -30,6 +33,13 @@ const Dashboard = () => {
         `/user/${user.username}/queue/errors`,
         (message) => {
           toast.error(message);
+        }
+      );
+
+      subscriptionAddNewNotifRef.current = stompClient.subscribe(
+        `/user/${user.username}/queue/notification`,
+        (message) => {
+          dispatch(addNewNotification(message));
         }
       );
     }
@@ -41,6 +51,10 @@ const Dashboard = () => {
       }
     };
   }, [stompClient]);
+
+  useEffect(() => {
+    dispatch(fetchNotifications(user.id));
+  }, [dispatch, user.id]);
 
   return (
     <div className="flex flex-row overflow-hidden w-screen max-sm:relative">
