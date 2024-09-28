@@ -1,18 +1,23 @@
 import React, { useState } from "react";
 import { FaCheckCircle, FaComment, FaImage, FaUserPlus } from "react-icons/fa";
 import { ImSpinner } from "react-icons/im";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useStompClient } from "react-stomp-hooks";
 import {
   disableActionNotification,
   removeNotification,
 } from "../features/notification/notificationSlice";
 import { format } from "date-fns";
+import axios from "axios";
 
 const NotificationItem = ({ notification, jwt }) => {
   const [isRejecting, setIsRejecting] = useState(false);
   const [isAccepting, setIsAccepting] = useState(false);
+  const [notifMessage, setNotifMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const user =
+    useSelector((state) => state.auth.userInfo) ||
+    JSON.parse(localStorage.getItem("user-info"));
   const dispatch = useDispatch();
   const stompClient = useStompClient();
   // Format date function
@@ -45,16 +50,16 @@ const NotificationItem = ({ notification, jwt }) => {
         stompClient.publish({
           destination: "/app/add-new-friend",
           body: JSON.stringify({
-            userId: user.id,
-            userName: user.username,
+            userId: user.info.id,
+            userName: user.info.username,
             friendId: notification.sender.id,
-            friendName: notification,
+            friendName: notification.sender.username,
             notificationId: notification.id,
           }),
         });
+        setNotifMessage("Friend request accepted!");
       } catch (e) {
         console.error("Failed to reject notification", e);
-        setErrorMessage(e.getMessage());
       } finally {
         setIsAccepting(false); // Stop loading
         dispatch(disableActionNotification(notification.id));
@@ -122,7 +127,12 @@ const NotificationItem = ({ notification, jwt }) => {
         </div>
       </div>
       {renderActionButtons()}
-      {errorMessage && <span>{errorMessage}</span>}
+      {errorMessage && (
+        <span className="text-red-500 text-center">{errorMessage}</span>
+      )}
+      {notifMessage && (
+        <span className="text-green-500 text-center">{notifMessage}</span>
+      )}
     </div>
   );
 };

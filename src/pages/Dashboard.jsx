@@ -30,16 +30,17 @@ const Dashboard = () => {
     if (stompClient) {
       // Đăng ký và lưu trữ subscription
       subscriptionErrorsRef.current = stompClient.subscribe(
-        `/user/${user.username}/queue/errors`,
+        `/user/${user.info.username}/queue/errors`,
         (message) => {
-          toast.error(message);
+          toast.error(message.body);
         }
       );
 
       subscriptionAddNewNotifRef.current = stompClient.subscribe(
-        `/user/${user.username}/queue/notification`,
+        `/user/${user.info.username}/queue/notification`,
         (message) => {
-          dispatch(addNewNotification(message));
+          console.log(message);
+          dispatch(addNewNotification(JSON.parse(message.body)));
         }
       );
     }
@@ -53,8 +54,8 @@ const Dashboard = () => {
   }, [stompClient]);
 
   useEffect(() => {
-    dispatch(fetchNotifications(user.id));
-  }, [dispatch, user.id]);
+    dispatch(fetchNotifications(user.info.id));
+  }, [dispatch, user.info.id]);
 
   return (
     <div className="flex flex-row overflow-hidden w-screen max-sm:relative">

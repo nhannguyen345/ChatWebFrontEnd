@@ -21,8 +21,8 @@ const InviteModal = () => {
     stompClient.publish({
       destination: "/app/create-friend-request",
       body: JSON.stringify({
-        userId: user.id,
-        userName: user.username,
+        userId: user.info.id,
+        userName: user.info.username,
         emailReceiver: email,
         inviteMessage: message,
       }),
