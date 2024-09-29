@@ -53,8 +53,14 @@ const Dashboard = () => {
     };
   }, [stompClient]);
 
+  // fetch notifications
   useEffect(() => {
     dispatch(fetchNotifications(user.info.id));
+  }, [dispatch, user.info.id]);
+
+  // fetch list messages
+  useEffect(() => {
+    dispatch(fetchMessages(user.info.id)); // Dispatch lấy danh sách tin nhắn
   }, [dispatch, user.info.id]);
 
   return (

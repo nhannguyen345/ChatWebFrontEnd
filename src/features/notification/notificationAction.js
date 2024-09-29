@@ -2,7 +2,7 @@ import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchNotifications = createAsyncThunk(
-  "notifications/fetchNotifications",
+  "notification/fetchNotifications",
   async (userId, { getState }) => {
     const jwt = localStorage.getItem("auth-tk-webchat");
     const response = await axios.get(

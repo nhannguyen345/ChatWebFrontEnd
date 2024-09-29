@@ -7,9 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 const WebSocketProvider = ({ children }) => {
   const [connectionError, setConnectionError] = useState(false);
   const navigate = useNavigate();
-  const user = useSelector((state) => state.auth.userInfo) || {
-    jwtToken: localStorage.getItem("auth-tk-webchat"),
-  };
+  const user = useSelector((state) => state.auth.userToken);
 
   useEffect(() => {
     if (connectionError) {
