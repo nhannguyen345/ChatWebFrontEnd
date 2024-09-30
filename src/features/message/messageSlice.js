@@ -13,6 +13,9 @@ const messageSlice = createSlice({
     setSelectedConversation: (state, action) => {
       state.selectedConversation = action.payload;
     },
+    addNewConversation: (state, action) => {
+      state.listMess.push(action.payload);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -22,6 +25,7 @@ const messageSlice = createSlice({
       .addCase(fetchMessages.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.listMess = action.payload;
+        console.log(state.listMess);
       })
       .addCase(fetchMessages.rejected, (state, action) => {
         state.status = "error";
@@ -30,5 +34,6 @@ const messageSlice = createSlice({
   },
 });
 
-export const { setSelectedConversation } = messageSlice.actions;
+export const { setSelectedConversation, addNewConversation } =
+  messageSlice.actions;
 export default messageSlice.reducer;

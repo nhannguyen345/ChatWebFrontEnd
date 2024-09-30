@@ -9,6 +9,7 @@ import {
 } from "../features/notification/notificationSlice";
 import { format } from "date-fns";
 import axios from "axios";
+import { addNewConversation } from "../features/message/messageSlice";
 
 const NotificationItem = ({ notification, jwt }) => {
   const [isRejecting, setIsRejecting] = useState(false);
@@ -58,6 +59,14 @@ const NotificationItem = ({ notification, jwt }) => {
           }),
         });
         setNotifMessage("Friend request accepted!");
+        dispatch(
+          addNewConversation({
+            type: "friend",
+            entity: notification.sender,
+            lastMessageTime: null,
+            messages: [],
+          })
+        );
       } catch (e) {
         console.error("Failed to reject notification", e);
       } finally {

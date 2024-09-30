@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { setPanelVisibility } from "../../features/panelVisibility/panelVisibilitySlice";
 import { formatDistanceToNow } from "date-fns";
+import { ImSpinner } from "react-icons/im";
 
 const chats = [
   {
@@ -72,7 +73,7 @@ const ListChat = () => {
   const jwt = localStorage.getItem("auth-tk-webchat");
   const user = useSelector((state) => state.auth.userInfo);
   const dispatch = useDispatch();
-  const { selectedConversation, listMess } = useSelector(
+  const { selectedConversation, listMess, status, error } = useSelector(
     (state) => state.message
   );
   // const panelVisibility = useSelector((state) => state.panelVisibility);
@@ -87,41 +88,54 @@ const ListChat = () => {
 
   return (
     <div className="flex-grow py-3 px-4 overflow-y-scroll no-scrollbar max-sm:mb-[60px]">
-      {listMess.map((item, idx) => (
-        <div
-          key={idx}
-          className="py-4 my-3 w-full flex flex-row overflow-hidden justify-evenly border bg-[#fff] rounded-sm shadow-sm transition-all duration-300 ease-in-out hover:border-[#665dfe] cursor-pointer"
-          onClick={() => dispatch(setPanelVisibility(true))}
-        >
-          {/* Avatar */}
-          <div>
-            <img
-              className="h-[52px] w-[52px] shadow object-cover rounded-full"
-              src={item.entity.avatarUrl}
-              alt=""
-            />
-          </div>
-
-          {/* Name & lastMessgae */}
-          <div className="w-9/12 flex flex-col gap-1 overflow-hidden">
-            <div className="flex justify-between">
-              <h4 className="font-semibold text-sm">
-                {item?.entity?.username
-                  ? item.entity.username
-                  : item.entity.name}
-              </h4>
-              <span className="text-sm text-[#adb5bd]">
-                {item?.lastMessageTime ? null : timeAgo(item.lastMessageTime)}
-              </span>
-            </div>
-            <p className="w-full whitespace-nowrap overflow-hidden overflow-ellipsis text-sm text-[#adb5bd]">
-              {item?.messages?.at(-1)
-                ? item.messages.at(-1)
-                : "(Start chatting with your friend"}
-            </p>
-          </div>
+      {(status == "idle" || status == "loading") && (
+        <div className="flex w-full h-full justify-center items-center">
+          <ImSpinner className="animate-spin h-[36px] w-[36px]" />
+          {/* Vòng xoay loading */}
         </div>
-      ))}
+      )}
+      {error && (
+        <div className="text-red-500 text-center">
+          {error.message} {/* Hiển thị thông báo lỗi */}
+        </div>
+      )}
+      {status === "succeeded" &&
+        !error &&
+        listMess.map((item, idx) => (
+          <div
+            key={idx}
+            className="py-4 my-3 w-full flex flex-row overflow-hidden justify-evenly border bg-[#fff] rounded-sm shadow-sm transition-all duration-300 ease-in-out hover:border-[#665dfe] cursor-pointer"
+            onClick={() => dispatch(setPanelVisibility(true))}
+          >
+            {/* Avatar */}
+            <div>
+              <img
+                className="h-[52px] w-[52px] shadow object-cover rounded-full"
+                src={item.entity.avatarUrl}
+                alt=""
+              />
+            </div>
+
+            {/* Name & lastMessgae */}
+            <div className="w-9/12 flex flex-col gap-1 overflow-hidden">
+              <div className="flex justify-between">
+                <h4 className="font-semibold text-base">
+                  {item?.entity?.username
+                    ? item.entity.username
+                    : item.entity.name}
+                </h4>
+                <span className="text-sm text-[#adb5bd]">
+                  {item?.lastMessageTime ? timeAgo(item.lastMessageTime) : null}
+                </span>
+              </div>
+              <p className="w-full whitespace-nowrap overflow-hidden overflow-ellipsis text-sm text-[#adb5bd]">
+                {item?.messages?.at(-1)
+                  ? item.messages.at(-1)
+                  : "( Start chatting with your friend )"}
+              </p>
+            </div>
+          </div>
+        ))}
     </div>
   );
 };

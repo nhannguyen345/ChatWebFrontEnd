@@ -10,6 +10,8 @@ import { useStompClient } from "react-stomp-hooks";
 import { toast, ToastContainer } from "react-toastify";
 import { fetchNotifications } from "../features/notification/notificationAction";
 import { addNewNotification } from "../features/notification/notificationSlice";
+import { fetchMessages } from "../features/message/messageAction";
+import { addNewConversation } from "../features/message/messageSlice";
 
 const Dashboard = () => {
   // const [errorMessage, setErrorMessage] = useState();
@@ -25,6 +27,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const subscriptionErrorsRef = useRef(null);
   const subscriptionAddNewNotifRef = useRef(null);
+  const subscriptionAddNewMessRef = useRef(null);
 
   useEffect(() => {
     if (stompClient) {
@@ -40,7 +43,18 @@ const Dashboard = () => {
         `/user/${user.info.username}/queue/notification`,
         (message) => {
           console.log(message);
-          dispatch(addNewNotification(JSON.parse(message.body)));
+          const newNotif = JSON.parse(message.body);
+          dispatch(addNewNotification(newNotif));
+          if (newNotif.notificationType === "FRIEND_REQUEST_ACCEPTED") {
+            dispatch(
+              addNewConversation({
+                type: "friend",
+                entity: newNotif.receiver,
+                lastMessageTime: null,
+                messages: [],
+              })
+            );
+          }
         }
       );
     }
@@ -56,11 +70,7 @@ const Dashboard = () => {
   // fetch notifications
   useEffect(() => {
     dispatch(fetchNotifications(user.info.id));
-  }, [dispatch, user.info.id]);
-
-  // fetch list messages
-  useEffect(() => {
-    dispatch(fetchMessages(user.info.id)); // Dispatch lấy danh sách tin nhắn
+    dispatch(fetchMessages(user.info.id));
   }, [dispatch, user.info.id]);
 
   return (

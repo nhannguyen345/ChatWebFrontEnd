@@ -7,7 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 const WebSocketProvider = ({ children }) => {
   const [connectionError, setConnectionError] = useState(false);
   const navigate = useNavigate();
-  const user = useSelector((state) => state.auth.userToken);
+  const jwt = useSelector((state) => state.auth.userToken);
 
   useEffect(() => {
     if (connectionError) {
@@ -22,7 +22,7 @@ const WebSocketProvider = ({ children }) => {
       url="ws://localhost:8080/chat-web-websocket"
       onConnect={() => console.log("Connected to Websocket server")}
       onDisconnect={() => console.log("Disconnected from Websocket server")}
-      connectHeaders={{ "WS-Authorization": `Bearer ${user.jwtToken}` }}
+      connectHeaders={{ "WS-Authorization": `Bearer ${jwt}` }}
       onStompError={(error) => {
         console.error("WebSocket error: ", error);
         setConnectionError(true);

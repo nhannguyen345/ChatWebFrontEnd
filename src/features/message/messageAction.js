@@ -5,12 +5,13 @@ export const fetchMessages = createAsyncThunk(
   "message/fetchMessages",
   async (userId, { rejectWithValue }) => {
     const jwt = localStorage.getItem("auth-tk-webchat");
+    console.log(userId);
     try {
+      const formData = new FormData();
+      formData.append("userId", userId);
       const response = await axios.post(
-        "http://localhost:8080/mesage/get-list-messages",
-        {
-          userId,
-        },
+        "http://localhost:8080/message/get-list-messages",
+        formData,
         {
           headers: { Authorization: `Bearer ${jwt}` },
         }
