@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 // eslint-disable-next-line react/prop-types
 const WebSocketProvider = ({ children }) => {
   const [connectionError, setConnectionError] = useState(false);
+  const [sessionId, setSessionId] = useState(null);
   const navigate = useNavigate();
   const jwt = useSelector((state) => state.auth.userToken);
 
@@ -20,7 +21,11 @@ const WebSocketProvider = ({ children }) => {
   return (
     <StompSessionProvider
       url="ws://localhost:8080/chat-web-websocket"
-      onConnect={() => console.log("Connected to Websocket server")}
+      onConnect={(frame) => {
+        console.log("Connected to Websocket server");
+        // Lấy sessionId từ frame nếu có
+        console.log(frame);
+      }}
       onDisconnect={() => console.log("Disconnected from Websocket server")}
       connectHeaders={{ "WS-Authorization": `Bearer ${jwt}` }}
       onStompError={(error) => {

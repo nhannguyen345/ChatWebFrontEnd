@@ -14,7 +14,7 @@ import { setActiveTab } from "../features/menu/menuSlice";
 const ResponsiveMenu = () => {
   const dispatch = useDispatch();
   const menu = useSelector((state) => state.menu.activeTab);
-
+  const user = useSelector((state) => state.auth.userInfo);
   const [isMenuOpen, setIsMenuOpen] = useState(false); // state để thực hiện đóng mở menu popover khi click vào avatar
   const avatarRef = useRef(null); // Tạo ref cho avatar, mục đích để giải quyết vấn đề khi click vào bên ngoài menu cụ thể là avatar để đóng menu
   return (
@@ -117,7 +117,7 @@ const ResponsiveMenu = () => {
         <div className="flex-1 max-sm:hidden"></div>
         <div className="group relative flex justify-center">
           <MdOutlineDarkMode
-            className="mt-[40px] text-[26px] max-sm:mt-0 max-sm:text-[22px] group-hover:fill-white"
+            className="mt-[40px] text-[26px] max-sm:mt-0 max-sm:text-[22px] group-hover:fill-white cursor-pointer"
             style={{ color: "#aea9fe" }}
           />
           {/* Tooltip */}
@@ -130,7 +130,7 @@ const ResponsiveMenu = () => {
           <img
             ref={avatarRef}
             className="w-[38px] rounded-full max-sm:w-[34px]"
-            src="https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100270.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1721520000&semt=ais_user"
+            src={user?.info?.avatarUrl}
             alt=""
             onClick={() => {
               setIsMenuOpen(!isMenuOpen);

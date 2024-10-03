@@ -27,7 +27,6 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const subscriptionErrorsRef = useRef(null);
   const subscriptionAddNewNotifRef = useRef(null);
-  const subscriptionAddNewMessRef = useRef(null);
 
   useEffect(() => {
     if (stompClient) {

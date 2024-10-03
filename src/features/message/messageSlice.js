@@ -5,16 +5,51 @@ const messageSlice = createSlice({
   name: "message",
   initialState: {
     listMess: [],
-    selectedConversation: null,
+    selectedConversationId: null,
     status: "idle",
     error: null,
   },
   reducers: {
-    setSelectedConversation: (state, action) => {
-      state.selectedConversation = action.payload;
+    setSelectedConversationId: (state, action) => {
+      state.selectedConversationId = action.payload;
     },
     addNewConversation: (state, action) => {
       state.listMess.push(action.payload);
+    },
+    addNewMessageFromSelf: (state, action) => {
+      state.listMess.map((conversation) => {
+        if (
+          conversation.entity.id === action.payload.senderId ||
+          conversation.entity.id === action.payload.groupId
+        ) {
+          conversation.messages.push(payload);
+        }
+        return conversation;
+      });
+    },
+    addNewMessageFromOther: (state, action) => {
+      const selectedConversationIndex = state.listMess.findIndex(
+        (item) => (item.entity.id = action.payload.sender.id)
+      );
+
+      if (selectedConversationIndex !== -1) {
+        // copy of conversation which has new message
+        const updatedConversation = {
+          ...state.listMess[selectedConversationIndex],
+          messages: [
+            ...state.listMess[selectedConversationIndex].messages,
+            action.payload,
+          ],
+          lastMessageTime: action.payload.createAt,
+        };
+
+        // copy of listMess
+        const newListMess = [...state.listMess];
+        newListMess.splice(selectedConversationIndex, 1);
+        newListMess.unshift(updatedConversation);
+
+        state.listMess = newListMess;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -34,6 +69,6 @@ const messageSlice = createSlice({
   },
 });
 
-export const { setSelectedConversation, addNewConversation } =
+export const { setSelectedConversationId, addNewConversation } =
   messageSlice.actions;
 export default messageSlice.reducer;

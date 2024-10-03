@@ -73,7 +73,7 @@ const ListChat = () => {
   const jwt = localStorage.getItem("auth-tk-webchat");
   const user = useSelector((state) => state.auth.userInfo);
   const dispatch = useDispatch();
-  const { selectedConversation, listMess, status, error } = useSelector(
+  const { selectedConversationId, listMess, status, error } = useSelector(
     (state) => state.message
   );
   // const panelVisibility = useSelector((state) => state.panelVisibility);

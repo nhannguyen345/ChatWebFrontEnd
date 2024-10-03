@@ -3,9 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import ChatContent from "./MainContentPanelComps/ChatContent";
 import ChatInfo from "./MainContentPanelComps/ChatInfo";
 import ProfileSettingContent from "./MainContentPanelComps/ProfileSettingContent";
+import WelcomeChatContent from "./WelcomeChatContent";
 
 const MainContentPanel = () => {
   const dispatch = useDispatch();
+  const selectedConversationId = useSelector(
+    (state) => state.message.selectedConversationId
+  );
   const menu = useSelector((state) => state.menu.activeTab);
   const panelVisibility = useSelector((state) => state.panelVisibility);
   return (
@@ -17,12 +21,21 @@ const MainContentPanel = () => {
           : "max-sm:z-10 max-sm:animate-slide-right max-sm:absolute")
       }
     >
-      {menu !== "profile" && (
+      {menu !== "profile" &&
+        (selectedConversationId ? (
+          <div className={"flex"}>
+            <ChatContent />
+            <ChatInfo />
+          </div>
+        ) : (
+          <WelcomeChatContent />
+        ))}
+      {/* {menu !== "profile" && (
         <div className={"flex"}>
           <ChatContent />
           <ChatInfo />
         </div>
-      )}
+      )} */}
       {menu === "profile" && <ProfileSettingContent />}
     </div>
   );
