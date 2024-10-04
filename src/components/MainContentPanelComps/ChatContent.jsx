@@ -3,30 +3,36 @@ import HeaderOfChatContent from "../ChatContentComps/HeaderOfChatContent";
 import MessageContainer from "../ChatContentComps/MessageContainer";
 import MessageInputBox from "../ChatContentComps/MessageInputBox";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import useCloudinaryUpload from "../../hooks/useCloudinaryUpload";
+import { addNewMessageFromSelf } from "../../features/message/messageSlice";
+import { getFileName, getFileSizeInKB } from "../../utils/fileUtils";
+import { generateIdMessage, createNewMessage } from "../../utils/messageUtils";
+import { useStompClient } from "react-stomp-hooks";
 
 const ChatContent = () => {
+  const stompClient = useStompClient();
   const user = useSelector((state) => state.auth.userInfo);
-  const { selectedConversationId, listMess, status } = useSelector(
+  const { selectedConversationId, listMess } = useSelector(
     (state) => state.message
   );
-  const dispatch = useDispatch();
   const showInfoChat = useSelector((state) => state.showInfoChat);
+  const dispatch = useDispatch();
   const { postToCloudinary, uploading, error } = useCloudinaryUpload();
   const [inputValue, setInputValue] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [listChat, setListChat] = useState([]);
 
-  // Hàm lấy tên file
-  function getFileName(file) {
-    return file.name;
+  function SendDataThroughWS(data) {
+    stompClient.publish({
+      destination: "/app/add-new-message",
+      body: JSON.stringify(data),
+    });
   }
 
-  // Hàm lấy dung lượng file (KB)
-  function getFileSizeInKB(file) {
-    const fileSizeInBytes = file.size;
-    return (fileSizeInBytes / 1024).toFixed(2); // Chuyển đổi bytes sang KB và giới hạn 2 chữ số sau dấu phẩy
+  function getMessagesFromSelectedConversation() {
+    return listMess.filter((conv) => {
+      return conv.entity.id === selectedConversationId;
+    })?.messages;
   }
 
   function getTypeSelectedConversation() {
@@ -35,84 +41,54 @@ const ChatContent = () => {
     })?.type;
   }
 
-  function generateIdMessage() {
-    return "msg_" + (Math.random() + 1).toString(36).substring(2);
-  }
-
-  function createNewMessage(
-    tempId,
-    senderId,
-    isGroup,
-    receiverId,
-    messageType = "TEXT",
-    content = "",
-    fileUrl = "",
-    createAt = new Date()
-  ) {
-    return {
-      tempId,
-      senderId,
-      receiverId: groupId ? null : receiverId,
-      groupId: groupId ? receiverId : null,
-      content,
-      fileUrl,
-      messageType,
-      createAt,
-      statusMess: "pending",
-    };
-  }
-
   const handleSendMessage = async (e) => {
     const file = selectedFile;
     const tempId = generateIdMessage();
-
     if (file) {
       const url_file = await postToCloudinary(file);
       if (url_file) {
         const fileType = file.type;
         if (fileType.startsWith("image/")) {
-          setListChat((prevChat) => [
-            ...prevChat,
-            createNewMessage(
-              tempId,
-              user.info.id,
-              getTypeSelectedConversation(),
-              selectedConversationId,
-              "",
-              url_file,
-              "IMAGE"
-            ),
-          ]);
+          const imgeMess = createNewMessage(
+            tempId,
+            user.info.id,
+            getTypeSelectedConversation(),
+            selectedConversationId,
+            "",
+            url_file,
+            "IMAGE"
+          );
+          dispatch(addNewMessageFromSelf(imgeMess));
+          SendDataThroughWS(imgeMess);
         } else {
-          setListChat((prevChat) => [
-            ...prevChat,
-            createNewMessage(
-              tempId,
-              user.info.id,
-              getTypeSelectedConversation(),
-              selectedConversationId,
-              getFileName(file) + "-" + getFileSizeInKB(file),
-              url_file,
-              "FILE"
-            ),
-          ]);
+          const fileMess = createNewMessage(
+            tempId,
+            user.info.id,
+            getTypeSelectedConversation(),
+            selectedConversationId,
+            getFileName(file) + "-" + getFileSizeInKB(file),
+            url_file,
+            "FILE"
+          );
+          dispatch(addNewMessageFromSelf(fileMess));
+          SendDataThroughWS(fileMess);
         }
         setSelectedFile(null);
       }
     } else {
       if (inputValue === "") return;
-      setListChat((prevChat) => [
-        ...prevChat,
-        createNewMessage(
-          tempId,
-          user.info.id,
-          getTypeSelectedConversation(),
-          selectedConversationId,
-          inputValue,
-          "",
-          "TEXT"
-        ),
-      ]);
+      const textMess = createNewMessage(
+        tempId,
+        user.info.id,
+        getTypeSelectedConversation(),
+        selectedConversationId,
+        inputValue,
+        "",
+        "TEXT"
+      );
+      console.log(textMess);
+      dispatch(addNewMessageFromSelf(textMess));
+      SendDataThroughWS(textMess);
       setInputValue("");
     }
   };
@@ -125,7 +101,10 @@ const ChatContent = () => {
       }
     >
       <HeaderOfChatContent />
-      <MessageContainer listChat={listChat} setListChat={setListChat} />
+      <MessageContainer
+        listChat={getMessagesFromSelectedConversation()}
+        setListChat={setListChat}
+      />
       <MessageInputBox
         inputValue={inputValue}
         setInputValue={setInputValue}

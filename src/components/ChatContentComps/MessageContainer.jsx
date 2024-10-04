@@ -98,7 +98,7 @@ const MessageContainer = ({ listChat }) => {
       ref={refDiv}
       className="flex-1 w-full overflow-y-hidden custom-scrollbar hover:overflow-y-auto focus:overflow-y-auto"
     >
-      {listChat.map((item, idx) => {
+      {listChat?.map((item, idx) => {
         if (item.senderId === "1") {
           if (item.contentType === "text")
             return (

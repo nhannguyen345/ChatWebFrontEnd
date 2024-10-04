@@ -1,5 +1,6 @@
 import React from "react";
 import { GoFile } from "react-icons/go";
+import { IoMdCheckmark } from "react-icons/io";
 const FileMessageLeftSide = ({ item, index }) => {
   return (
     <div className="w-full h-fit text-left my-[36px]">
@@ -40,6 +41,20 @@ const FileMessageLeftSide = ({ item, index }) => {
         <span className="leading-[18px] inline-block align-middle text-[12px]">
           {item.sendAt}
         </span>
+      </div>
+
+      <div className="text-[10px] mt-2 ml-[58px]">
+        {item?.statusMess === "pending" && (
+          <span className="text-blue-500">Đang gửi...</span>
+        )}
+        {item?.statusMess === "error" && (
+          <span className="text-red-500">Gửi thất bại</span>
+        )}
+        {item?.statusMess === "success" && (
+          <span className="text-green-500">
+            <IoMdCheckmark />
+          </span>
+        )}
       </div>
     </div>
   );

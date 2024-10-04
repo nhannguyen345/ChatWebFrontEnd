@@ -1,6 +1,7 @@
 import React from "react";
 import { BsThreeDots } from "react-icons/bs";
 import PopoverMenuOptionsMessage from "./PopoverMenuOptionsMessage";
+import { IoMdCheckmark } from "react-icons/io";
 
 const TextMessageLeftSide = ({ item, index, toggleMenu, openMenuId }) => {
   return (
@@ -26,6 +27,20 @@ const TextMessageLeftSide = ({ item, index, toggleMenu, openMenuId }) => {
         />
 
         {openMenuId === index && <PopoverMenuOptionsMessage message={item} />}
+      </div>
+
+      <div className="ml-[58px] mt-[4px] text-[10px]">
+        {item?.statusMess === "pending" && (
+          <span className="text-blue-500">Sending...</span>
+        )}
+        {item?.statusMess === "error" && (
+          <span className="text-red-500">Failed</span>
+        )}
+        {item?.statusMess === "success" && (
+          <span className="text-green-500">
+            <IoMdCheckmark />
+          </span>
+        )}
       </div>
     </div>
   );

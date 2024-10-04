@@ -16,16 +16,52 @@ const messageSlice = createSlice({
     addNewConversation: (state, action) => {
       state.listMess.push(action.payload);
     },
+    updateStatusErrorMess: (state, action) => {
+      const tempId = action.payload;
+
+      for (let i = 0; i < state.listMess.length; i++) {
+        const conversation = state.listMess[i];
+
+        const messageIndex = conversation.messages.findIndex(
+          (message) => message.messId === tempId
+        );
+
+        if (messageIndex !== -1) {
+          conversation.messages[messageIndex].status = "error";
+          break;
+        }
+      }
+    },
+    upadateIdAndStatusMess: (state, action) => {
+      const { tempId, newMessageId, status } = action.payload;
+
+      for (let i = 0; i < state.listMess.length; i++) {
+        const conversation = state.listMess[i];
+
+        const messageIndex = conversation.messages.findIndex(
+          (message) => message.messId === tempId
+        );
+
+        if (messageIndex !== -1) {
+          conversation.messages[messageIndex].messId = newMessageId;
+          conversation.messages[messageIndex].status = status;
+          break;
+        }
+      }
+    },
     addNewMessageFromSelf: (state, action) => {
-      state.listMess.map((conversation) => {
+      for (let i = 0; i < state.listMess.length; i++) {
+        const conversation = state.listMess[i];
+
         if (
           conversation.entity.id === action.payload.senderId ||
           conversation.entity.id === action.payload.groupId
         ) {
-          conversation.messages.push(payload);
+          conversation.messages.push(action.payload);
+          conversation.lastMessageTime = action.payload.createAt;
+          break;
         }
-        return conversation;
-      });
+      }
     },
     addNewMessageFromOther: (state, action) => {
       const selectedConversationIndex = state.listMess.findIndex(
@@ -69,6 +105,12 @@ const messageSlice = createSlice({
   },
 });
 
-export const { setSelectedConversationId, addNewConversation } =
-  messageSlice.actions;
+export const {
+  setSelectedConversationId,
+  addNewConversation,
+  updateStatusErrorMess,
+  upadateIdAndStatusMess,
+  addNewMessageFromSelf,
+  addNewMessageFromOther,
+} = messageSlice.actions;
 export default messageSlice.reducer;

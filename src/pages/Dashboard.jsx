@@ -11,7 +11,12 @@ import { toast, ToastContainer } from "react-toastify";
 import { fetchNotifications } from "../features/notification/notificationAction";
 import { addNewNotification } from "../features/notification/notificationSlice";
 import { fetchMessages } from "../features/message/messageAction";
-import { addNewConversation } from "../features/message/messageSlice";
+import {
+  addNewConversation,
+  addNewMessageFromOther,
+  upadateIdAndStatusMess,
+  updateStatusErrorMess,
+} from "../features/message/messageSlice";
 
 const Dashboard = () => {
   // const [errorMessage, setErrorMessage] = useState();
@@ -27,6 +32,9 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const subscriptionErrorsRef = useRef(null);
   const subscriptionAddNewNotifRef = useRef(null);
+  const subscriptionAddNewMessRef = useRef(null);
+  const subscriptionSendMessSuccRef = useRef(null);
+  const subscriptionSendMessErrRef = useRef(null);
 
   useEffect(() => {
     if (stompClient) {
@@ -48,7 +56,7 @@ const Dashboard = () => {
             dispatch(
               addNewConversation({
                 type: "friend",
-                entity: newNotif.receiver,
+                entity: newNotif.sender,
                 lastMessageTime: null,
                 messages: [],
               })
@@ -56,13 +64,37 @@ const Dashboard = () => {
           }
         }
       );
+
+      subscriptionAddNewMessRef.current = stompClient.subscribe(
+        `/user/${user.info.username}/queue/new-message`,
+        (message) => {
+          const newMess = JSON.parse(message.body);
+          dispatch(addNewMessageFromOther(newMess));
+        }
+      );
+
+      subscriptionSendMessSuccRef.current = stompClient.subscribe(
+        `/user/${user.info.username}/queue/send-mess-success`,
+        (message) => {
+          dispatch(upadateIdAndStatusMess(JSON.parse(message.body)));
+        }
+      );
+
+      subscriptionSendMessErrRef.current = stompClient.subscribe(
+        `/user/${user.info.username}/queue/send-mess-error`,
+        (message) => {
+          dispatch(updateStatusErrorMess(message.body));
+        }
+      );
     }
 
     // Cleanup function để hủy đăng ký
     return () => {
-      if (subscriptionErrorsRef.current) {
-        subscriptionErrorsRef.current.unsubscribe();
-      }
+      subscriptionErrorsRef.current?.unsubscribe();
+      subscriptionAddNewNotifRef.current?.unsubscribe();
+      subscriptionAddNewMessRef.current?.unsubscribe();
+      subscriptionSendMessSuccRef.current?.unsubscribe();
+      subscriptionSendMessErrRef.current?.unsubscribe();
     };
   }, [stompClient]);
 

@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPanelVisibility } from "../../features/panelVisibility/panelVisibilitySlice";
 import { formatDistanceToNow } from "date-fns";
 import { ImSpinner } from "react-icons/im";
+import { setSelectedConversationId } from "../../features/message/messageSlice";
 
 const chats = [
   {
@@ -105,7 +106,10 @@ const ListChat = () => {
           <div
             key={idx}
             className="py-4 my-3 w-full flex flex-row overflow-hidden justify-evenly border bg-[#fff] rounded-sm shadow-sm transition-all duration-300 ease-in-out hover:border-[#665dfe] cursor-pointer"
-            onClick={() => dispatch(setPanelVisibility(true))}
+            onClick={() => {
+              dispatch(setPanelVisibility(true));
+              dispatch(setSelectedConversationId(item.entity.id));
+            }}
           >
             {/* Avatar */}
             <div>
