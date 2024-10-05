@@ -19,53 +19,80 @@ const messageSlice = createSlice({
     updateStatusErrorMess: (state, action) => {
       const tempId = action.payload;
 
-      for (let i = 0; i < state.listMess.length; i++) {
-        const conversation = state.listMess[i];
+      const conversationIndex = state.listMess.findIndex((conv) =>
+        conv.messages.some((message) => message.messId === tempId)
+      );
 
-        const messageIndex = conversation.messages.findIndex(
-          (message) => message.messId === tempId
-        );
+      if (conversationIndex !== -1) {
+        const updatedConversation = {
+          ...state.listMess[conversationIndex],
+          messages: state.listMess[conversationIndex].messages.map((message) =>
+            message.messId === tempId
+              ? { ...message, statusMess: "error" }
+              : message
+          ),
+        };
 
-        if (messageIndex !== -1) {
-          conversation.messages[messageIndex].status = "error";
-          break;
-        }
+        state.listMess = [
+          ...state.listMess.slice(0, conversationIndex),
+          updatedConversation,
+          ...state.listMess.slice(conversationIndex + 1),
+        ];
       }
     },
     upadateIdAndStatusMess: (state, action) => {
-      const { tempId, newMessageId, status } = action.payload;
+      const { tempId, newMessage, status } = action.payload;
 
-      for (let i = 0; i < state.listMess.length; i++) {
-        const conversation = state.listMess[i];
+      const conversationIndex = state.listMess.findIndex((conv) =>
+        conv.messages.some((message) => message.messId === tempId)
+      );
 
-        const messageIndex = conversation.messages.findIndex(
-          (message) => message.messId === tempId
-        );
+      console.log(conversationIndex);
 
-        if (messageIndex !== -1) {
-          conversation.messages[messageIndex].messId = newMessageId;
-          conversation.messages[messageIndex].status = status;
-          break;
-        }
+      if (conversationIndex !== -1) {
+        const updatedConversation = {
+          ...state.listMess[conversationIndex],
+          messages: state.listMess[conversationIndex].messages.map((message) =>
+            message.messId === tempId
+              ? { ...message, ...newMessage, statusMess: status } // Cập nhật tin nhắn
+              : message
+          ),
+        };
+
+        state.listMess = [
+          ...state.listMess.slice(0, conversationIndex),
+          updatedConversation,
+          ...state.listMess.slice(conversationIndex + 1),
+        ];
       }
     },
     addNewMessageFromSelf: (state, action) => {
-      for (let i = 0; i < state.listMess.length; i++) {
-        const conversation = state.listMess[i];
+      const conversationIndex = state.listMess.findIndex(
+        (conv) =>
+          conv.entity.id === action.payload.receiverId ||
+          conv.entity.id === action.payload.groupId
+      );
 
-        if (
-          conversation.entity.id === action.payload.senderId ||
-          conversation.entity.id === action.payload.groupId
-        ) {
-          conversation.messages.push(action.payload);
-          conversation.lastMessageTime = action.payload.createAt;
-          break;
-        }
+      if (conversationIndex !== -1) {
+        const updatedConversation = {
+          ...state.listMess[conversationIndex],
+          messages: [
+            ...state.listMess[conversationIndex].messages,
+            action.payload,
+          ],
+          lastMessageTime: action.payload.createAt,
+        };
+
+        state.listMess = [
+          ...state.listMess.slice(0, conversationIndex),
+          updatedConversation,
+          ...state.listMess.slice(conversationIndex + 1),
+        ];
       }
     },
     addNewMessageFromOther: (state, action) => {
       const selectedConversationIndex = state.listMess.findIndex(
-        (item) => (item.entity.id = action.payload.sender.id)
+        (item) => item.entity.id === action.payload.sender.id
       );
 
       if (selectedConversationIndex !== -1) {

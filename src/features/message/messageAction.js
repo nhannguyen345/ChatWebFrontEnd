@@ -16,6 +16,7 @@ export const fetchMessages = createAsyncThunk(
           headers: { Authorization: `Bearer ${jwt}` },
         }
       );
+      console.log(response.data);
       return response.data;
     } catch (error) {
       if (error.response && error.response.data.message) {

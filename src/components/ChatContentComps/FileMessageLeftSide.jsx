@@ -1,6 +1,7 @@
 import React from "react";
 import { GoFile } from "react-icons/go";
 import { IoMdCheckmark } from "react-icons/io";
+import { formattedTime } from "../../utils/timeUtils";
 const FileMessageLeftSide = ({ item, index }) => {
   return (
     <div className="w-full h-fit text-left my-[36px]">
@@ -8,10 +9,10 @@ const FileMessageLeftSide = ({ item, index }) => {
         <h6 className="text-[#343a40] text-[14px] mb-[12px] font-[500] leading-[1.2]">
           {"Cathana"}
         </h6>
-        {item.contentType === "image" ? (
+        {item.messageType === "IMAGE" ? (
           <img
             className="max-w-full h-auto rounded-md object-cover"
-            src={item.urlFile}
+            src={item.fileUrl}
           />
         ) : (
           <div className="flex justify-center items-center">
@@ -39,7 +40,7 @@ const FileMessageLeftSide = ({ item, index }) => {
       </div>
       <div className="flex justify-start items-center gap-2 ml-[58px] text-[#adb5bd]">
         <span className="leading-[18px] inline-block align-middle text-[12px]">
-          {item.sendAt}
+          {formattedTime(item.createdAt)}
         </span>
       </div>
 

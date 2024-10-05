@@ -76,6 +76,7 @@ const Dashboard = () => {
       subscriptionSendMessSuccRef.current = stompClient.subscribe(
         `/user/${user.info.username}/queue/send-mess-success`,
         (message) => {
+          console.log("test call");
           dispatch(upadateIdAndStatusMess(JSON.parse(message.body)));
         }
       );

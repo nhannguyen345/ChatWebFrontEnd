@@ -10,7 +10,7 @@ export function createNewMessage(
   messageType = "TEXT",
   content = "",
   fileUrl = "",
-  createAt = new Date().toISOString()
+  createdAt = new Date().toISOString()
 ) {
   return {
     tempId,
@@ -20,7 +20,7 @@ export function createNewMessage(
     content,
     fileUrl,
     messageType,
-    createAt,
+    createdAt,
     statusMess: "pending",
   };
 }

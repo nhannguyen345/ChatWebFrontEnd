@@ -2,6 +2,7 @@ import React from "react";
 import { BsThreeDots } from "react-icons/bs";
 import PopoverMenuOptionsMessage from "./PopoverMenuOptionsMessage";
 import { IoMdCheckmark } from "react-icons/io";
+import { formattedTime } from "../../utils/timeUtils";
 
 const TextMessageLeftSide = ({ item, index, toggleMenu, openMenuId }) => {
   return (
@@ -19,7 +20,7 @@ const TextMessageLeftSide = ({ item, index, toggleMenu, openMenuId }) => {
       </div>
       <div className="relative flex justify-start items-center gap-2 mt-[6px] ml-[58px] text-[#adb5bd]">
         <span className="leading-[18px] inline-block align-middle text-[12px]">
-          {item.sendAt}
+          {formattedTime(item.createdAt)}
         </span>
         <BsThreeDots
           className="h-[18px] w-[18px] align-middle text-[12px] cursor-pointer"

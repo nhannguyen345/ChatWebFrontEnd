@@ -3,6 +3,7 @@ import TextMessageRightSide from "./TextMessageRightSide";
 import TextMessageLeftSide from "./TextMessageLeftSide";
 import FileMessageLeftSide from "./FileMessageLeftSide";
 import FileMessageRightSide from "./FileMessageRightSide";
+import { useSelector } from "react-redux";
 const ListMessage = [
   {
     messId: 1,
@@ -74,6 +75,7 @@ const ListMessage = [
   },
 ];
 const MessageContainer = ({ listChat }) => {
+  const user = useSelector((state) => state.auth.userInfo);
   const [openMenuId, setOpenMenuId] = useState(null);
   const refDiv = useRef(null);
   const toggleMenu = (idx) => {
@@ -99,8 +101,8 @@ const MessageContainer = ({ listChat }) => {
       className="flex-1 w-full overflow-y-hidden custom-scrollbar hover:overflow-y-auto focus:overflow-y-auto"
     >
       {listChat?.map((item, idx) => {
-        if (item.senderId === "1") {
-          if (item.contentType === "text")
+        if (item.senderId === user.info.id || item.sender.id === user.info.id) {
+          if (item.messageType === "TEXT")
             return (
               <TextMessageRightSide
                 item={item}
@@ -112,7 +114,7 @@ const MessageContainer = ({ listChat }) => {
             );
           else return <FileMessageRightSide item={item} key={idx} />;
         } else {
-          if (item.contentType === "text")
+          if (item.messageType === "TEXT")
             return (
               <TextMessageLeftSide
                 item={item}

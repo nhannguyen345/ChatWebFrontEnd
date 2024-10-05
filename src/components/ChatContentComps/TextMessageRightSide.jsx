@@ -2,6 +2,7 @@ import React from "react";
 import { BsThreeDots } from "react-icons/bs";
 import PopoverMenuOptionsMessage from "./PopoverMenuOptionsMessage";
 import { IoMdCheckmark } from "react-icons/io";
+import { formattedTime } from "../../utils/timeUtils";
 
 const TextMessageRightSide = ({ item, index, toggleMenu, openMenuId }) => {
   return (
@@ -18,7 +19,7 @@ const TextMessageRightSide = ({ item, index, toggleMenu, openMenuId }) => {
         {openMenuId === index && <PopoverMenuOptionsMessage message={item} />}
 
         <span className="leading-[18px] inline-block align-middle text-[12px]">
-          {item.sendAt}
+          {formattedTime(item.createdAt)}
         </span>
       </div>
 

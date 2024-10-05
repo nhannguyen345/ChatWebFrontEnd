@@ -30,9 +30,10 @@ const ChatContent = () => {
   }
 
   function getMessagesFromSelectedConversation() {
-    return listMess.filter((conv) => {
+    const conve = listMess.filter((conv) => {
       return conv.entity.id === selectedConversationId;
-    })?.messages;
+    });
+    return conve[0]?.messages;
   }
 
   function getTypeSelectedConversation() {
@@ -54,9 +55,9 @@ const ChatContent = () => {
             user.info.id,
             getTypeSelectedConversation(),
             selectedConversationId,
+            "IMAGE",
             "",
-            url_file,
-            "IMAGE"
+            url_file
           );
           dispatch(addNewMessageFromSelf(imgeMess));
           SendDataThroughWS(imgeMess);
@@ -66,9 +67,9 @@ const ChatContent = () => {
             user.info.id,
             getTypeSelectedConversation(),
             selectedConversationId,
+            "FILE",
             getFileName(file) + "-" + getFileSizeInKB(file),
-            url_file,
-            "FILE"
+            url_file
           );
           dispatch(addNewMessageFromSelf(fileMess));
           SendDataThroughWS(fileMess);
@@ -82,9 +83,9 @@ const ChatContent = () => {
         user.info.id,
         getTypeSelectedConversation(),
         selectedConversationId,
+        "TEXT",
         inputValue,
-        "",
-        "TEXT"
+        ""
       );
       console.log(textMess);
       dispatch(addNewMessageFromSelf(textMess));

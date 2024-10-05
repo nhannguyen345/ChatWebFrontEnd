@@ -133,8 +133,8 @@ const ListChat = () => {
                 </span>
               </div>
               <p className="w-full whitespace-nowrap overflow-hidden overflow-ellipsis text-sm text-[#adb5bd]">
-                {item?.messages?.at(-1)
-                  ? item.messages.at(-1)
+                {item?.messages?.at(-1)?.content
+                  ? item.messages.at(-1).content
                   : "( Start chatting with your friend )"}
               </p>
             </div>
