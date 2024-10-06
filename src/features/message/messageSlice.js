@@ -20,14 +20,14 @@ const messageSlice = createSlice({
       const tempId = action.payload;
 
       const conversationIndex = state.listMess.findIndex((conv) =>
-        conv.messages.some((message) => message.messId === tempId)
+        conv.messages.some((message) => message.tempId === tempId)
       );
 
       if (conversationIndex !== -1) {
         const updatedConversation = {
           ...state.listMess[conversationIndex],
           messages: state.listMess[conversationIndex].messages.map((message) =>
-            message.messId === tempId
+            message.tempId === tempId
               ? { ...message, statusMess: "error" }
               : message
           ),
@@ -41,10 +41,10 @@ const messageSlice = createSlice({
       }
     },
     upadateIdAndStatusMess: (state, action) => {
-      const { tempId, newMessage, status } = action.payload;
-
+      const { tempId, newMessage, statusMess } = action.payload;
+      console.log(action.payload);
       const conversationIndex = state.listMess.findIndex((conv) =>
-        conv.messages.some((message) => message.messId === tempId)
+        conv.messages.some((message) => message.tempId === tempId)
       );
 
       console.log(conversationIndex);
@@ -52,13 +52,14 @@ const messageSlice = createSlice({
       if (conversationIndex !== -1) {
         const updatedConversation = {
           ...state.listMess[conversationIndex],
+          lastMessageTime: newMessage.createdAt,
           messages: state.listMess[conversationIndex].messages.map((message) =>
-            message.messId === tempId
-              ? { ...message, ...newMessage, statusMess: status } // Cập nhật tin nhắn
+            message.tempId === tempId
+              ? { ...message, ...newMessage, statusMess: statusMess } // Cập nhật tin nhắn
               : message
           ),
         };
-
+        console.log(updatedConversation);
         state.listMess = [
           ...state.listMess.slice(0, conversationIndex),
           updatedConversation,

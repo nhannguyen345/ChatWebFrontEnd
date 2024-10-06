@@ -11,12 +11,22 @@ import { setPanelVisibility } from "../../features/panelVisibility/panelVisibili
 import { setShowInfoChat } from "../../features/showInfoChat/showInfoChatSlice";
 import useClickOutside from "../../hooks/useClickOutside";
 const HeaderOfChatContent = () => {
+  const { selectedConversationId, listMess } = useSelector(
+    (state) => state.message
+  );
   // Using to showw/hide menu when click three dots
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Menu & Three Dót Icon Ref
   const menuRef = useRef(null);
   const otherRef = useRef(null);
+
+  function getSelectedConversation() {
+    const conve = listMess.find((conv) => {
+      return conv.entity.id === selectedConversationId;
+    });
+    return conve;
+  }
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -40,13 +50,15 @@ const HeaderOfChatContent = () => {
       {/* Avatar */}
       <img
         className="h-[52px] w-[52px] shadow object-cover rounded-full my-auto"
-        src="https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg"
+        src={getSelectedConversation()?.entity?.avatarUrl}
         alt=""
       />
 
       {/* Name & text info */}
       <div className="ml-3 w-fit">
-        <h4 className="col-span-6 font-semibold text-[#495057]">Cathana</h4>
+        <h4 className="col-span-6 font-semibold text-[#495057]">
+          {getSelectedConversation()?.entity?.username}
+        </h4>
         <span
           onClick={() => dispatch(setShowInfoChat(true))}
           className="col-span-2 text-sm text-[#adb5bd] cursor-pointer hover:text-[#665dfe] max-sm:text-[11px]"

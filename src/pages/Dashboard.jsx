@@ -101,9 +101,20 @@ const Dashboard = () => {
 
   // fetch notifications
   useEffect(() => {
-    dispatch(fetchNotifications(user.info.id));
-    dispatch(fetchMessages(user.info.id));
-  }, [dispatch, user.info.id]);
+    let idUser;
+
+    if (!user?.info?.id) {
+      const storedUser = JSON.parse(localStorage.getItem("user-info"));
+      idUser = storedUser?.info?.id;
+    } else {
+      idUser = user.info.id;
+    }
+
+    if (idUser) {
+      dispatch(fetchNotifications(idUser));
+      dispatch(fetchMessages(idUser));
+    }
+  }, [dispatch, user]);
 
   return (
     <div className="flex flex-row overflow-hidden w-screen max-sm:relative">

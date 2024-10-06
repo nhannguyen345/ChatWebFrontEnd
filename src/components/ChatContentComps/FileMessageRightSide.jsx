@@ -1,6 +1,5 @@
 import React from "react";
 import { GoFile } from "react-icons/go";
-import { IoMdCheckmark } from "react-icons/io";
 import { formattedTime } from "../../utils/timeUtils";
 
 const FileMessageRightSide = ({ item, index }) => {
@@ -42,12 +41,10 @@ const FileMessageRightSide = ({ item, index }) => {
           <span className="text-blue-500">Sending...</span>
         )}
         {item?.statusMess === "error" && (
-          <span className="text-red-500">Failed</span>
+          <span className="text-red-500">Failed to send</span>
         )}
         {item?.statusMess === "success" && (
-          <span className="text-green-500">
-            <IoMdCheckmark />
-          </span>
+          <span className="text-green-500">Sent</span>
         )}
       </div>
     </div>

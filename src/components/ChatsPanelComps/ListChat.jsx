@@ -105,7 +105,12 @@ const ListChat = () => {
         listMess.map((item, idx) => (
           <div
             key={idx}
-            className="py-4 my-3 w-full flex flex-row overflow-hidden justify-evenly border bg-[#fff] rounded-sm shadow-sm transition-all duration-300 ease-in-out hover:border-[#665dfe] cursor-pointer"
+            className={
+              "py-4 my-3 w-full flex flex-row overflow-hidden justify-evenly border rounded-md shadow-sm transition-all duration-300 ease-in-out hover:border-[#665dfe] cursor-pointer " +
+              (selectedConversationId === item.entity.id
+                ? "bg-[#665dfe]"
+                : "bg-[#fff]")
+            }
             onClick={() => {
               dispatch(setPanelVisibility(true));
               dispatch(setSelectedConversationId(item.entity.id));
@@ -123,16 +128,37 @@ const ListChat = () => {
             {/* Name & lastMessgae */}
             <div className="w-9/12 flex flex-col gap-1 overflow-hidden">
               <div className="flex justify-between">
-                <h4 className="font-semibold text-base">
+                <h4
+                  className={
+                    "font-semibold text-base " +
+                    (selectedConversationId === item.entity.id
+                      ? "text-[#fff]"
+                      : "")
+                  }
+                >
                   {item?.entity?.username
                     ? item.entity.username
                     : item.entity.name}
                 </h4>
-                <span className="text-sm text-[#adb5bd]">
+                <span
+                  className={
+                    "text-sm " +
+                    (selectedConversationId === item.entity.id
+                      ? "text-[#fff]"
+                      : "text-[#adb5bd]")
+                  }
+                >
                   {item?.lastMessageTime ? timeAgo(item.lastMessageTime) : null}
                 </span>
               </div>
-              <p className="w-full whitespace-nowrap overflow-hidden overflow-ellipsis text-sm text-[#adb5bd]">
+              <p
+                className={
+                  "w-full whitespace-nowrap overflow-hidden overflow-ellipsis text-sm " +
+                  (selectedConversationId === item.entity.id
+                    ? "text-[#fff]"
+                    : "text-[#adb5bd]")
+                }
+              >
                 {item?.messages?.at(-1)?.content
                   ? item.messages.at(-1).content
                   : "( Start chatting with your friend )"}

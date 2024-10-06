@@ -1,7 +1,6 @@
 import React from "react";
 import { BsThreeDots } from "react-icons/bs";
 import PopoverMenuOptionsMessage from "./PopoverMenuOptionsMessage";
-import { IoMdCheckmark } from "react-icons/io";
 import { formattedTime } from "../../utils/timeUtils";
 
 const TextMessageRightSide = ({ item, index, toggleMenu, openMenuId }) => {
@@ -25,15 +24,13 @@ const TextMessageRightSide = ({ item, index, toggleMenu, openMenuId }) => {
 
       <div className="text-[10px] mt-2 mr-[28px]">
         {item?.statusMess === "pending" && (
-          <span className="text-blue-500">Đang gửi...</span>
+          <span className="text-blue-500">Sending...</span>
         )}
         {item?.statusMess === "error" && (
-          <span className="text-red-500">Gửi thất bại</span>
+          <span className="text-red-500">Failed to send</span>
         )}
         {item?.statusMess === "success" && (
-          <span className="text-green-500">
-            <IoMdCheckmark />
-          </span>
+          <span className="text-green-500">Sent</span>
         )}
       </div>
     </div>

@@ -56,7 +56,7 @@ const ChatContent = () => {
             getTypeSelectedConversation(),
             selectedConversationId,
             "IMAGE",
-            "",
+            "*IMAGE*",
             url_file
           );
           dispatch(addNewMessageFromSelf(imgeMess));
