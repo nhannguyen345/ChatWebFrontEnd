@@ -1,6 +1,6 @@
 import React from "react";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-const UserInformation = () => {
+const UserInformation = ({ userInfo }) => {
   return (
     <div className="px-7 py-3">
       <div className="flex justify-between items-center">
@@ -16,7 +16,7 @@ const UserInformation = () => {
               Birthdate
             </p>
             <p className="text-[14px] italic leading-[1.5] text-[#495057]">
-              20/11/1992
+              {userInfo?.birthdate ? userInfo.birthdate : "No infomation"}
             </p>
           </div>
         </li>
@@ -24,7 +24,7 @@ const UserInformation = () => {
           <div className="flex-1 flex flex-col gap-1">
             <p className="text-[13px] leading-[1.5] text-[#adb5bd]">Phone</p>
             <p className="text-[14px] italic leading-[1.5] text-[#495057]">
-              09937473784
+              {userInfo?.phone ? userInfo.phone : "No infomation"}
             </p>
           </div>
         </li>
@@ -32,7 +32,7 @@ const UserInformation = () => {
           <div className="flex-1 flex flex-col gap-1">
             <p className="text-[13px] leading-[1.5] text-[#adb5bd]">Email</p>
             <p className="text-[14px] italic leading-[1.5] text-[#495057]">
-              nhandzzkkk@gmail.com
+              {userInfo?.email}
             </p>
           </div>
         </li>
@@ -40,7 +40,7 @@ const UserInformation = () => {
           <div className="flex-1 flex flex-col gap-1">
             <p className="text-[13px] leading-[1.5] text-[#adb5bd]">Address</p>
             <p className="text-[14px] italic leading-[1.5] text-[#495057]">
-              1134 Ridder Park Road, San Fransisco, CA 94851
+              {userInfo?.address ? userInfo.address : "No infomation"}
             </p>
           </div>
         </li>
@@ -49,9 +49,9 @@ const UserInformation = () => {
             <p className="text-[13px] leading-[1.5] text-[#adb5bd]">Facebook</p>
             <a
               className="text-[14px] italic leading-[1.5] text-[#665dfe] no-underline"
-              href="#"
+              href={userInfo?.fbLink ? userInfo.fbLink : "#"}
             >
-              @Facebook Account
+              {userInfo?.fbLink ? "@Facebook Account" : "No infomation"}
             </a>
           </div>
         </li>
@@ -60,9 +60,9 @@ const UserInformation = () => {
             <p className="text-[13px] leading-[1.5] text-[#adb5bd]">Twitter</p>
             <a
               className="text-[14px] italic leading-[1.5] text-[#665dfe] no-underline"
-              href="#"
+              href={userInfo?.twitterLink ? userInfo.twitterLink : "#"}
             >
-              @Twitter Account
+              {userInfo?.twitterLink ? "@Twitter Account" : "No infomation"}
             </a>
           </div>
         </li>
@@ -73,9 +73,9 @@ const UserInformation = () => {
             </p>
             <a
               className="text-[14px] italic leading-[1.5] text-[#665dfe] no-underline"
-              href="#"
+              href={userInfo?.instaLink ? userInfo.instaLink : "#"}
             >
-              @Instagram Account
+              {userInfo?.instaLink ? "@Instagram Account" : "No infomation"}
             </a>
           </div>
         </li>

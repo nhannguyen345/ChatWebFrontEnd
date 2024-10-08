@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { registerUser, userLogin } from "./authAction";
 
-const userToken = localStorage.getItem("userToken")
-  ? localStorage.getItem("userToken")
+const userToken = localStorage.getItem("auth-tk-webchat")
+  ? localStorage.getItem("auth-tk-webchat")
   : null;
 
 const initialState = {
@@ -20,6 +20,10 @@ const authSlice = createSlice({
     resetState: (state) => {
       state.success = false;
       state.error = null;
+    },
+    clearUserInfo: (state) => {
+      state.userInfo = {};
+      state.userToken = null;
     },
   },
   extraReducers: (builder) => {
@@ -58,4 +62,4 @@ const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { resetState } = authSlice.actions;
+export const { resetState, clearUserInfo } = authSlice.actions;

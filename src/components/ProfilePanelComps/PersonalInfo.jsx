@@ -3,7 +3,7 @@ import { AiOutlineHome } from "react-icons/ai";
 import { FiPhone } from "react-icons/fi";
 import { MdOutlineCalendarToday, MdOutlineEmail } from "react-icons/md";
 
-const PersonalInfo = () => {
+const PersonalInfo = ({ userInfo }) => {
   const InfoItem = ({ label, value, icon: Icon }) => (
     <li className="flex items-center border-b border-[#e5e9f2] py-3 px-5 bg-white">
       <div className="flex-1 flex flex-col pr-[10px]">
@@ -22,15 +22,11 @@ const PersonalInfo = () => {
           value="20/11/1992"
           icon={MdOutlineCalendarToday}
         /> */}
-        <InfoItem label="Phone" value="09937473784" icon={FiPhone} />
-        <InfoItem
-          label="Email"
-          value="nhandzzkkk@gmail.com"
-          icon={MdOutlineEmail}
-        />
+        <InfoItem label="Phone" value={userInfo?.phone} icon={FiPhone} />
+        <InfoItem label="Email" value={userInfo?.email} icon={MdOutlineEmail} />
         <InfoItem
           label="Address"
-          value="1134 Ridder Park Road, San Fransisco, CA 94851"
+          value={userInfo?.address}
           icon={AiOutlineHome}
         />
       </ul>

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import HeaderOfProfileSetting from "./HeaderOfProfileSetting";
+import { useSelector } from "react-redux";
 
 const InputField = ({ label, value, onChange, type = "text" }) => (
-  <div className="mb-2">
+  <div className={"mb-2 " + (label === "address" ? "col-span-2" : "")}>
     <label className="block text-[15px] leading-[1.5] text-[#495057] mb-[6px]">
       {label}
     </label>
@@ -45,17 +46,19 @@ const FormSection = ({ title, description, children, onSubmit, onReset }) => (
 );
 
 const ProfileSettingContent = () => {
+  const user = useSelector((state) => state.auth.userInfo);
   const [accountData, setAccountData] = useState({
-    userName: "Catherine",
-    mobileNumber: "+01-222-364522",
-    emailAddress: "catherine.richardson@gmail.com",
-    address: "1134 Ridder Park Road, San Fransisco, CA 94851",
+    userName: user.info.username,
+    birthDate: user.info.birthdate,
+    mobileNumber: user.info.phone,
+    emailAddress: user.info.email,
+    address: user.info.address,
   });
 
   const [socialData, setSocialData] = useState({
-    facebook: "",
-    twitter: "",
-    instagram: "",
+    facebook: user.info.fbLink,
+    twitter: user.info.twitterLink,
+    instagram: user.info.instaLink,
   });
 
   const [passwordData, setPasswordData] = useState({
@@ -100,7 +103,13 @@ const ProfileSettingContent = () => {
                 }
                 value={value}
                 onChange={(value) => handleChange(setAccountData)(key, value)}
-                type={key === "emailAddress" ? "email" : "text"}
+                type={
+                  key === "emailAddress"
+                    ? "email"
+                    : key === "birthDate"
+                    ? "date"
+                    : "text"
+                }
               />
             ))}
           </div>

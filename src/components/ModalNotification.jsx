@@ -71,15 +71,10 @@ const ModalNotification = () => {
         <div className="flex-1 overflow-y-scroll no-scrollbar">
           {loading && (
             <div className="flex justify-center items-center">
-              <ImSpinner className="animate-spin h-[18px] w-[18px]" />{" "}
-              {/* Vòng xoay loading */}
+              <ImSpinner className="animate-spin h-[18px] w-[18px]" />
             </div>
           )}
-          {error && (
-            <div className="text-red-500 text-center">
-              {error.message} {/* Hiển thị thông báo lỗi */}
-            </div>
-          )}
+          {error && <div className="text-red-500 text-center">{error}</div>}
           {notifications &&
             !loading &&
             !error &&

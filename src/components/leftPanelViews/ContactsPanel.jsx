@@ -1,6 +1,7 @@
 import React from "react";
 import HeaderOfLeftPanel from "../HeaderOfLeftPanel";
 import ContactList from "../ContactsPanelComps/ContactList";
+import useFetchData from "../../hooks/useFetchData";
 const contacts = [
   { letter: "A", name: "Alvarez Luna", initials: "AL", color: "bg-pink-500" },
   {
@@ -42,10 +43,18 @@ const contacts = [
 ];
 
 const ContactsPanel = () => {
+  const jwt = localStorage.getItem("auth-tk-webchat");
+  const user = useSelector((state) => state.auth.userInfo);
+  const { data, loading, error } = useFetchData(
+    `http://localhost:8080/friend/get-contacts-list/${user.info}`,
+    {
+      headers: { Authorization: `Bearer ${jwt}` },
+    }
+  );
   return (
     <div className="max-w-md w-full flex flex-col bg-white shadow-lg rounded-lg">
       <HeaderOfLeftPanel />
-      <ContactList contacts={contacts} />
+      <ContactList contacts={data} loading={loading} error={error} />
     </div>
   );
 };

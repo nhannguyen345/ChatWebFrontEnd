@@ -1,41 +1,43 @@
 import React from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { ImSpinner } from "react-icons/im";
 
-const ContactList = ({ contacts }) => {
+const ContactList = ({ contacts, loading, error }) => {
   return (
     <div className="flex-grow divide-gray-200 overflow-y-scroll no-scrollbar">
-      {contacts.map((contact, index) => (
-        <React.Fragment key={contact.name}>
-          {(index === 0 || contact.letter !== contacts[index - 1].letter) && (
-            <div className="px-4 pb-2 pt-4 gap-2 bg-gray-50 text-sm font-medium text-gray-500 border-y">
-              {contact.letter}
-            </div>
-          )}
-          <div className="pl-8 pr-4 py-3 flex items-center justify-between">
-            <div className="flex items-center">
-              {contact.image ? (
+      {loading && (
+        <div className="flex justify-center items-center">
+          <ImSpinner className="animate-spin h-[18px] w-[18px]" />
+        </div>
+      )}
+      {error && <div className="text-red-500 text-center">{error}</div>}
+      {contacts &&
+        !loading &&
+        !error &&
+        contacts.map((contact, index) => (
+          <React.Fragment key={contact.username}>
+            {(index === 0 || contact.letter !== contacts[index - 1].letter) && (
+              <div className="px-4 pb-2 pt-4 gap-2 bg-gray-50 text-sm font-medium text-gray-500 border-y">
+                {contact.letter}
+              </div>
+            )}
+            <div className="pl-8 pr-4 py-3 flex items-center justify-between">
+              <div className="flex items-center">
                 <img
                   src={contact.image}
-                  alt={contact.name}
+                  alt={contact.username}
                   className="w-10 h-10 rounded-full mr-3"
                 />
-              ) : (
-                <div
-                  className={`w-10 h-10 rounded-full mr-3 flex items-center justify-center text-white ${contact.color}`}
-                >
-                  {contact.initials}
-                </div>
-              )}
-              <span className="text-sm font-medium text-gray-900">
-                {contact.name}
-              </span>
+                <span className="text-sm font-medium text-gray-900">
+                  {contact.username}
+                </span>
+              </div>
+              <button className="text-gray-400 hover:text-gray-500">
+                <BsThreeDotsVertical className="text-[20px]" />
+              </button>
             </div>
-            <button className="text-gray-400 hover:text-gray-500">
-              <BsThreeDotsVertical className="text-[20px]" />
-            </button>
-          </div>
-        </React.Fragment>
-      ))}
+          </React.Fragment>
+        ))}
     </div>
   );
 };

@@ -37,7 +37,7 @@ const ChatContent = () => {
   }
 
   function getTypeSelectedConversation() {
-    return listMess.filter((conv) => {
+    return listMess.find((conv) => {
       return conv.entity.id === selectedConversationId;
     })?.type;
   }

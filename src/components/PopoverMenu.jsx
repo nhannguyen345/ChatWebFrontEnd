@@ -4,11 +4,27 @@ import { TfiUnlock } from "react-icons/tfi";
 import { SlLogout } from "react-icons/sl";
 import { useEffect, useRef } from "react";
 import useClickOutside from "../hooks/useClickOutside";
+import { useDispatch } from "react-redux";
+import { clearUserInfo } from "../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
+import { useStompClient } from "react-stomp-hooks";
 
 const PopoverMenu = ({ closeMenu, avatarRef }) => {
   const menuRef = useRef(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const stompClient = useStompClient();
 
   useClickOutside([avatarRef], closeMenu);
+
+  const handleLogOut = () => {
+    localStorage.removeItem("auth-tk-webchat");
+    dispatch(clearUserInfo());
+    setTimeout(() => {
+      navigate("/login");
+    }, 500);
+    stompClient?.deactivate;
+  };
 
   return (
     <div
@@ -40,6 +56,7 @@ const PopoverMenu = ({ closeMenu, avatarRef }) => {
       <a
         className="px-5 py-1 flex flex-row justify-between items-center text-[#495057] text-[15px] max-sm:text-[14px]"
         href="#"
+        onClick={handleLogOut}
       >
         Log out
         <SlLogout style={{ fontSize: "13px", marginRight: "2px" }} />

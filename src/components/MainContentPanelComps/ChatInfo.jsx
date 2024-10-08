@@ -5,7 +5,17 @@ import UserInformation from "../ChatInfoComps/UserInformation";
 
 const ChatInfo = () => {
   const dispatch = useDispatch();
+  const { selectedConversationId, listMess } = useSelector(
+    (state) => state.message
+  );
   const showInfoChat = useSelector((state) => state.showInfoChat);
+
+  function getSelectedConversation() {
+    return listMess.find((conv) => {
+      return conv.entity.id === selectedConversationId;
+    });
+  }
+
   return (
     <div
       className={
@@ -14,8 +24,8 @@ const ChatInfo = () => {
       }
     >
       <HeaderOfChatInfo />
-      <ProfileSummary />
-      <UserInformation />
+      <ProfileSummary userInfo={getSelectedConversation()?.entity} />
+      <UserInformation userInfo={getSelectedConversation()?.entity} />
     </div>
   );
 };
