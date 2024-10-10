@@ -1,7 +1,10 @@
 import React from "react";
 import { GoFile } from "react-icons/go";
 import { formattedTime } from "../../utils/timeUtils";
+import { useDispatch } from "react-redux";
+import { openImageModal } from "../../features/modal/modalSlice";
 const FileMessageLeftSide = ({ item, index }) => {
+  const dispatch = useDispatch();
   return (
     <div className="w-full h-fit text-left my-[36px]">
       <div className="inline-block relative text-left max-w-[400px] bg-[#f5f6fa] text-[#8094ae] text-[14px] ml-[30px] px-[36px] py-[16px] rounded-[20px]">
@@ -10,6 +13,9 @@ const FileMessageLeftSide = ({ item, index }) => {
         </h6> */}
         {item.messageType === "IMAGE" ? (
           <img
+            onClick={() =>
+              dispatch(openImageModal({ imageUrl: item.fileUrl, status: true }))
+            }
             className="max-w-full h-auto rounded-md object-cover"
             src={item?.fileUrl}
           />

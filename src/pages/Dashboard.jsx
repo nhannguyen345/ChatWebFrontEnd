@@ -17,6 +17,7 @@ import {
   upadateIdAndStatusMess,
   updateStatusErrorMess,
 } from "../features/message/messageSlice";
+import ImageModal from "../components/ImageModal";
 
 const Dashboard = () => {
   // const [errorMessage, setErrorMessage] = useState();
@@ -26,6 +27,9 @@ const Dashboard = () => {
   const inviteModal = useSelector((state) => state.modal.isInviteModalOpen);
   const createGroupModal = useSelector(
     (state) => state.modal.isCreateGroupModalOpen
+  );
+  const imageModal = useSelector(
+    (state) => state.modal.isImageModalOpen.status
   );
   const user = useSelector((state) => state.auth.userInfo);
   const stompClient = useStompClient();
@@ -43,6 +47,7 @@ const Dashboard = () => {
         `/user/${user.info.username}/queue/errors`,
         (message) => {
           toast.error(message.body);
+          // dispatch(showAlert({ message: message.body, type: "error" }));
         }
       );
 
@@ -116,6 +121,16 @@ const Dashboard = () => {
     }
   }, [dispatch, user]);
 
+  // useEffect(() => {
+  //   if (type === "success") {
+  //     toast.success(message);
+  //   } else if (type === "error") {
+  //     toast.error(message);
+  //   } else if (type === "info") {
+  //     toast.info(message);
+  //   }
+  // }, [message, type]);
+
   return (
     <div className="flex flex-row overflow-hidden w-screen max-sm:relative">
       <ResponsiveMenu />
@@ -124,7 +139,12 @@ const Dashboard = () => {
       {notificationModal && <ModalNotification></ModalNotification>}
       {inviteModal && <InviteModal></InviteModal>}
       {createGroupModal && <CreateGroupModal></CreateGroupModal>}
-      <ToastContainer className={"z-50"} position="top-center" />
+      {imageModal && <ImageModal></ImageModal>}
+      <ToastContainer
+        className={"z-50"}
+        position="top-center"
+        autoClose={2000}
+      />
     </div>
   );
 };

@@ -7,6 +7,10 @@ export const modalSlice = createSlice({
     isNotificationModalOpen: false,
     isInviteModalOpen: false,
     isCreateGroupModalOpen: false,
+    isImageModalOpen: {
+      imageUrl: null,
+      status: false,
+    },
   },
   reducers: {
     openNotificationModal: (state) => {
@@ -18,6 +22,9 @@ export const modalSlice = createSlice({
     openInviteModal: (state) => {
       state.isInviteModalOpen = true;
     },
+    openImageModal: (state, action) => {
+      state.isImageModalOpen = { ...action.payload };
+    },
     closeInviteModal: (state) => {
       state.isInviteModalOpen = false;
     },
@@ -26,6 +33,9 @@ export const modalSlice = createSlice({
     },
     closeCreateGroupModal: (state) => {
       state.isCreateGroupModalOpen = false;
+    },
+    closeImageModal: (state, action) => {
+      state.isImageModalOpen = { imageUrl: null, status: false };
     },
   },
 });
@@ -37,5 +47,7 @@ export const {
   closeInviteModal,
   openCreateGroupModal,
   closeCreateGroupModal,
+  openImageModal,
+  closeImageModal,
 } = modalSlice.actions;
 export default modalSlice.reducer;

@@ -21,6 +21,12 @@ const authSlice = createSlice({
       state.success = false;
       state.error = null;
     },
+    setUserInfo: (state, action) => {
+      state.userInfo = {
+        ...state.userInfo,
+        info: { ...state.userInfo.info, ...action.payload },
+      };
+    },
     clearUserInfo: (state) => {
       state.userInfo = {};
       state.userToken = null;
@@ -62,4 +68,4 @@ const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { resetState, clearUserInfo } = authSlice.actions;
+export const { resetState, setUserInfo, clearUserInfo } = authSlice.actions;

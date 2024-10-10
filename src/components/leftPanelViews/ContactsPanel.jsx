@@ -2,6 +2,7 @@ import React from "react";
 import HeaderOfLeftPanel from "../HeaderOfLeftPanel";
 import ContactList from "../ContactsPanelComps/ContactList";
 import useFetchData from "../../hooks/useFetchData";
+import { useSelector } from "react-redux";
 const contacts = [
   { letter: "A", name: "Alvarez Luna", initials: "AL", color: "bg-pink-500" },
   {
@@ -46,7 +47,7 @@ const ContactsPanel = () => {
   const jwt = localStorage.getItem("auth-tk-webchat");
   const user = useSelector((state) => state.auth.userInfo);
   const { data, loading, error } = useFetchData(
-    `http://localhost:8080/friend/get-contacts-list/${user.info}`,
+    `http://localhost:8080/friend/get-contacts-list/${user.info.id}`,
     {
       headers: { Authorization: `Bearer ${jwt}` },
     }

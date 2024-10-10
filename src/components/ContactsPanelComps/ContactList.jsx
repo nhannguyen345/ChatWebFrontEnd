@@ -6,8 +6,8 @@ const ContactList = ({ contacts, loading, error }) => {
   return (
     <div className="flex-grow divide-gray-200 overflow-y-scroll no-scrollbar">
       {loading && (
-        <div className="flex justify-center items-center">
-          <ImSpinner className="animate-spin h-[18px] w-[18px]" />
+        <div className="flex w-full h-full justify-center items-center">
+          <ImSpinner className="animate-spin h-[36px] w-[36px]" />
         </div>
       )}
       {error && <div className="text-red-500 text-center">{error}</div>}

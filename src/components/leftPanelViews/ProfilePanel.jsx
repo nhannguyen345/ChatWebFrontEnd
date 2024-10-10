@@ -3,6 +3,7 @@ import ProfileHeader from "../ProfilePanelComps/ProfileHeader";
 import Avatar from "../ProfilePanelComps/Avatar";
 import PersonalInfo from "../ProfilePanelComps/PersonalInfo";
 import SocialInfo from "../ProfilePanelComps/SocialInfo";
+import { useSelector } from "react-redux";
 
 const ProfilePanel = () => {
   const user = useSelector((state) => state.auth.userInfo);

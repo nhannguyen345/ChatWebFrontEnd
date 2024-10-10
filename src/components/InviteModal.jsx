@@ -29,6 +29,7 @@ const InviteModal = () => {
     });
     // Handle invitation logic here
     toast.info("Invitation sent!");
+    // dispatch(showAlert({ message: "Invitation sent!", type: "info" }));
     setTimeout(() => dispatch(closeInviteModal()), 800);
   };
 

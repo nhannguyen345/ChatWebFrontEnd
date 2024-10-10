@@ -15,8 +15,8 @@ export function createNewMessage(
   return {
     tempId,
     senderId,
-    receiverId: isGroup ? null : receiverId,
-    groupId: isGroup ? receiverId : null,
+    receiverId: isGroup === "group" ? null : receiverId,
+    groupId: isGroup === "group" ? receiverId : null,
     content,
     fileUrl,
     messageType,

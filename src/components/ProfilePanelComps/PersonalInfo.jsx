@@ -2,6 +2,7 @@ import React from "react";
 import { AiOutlineHome } from "react-icons/ai";
 import { FiPhone } from "react-icons/fi";
 import { MdOutlineCalendarToday, MdOutlineEmail } from "react-icons/md";
+import { BsCake } from "react-icons/bs";
 
 const PersonalInfo = ({ userInfo }) => {
   const InfoItem = ({ label, value, icon: Icon }) => (
@@ -22,6 +23,7 @@ const PersonalInfo = ({ userInfo }) => {
           value="20/11/1992"
           icon={MdOutlineCalendarToday}
         /> */}
+        <InfoItem label="Birthdate" value={userInfo?.birthdate} icon={BsCake} />
         <InfoItem label="Phone" value={userInfo?.phone} icon={FiPhone} />
         <InfoItem label="Email" value={userInfo?.email} icon={MdOutlineEmail} />
         <InfoItem
