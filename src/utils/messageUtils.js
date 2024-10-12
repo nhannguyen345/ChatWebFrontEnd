@@ -1,5 +1,7 @@
+import generateIdRandom from "./generateIdRandom";
+
 export function generateIdMessage() {
-  return "msg_" + (Math.random() + 1).toString(36).substring(2);
+  return "msg_" + generateIdRandom();
 }
 
 export function createNewMessage(

@@ -14,10 +14,11 @@ import { fetchMessages } from "../features/message/messageAction";
 import {
   addNewConversation,
   addNewMessageFromOther,
-  upadateIdAndStatusMess,
+  updateIdAndStatusMess,
   updateStatusErrorMess,
 } from "../features/message/messageSlice";
 import ImageModal from "../components/ImageModal";
+import { setSessionSocketId } from "../features/auth/authSlice";
 
 const Dashboard = () => {
   // const [errorMessage, setErrorMessage] = useState();
@@ -34,6 +35,7 @@ const Dashboard = () => {
   const user = useSelector((state) => state.auth.userInfo);
   const stompClient = useStompClient();
   const dispatch = useDispatch();
+  const subscriptionConnectedRef = useRef(null);
   const subscriptionErrorsRef = useRef(null);
   const subscriptionAddNewNotifRef = useRef(null);
   const subscriptionAddNewMessRef = useRef(null);
@@ -42,12 +44,10 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (stompClient) {
-      // Đăng ký và lưu trữ subscription
       subscriptionErrorsRef.current = stompClient.subscribe(
         `/user/${user.info.username}/queue/errors`,
         (message) => {
           toast.error(message.body);
-          // dispatch(showAlert({ message: message.body, type: "error" }));
         }
       );
 
@@ -82,7 +82,7 @@ const Dashboard = () => {
         `/user/${user.info.username}/queue/send-mess-success`,
         (message) => {
           console.log("test call");
-          dispatch(upadateIdAndStatusMess(JSON.parse(message.body)));
+          dispatch(updateIdAndStatusMess(JSON.parse(message.body)));
         }
       );
 
@@ -96,6 +96,7 @@ const Dashboard = () => {
 
     // Cleanup function để hủy đăng ký
     return () => {
+      subscriptionConnectedRef.current?.unsubscribe();
       subscriptionErrorsRef.current?.unsubscribe();
       subscriptionAddNewNotifRef.current?.unsubscribe();
       subscriptionAddNewMessRef.current?.unsubscribe();

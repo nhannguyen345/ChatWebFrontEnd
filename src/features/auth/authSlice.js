@@ -8,6 +8,7 @@ const userToken = localStorage.getItem("auth-tk-webchat")
 const initialState = {
   loading: false,
   userInfo: {},
+  sessionSocketId: null,
   userToken,
   error: null,
   success: false,
@@ -20,6 +21,10 @@ const authSlice = createSlice({
     resetState: (state) => {
       state.success = false;
       state.error = null;
+    },
+    setSessionSocketId: (state, action) => {
+      state.sessionSocketId = action.payload;
+      console.log(state.sessionSocketId);
     },
     setUserInfo: (state, action) => {
       state.userInfo = {
@@ -68,4 +73,5 @@ const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { resetState, setUserInfo, clearUserInfo } = authSlice.actions;
+export const { resetState, setSessionSocketId, setUserInfo, clearUserInfo } =
+  authSlice.actions;

@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { StompSessionProvider } from "react-stomp-hooks";
+import { StompSessionProvider, useStompClient } from "react-stomp-hooks";
 import { toast, ToastContainer } from "react-toastify";
+import { setSessionSocketId } from "../features/auth/authSlice";
 // eslint-disable-next-line react/prop-types
 const WebSocketProvider = ({ children }) => {
+  const dispatch = useDispatch();
   const [connectionError, setConnectionError] = useState(false);
-  const [sessionId, setSessionId] = useState(null);
+  // const [sessionId, setSessionId] = useState(null);
   const navigate = useNavigate();
   const jwt = useSelector((state) => state.auth.userToken);
 
@@ -18,6 +20,7 @@ const WebSocketProvider = ({ children }) => {
       }, 1500);
     }
   }, [connectionError]);
+
   return (
     <StompSessionProvider
       url="ws://localhost:8080/chat-web-websocket"

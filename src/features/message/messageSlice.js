@@ -40,7 +40,7 @@ const messageSlice = createSlice({
         ];
       }
     },
-    upadateIdAndStatusMess: (state, action) => {
+    updateIdAndStatusMess: (state, action) => {
       const { tempId, newMessage, statusMess } = action.payload;
       console.log(action.payload);
       const conversationIndex = state.listMess.findIndex((conv) =>
@@ -137,7 +137,7 @@ export const {
   setSelectedConversationId,
   addNewConversation,
   updateStatusErrorMess,
-  upadateIdAndStatusMess,
+  updateIdAndStatusMess,
   addNewMessageFromSelf,
   addNewMessageFromOther,
 } = messageSlice.actions;
