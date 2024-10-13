@@ -18,10 +18,11 @@ import {
   updateStatusErrorMess,
 } from "../features/message/messageSlice";
 import ImageModal from "../components/ImageModal";
-import { setSessionSocketId } from "../features/auth/authSlice";
+import VideoCallInterface from "../components/VideoCallInterface";
+import IncomingCall from "../components/IncomingCall";
 
 const Dashboard = () => {
-  // const [errorMessage, setErrorMessage] = useState();
+  // get redux state
   const notificationModal = useSelector(
     (state) => state.modal.isNotificationModalOpen
   );
@@ -32,7 +33,12 @@ const Dashboard = () => {
   const imageModal = useSelector(
     (state) => state.modal.isImageModalOpen.status
   );
+  const videoModal = useSelector((state) => state.modal.isVideoCallModalOpen);
+  const incomingCallModal = useSelector(
+    (state) => state.modal.isIncomingCallModalOpen
+  );
   const user = useSelector((state) => state.auth.userInfo);
+
   const stompClient = useStompClient();
   const dispatch = useDispatch();
   const subscriptionConnectedRef = useRef(null);
@@ -141,6 +147,8 @@ const Dashboard = () => {
       {inviteModal && <InviteModal></InviteModal>}
       {createGroupModal && <CreateGroupModal></CreateGroupModal>}
       {imageModal && <ImageModal></ImageModal>}
+      {videoModal && <VideoCallInterface></VideoCallInterface>}
+      {incomingCallModal && <IncomingCall></IncomingCall>}
       <ToastContainer
         className={"z-50"}
         position="top-center"

@@ -1,66 +1,106 @@
-import React from "react";
+import React, { useState } from "react";
 import { FiMic } from "react-icons/fi";
 import { FiVideo } from "react-icons/fi";
 import { FiPhoneOff } from "react-icons/fi";
-const VideoCallInterface = () => {
-  return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-indigo-900 to-violet-900 text-white">
-      {/* Header */}
-      <header className="bg-black bg-opacity-30 p-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Call Room</h1>
-        <button className="p-2 hover:bg-white hover:bg-opacity-10 rounded-full transition-colors">
-          <Settings size={24} />
-        </button>
-      </header>
+import { FiVideoOff } from "react-icons/fi";
+import { FiMicOff } from "react-icons/fi";
+import { IoMdClose } from "react-icons/io";
+import { useDispatch } from "react-redux";
+import { closeVideoCallModal } from "../features/modal/modalSlice";
+const VideoCallInterface = ({ isOpen, onClose }) => {
+  const dispatch = useDispatch();
+  const [isMuted, setIsMuted] = useState(false);
+  const [isVideoOff, setIsVideoOff] = useState(false);
 
-      {/* Main content */}
-      <main className="flex-grow flex overflow-hidden">
-        {/* Video grid */}
-        <div className="flex-grow grid grid-cols-2 gap-4 p-4">
-          {/* Main participant (You) */}
-          <div className="col-span-2 row-span-2 relative bg-gray-800 rounded-xl overflow-hidden shadow-lg">
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl p-4">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-black text-xl font-semibold">Video Call</h2>
+          <button
+            onClick={null}
+            className="w-fit text-[#adb5bd] hover:text-[#868e96]"
+          >
+            <IoMdClose
+              className="h-[22px] w-[22px] cursor-pointer"
+              onClick={() => dispatch(closeVideoCallModal())}
+            />
+          </button>
+        </div>
+
+        <div className="flex space-x-4 mb-4">
+          {/* Your video */}
+          <div className="flex-1 relative bg-gray-600 rounded-lg overflow-hidden aspect-video">
             <img
-              src="/api/placeholder/1280/720"
+              src="/api/placeholder/640/360"
               alt="Your video"
               className="w-full h-full object-cover"
             />
-            <div className="absolute bottom-4 left-4 bg-black bg-opacity-60 px-3 py-1 rounded-full text-sm">
-              You (Host)
+            <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-2 py-1 rounded-full text-white text-sm">
+              You
+            </div>
+            {isVideoOff && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-80">
+                <FiVideoOff size={48} className="text-white opacity-50" />
+              </div>
+            )}
+          </div>
+
+          {/* Other person's video */}
+          <div className="flex-1 relative bg-gray-600 rounded-lg overflow-hidden aspect-video">
+            <img
+              src="/api/placeholder/640/360"
+              alt="Other person's video"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-2 py-1 rounded-full text-white text-sm">
+              Other Person
             </div>
           </div>
-          {/* Other participants */}
-          {[1, 2, 3].map((num) => (
-            <div
-              key={num}
-              className="relative bg-gray-800 rounded-xl overflow-hidden shadow-lg"
-            >
-              <img
-                src={`/api/placeholder/640/360`}
-                alt={`Participant ${num}`}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-2 py-1 rounded-full text-xs">
-                Participant {num}
-              </div>
-            </div>
-          ))}
         </div>
-      </main>
 
-      {/* Controls */}
-      <footer className="bg-black bg-opacity-30 p-4">
+        {/* Controls */}
         <div className="flex justify-center space-x-4">
-          <button className="p-3 bg-indigo-600 rounded-full hover:bg-indigo-700 transition-colors">
-            <FiMic size={24} />
+          <button
+            onClick={() => setIsMuted(!isMuted)}
+            className={`p-3 rounded-full transition-colors ${
+              isMuted
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-gray-700 hover:bg-gray-600"
+            }`}
+          >
+            {isMuted ? (
+              <FiMicOff size={24} className="text-white" />
+            ) : (
+              <FiMic size={24} className="text-white" />
+            )}
           </button>
-          <button className="p-3 bg-indigo-600 rounded-full hover:bg-indigo-700 transition-colors">
-            <FiVideo size={24} />
+          <button
+            onClick={() => setIsVideoOff(!isVideoOff)}
+            className={`p-3 rounded-full transition-colors ${
+              isVideoOff
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-gray-700 hover:bg-gray-600"
+            }`}
+          >
+            {isVideoOff ? (
+              <FiVideoOff size={24} className="text-white" />
+            ) : (
+              <FiVideo size={24} className="text-white" />
+            )}
           </button>
-          <button className="p-3 bg-red-600 rounded-full hover:bg-red-700 transition-colors">
-            <FiPhoneOff size={24} />
+          <button
+            onClick={null}
+            className="p-3 bg-red-600 rounded-full hover:bg-red-700 transition-colors"
+          >
+            <FiPhoneOff
+              size={24}
+              className="text-white"
+              onClick={() => dispatch(closeVideoCallModal())}
+            />
           </button>
         </div>
-      </footer>
+      </div>
     </div>
   );
 };
