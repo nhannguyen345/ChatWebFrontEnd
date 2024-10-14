@@ -29,7 +29,7 @@ const ModalNotification = () => {
       if (unreadCount) {
         async function setReadNotification() {
           await axios.put(
-            `http://localhost:8080/notification/updateReadStatus/${user.info.id}`,
+            `http://localhost:8080/notification/updateReadStatus`,
             {},
             {
               headers: { Authorization: `Bearer ${jwt}` },

@@ -11,8 +11,6 @@ export const modalSlice = createSlice({
       imageUrl: null,
       status: false,
     },
-    isVideoCallModalOpen: false,
-    isIncomingCallModalOpen: false,
   },
   reducers: {
     openNotificationModal: (state) => {
@@ -27,12 +25,6 @@ export const modalSlice = createSlice({
     openImageModal: (state, action) => {
       state.isImageModalOpen = { ...action.payload };
     },
-    openVideoCallModal: (state) => {
-      state.isVideoCallModalOpen = true;
-    },
-    openIncomingCallModal: (state) => {
-      state.isIncomingCallModalOpen = true;
-    },
     closeInviteModal: (state) => {
       state.isInviteModalOpen = false;
     },
@@ -44,12 +36,6 @@ export const modalSlice = createSlice({
     },
     closeImageModal: (state, action) => {
       state.isImageModalOpen = { imageUrl: null, status: false };
-    },
-    closeVideoCallModal: (state) => {
-      state.isVideoCallModalOpen = false;
-    },
-    closeIncomingCallModal: (state) => {
-      state.isIncomingCallModalOpen = false;
     },
   },
 });
@@ -63,9 +49,5 @@ export const {
   closeCreateGroupModal,
   openImageModal,
   closeImageModal,
-  openVideoCallModal,
-  closeVideoCallModal,
-  openIncomingCallModal,
-  closeIncomingCallModal,
 } = modalSlice.actions;
 export default modalSlice.reducer;

@@ -20,6 +20,8 @@ import {
 import ImageModal from "../components/ImageModal";
 import VideoCallInterface from "../components/VideoCallInterface";
 import IncomingCall from "../components/IncomingCall";
+import CallProvider from "../components/CallProvider";
+import { setCall, setReceivingCall } from "../features/call/callSlice";
 
 const Dashboard = () => {
   // get redux state
@@ -33,10 +35,6 @@ const Dashboard = () => {
   const imageModal = useSelector(
     (state) => state.modal.isImageModalOpen.status
   );
-  const videoModal = useSelector((state) => state.modal.isVideoCallModalOpen);
-  const incomingCallModal = useSelector(
-    (state) => state.modal.isIncomingCallModalOpen
-  );
   const user = useSelector((state) => state.auth.userInfo);
 
   const stompClient = useStompClient();
@@ -47,6 +45,7 @@ const Dashboard = () => {
   const subscriptionAddNewMessRef = useRef(null);
   const subscriptionSendMessSuccRef = useRef(null);
   const subscriptionSendMessErrRef = useRef(null);
+  const subscribeCallReceiveCallRef = useRef();
 
   useEffect(() => {
     if (stompClient) {
@@ -98,6 +97,14 @@ const Dashboard = () => {
           dispatch(updateStatusErrorMess(message.body));
         }
       );
+
+      subscribeCallReceiveCallRef.current = stompClient.subscribe(
+        `/user/${user.info.username}/queue/receive-call`,
+        (message) => {
+          dispatch(setCall(JSON.parse(message.body)));
+          dispatch(setReceivingCall(true));
+        }
+      );
     }
 
     // Cleanup function để hủy đăng ký
@@ -108,6 +115,7 @@ const Dashboard = () => {
       subscriptionAddNewMessRef.current?.unsubscribe();
       subscriptionSendMessSuccRef.current?.unsubscribe();
       subscriptionSendMessErrRef.current?.unsubscribe();
+      subscribeCallReceiveCallRef?.current?.unsubscribe();
     };
   }, [stompClient]);
 
@@ -116,7 +124,7 @@ const Dashboard = () => {
     let idUser;
 
     if (!user?.info?.id) {
-      const storedUser = JSON.parse(localStorage.getItem("user-info"));
+      const storedUser = JSON.parse(sessionStorage.getItem("user-info"));
       idUser = storedUser?.info?.id;
     } else {
       idUser = user.info.id;
@@ -128,27 +136,16 @@ const Dashboard = () => {
     }
   }, [dispatch, user]);
 
-  // useEffect(() => {
-  //   if (type === "success") {
-  //     toast.success(message);
-  //   } else if (type === "error") {
-  //     toast.error(message);
-  //   } else if (type === "info") {
-  //     toast.info(message);
-  //   }
-  // }, [message, type]);
-
   return (
     <div className="flex flex-row overflow-hidden w-screen max-sm:relative">
       <ResponsiveMenu />
       <LeftPanel />
       <MainContentPanel />
+      <CallProvider />
       {notificationModal && <ModalNotification></ModalNotification>}
       {inviteModal && <InviteModal></InviteModal>}
       {createGroupModal && <CreateGroupModal></CreateGroupModal>}
       {imageModal && <ImageModal></ImageModal>}
-      {videoModal && <VideoCallInterface></VideoCallInterface>}
-      {incomingCallModal && <IncomingCall></IncomingCall>}
       <ToastContainer
         className={"z-50"}
         position="top-center"

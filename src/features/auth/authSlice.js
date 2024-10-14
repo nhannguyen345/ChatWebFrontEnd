@@ -1,15 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { registerUser, userLogin } from "./authAction";
 
-const userToken = localStorage.getItem("auth-tk-webchat")
-  ? localStorage.getItem("auth-tk-webchat")
-  : null;
+// const userToken = localStorage.getItem("auth-tk-webchat")
+//   ? localStorage.getItem("auth-tk-webchat")
+//   : null;
 
 const initialState = {
   loading: false,
   userInfo: {},
   sessionSocketId: null,
-  userToken,
+  userToken: null,
   error: null,
   success: false,
 };

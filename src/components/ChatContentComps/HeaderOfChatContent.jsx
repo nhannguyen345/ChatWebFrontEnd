@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPanelVisibility } from "../../features/panelVisibility/panelVisibilitySlice";
 import { setShowInfoChat } from "../../features/showInfoChat/showInfoChatSlice";
 import useClickOutside from "../../hooks/useClickOutside";
-import { openIncomingCallModal } from "../../features/modal/modalSlice";
+import { setStartingCall } from "../../features/call/callSlice";
 const HeaderOfChatContent = () => {
   const { selectedConversationId, listMess } = useSelector(
     (state) => state.message
@@ -74,7 +74,13 @@ const HeaderOfChatContent = () => {
         <IoIosSearch className="text-[22px] stroke-1 my-auto mr-2 fill-[#adb5bd] cursor-pointer hover:fill-[#495057]" />
         <BsTelephone
           className="text-[18px] my-auto stroke-[0.1] mr-2 text-[#adb5bd] cursor-pointer hover:text-[#495057]"
-          onClick={() => dispatch(openIncomingCallModal())}
+          onClick={() =>
+            dispatch(
+              setStartingCall({
+                userId: getSelectedConversation()?.entity?.username,
+              })
+            )
+          }
         />
         <div ref={otherRef} className="relative">
           <BsThreeDotsVertical

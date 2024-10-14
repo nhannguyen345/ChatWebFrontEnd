@@ -18,7 +18,7 @@ const NotificationItem = ({ notification, jwt }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const user =
     useSelector((state) => state.auth.userInfo) ||
-    JSON.parse(localStorage.getItem("user-info"));
+    JSON.parse(sessionStorage.getItem("user-info"));
   const dispatch = useDispatch();
   const stompClient = useStompClient();
   // Format date function

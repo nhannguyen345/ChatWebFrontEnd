@@ -36,7 +36,6 @@ const Login = () => {
   const onSubmitHandler = (data) => {
     console.log({ data });
     dispatch(userLogin(data));
-    setTimeout(() => navigate("/"), 1500);
     reset();
   };
 
@@ -44,6 +43,7 @@ const Login = () => {
     if (success) {
       toast.success("Login successful!");
       dispatch(resetState());
+      setTimeout(() => navigate("/"), 1500);
     } else if (error) {
       toast.error(error);
       dispatch(resetState());

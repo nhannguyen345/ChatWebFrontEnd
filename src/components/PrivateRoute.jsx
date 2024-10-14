@@ -8,7 +8,7 @@ const PrivateRoute = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
-    let token = localStorage.getItem("auth-tk-webchat");
+    let token = sessionStorage.getItem("auth-tk-webchat");
     if (token) {
       let tokenExpiration = jwtDecode(token).exp;
       let dateNow = new Date();

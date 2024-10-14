@@ -5,9 +5,9 @@ export const fetchNotifications = createAsyncThunk(
   "notification/fetchNotifications",
   async (userId, { rejectWithValue }) => {
     try {
-      const jwt = localStorage.getItem("auth-tk-webchat");
+      const jwt = sessionStorage.getItem("auth-tk-webchat");
       const response = await axios.get(
-        `http://localhost:8080/notification/get-list-notifications/${userId}`,
+        `http://localhost:8080/notification/get-list-notifications`,
         {
           headers: { Authorization: `Bearer ${jwt}` },
         }

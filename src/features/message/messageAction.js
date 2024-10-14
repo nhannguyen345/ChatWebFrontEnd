@@ -4,14 +4,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 export const fetchMessages = createAsyncThunk(
   "message/fetchMessages",
   async (userId, { rejectWithValue }) => {
-    const jwt = localStorage.getItem("auth-tk-webchat");
+    const jwt = sessionStorage.getItem("auth-tk-webchat");
     console.log(userId);
     try {
-      const formData = new FormData();
-      formData.append("userId", userId);
+      // const formData = new FormData();
+      // formData.append("userId", userId);
       const response = await axios.post(
         "http://localhost:8080/message/get-list-messages",
-        formData,
+        null,
         {
           headers: { Authorization: `Bearer ${jwt}` },
         }
