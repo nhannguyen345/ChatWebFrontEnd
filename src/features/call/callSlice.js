@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  isCaller: false,
   startingCall: {},
   call: {},
   receivingCall: false,
@@ -12,10 +13,12 @@ const callSlice = createSlice({
   name: "call",
   initialState: initialState,
   reducers: {
+    setIsCaller: (state, action) => {
+      state.isCaller = action.payload;
+    },
     setStartingCall: (state, action) => {
       state.startingCall = action.payload;
     },
-
     setCall: (state, action) => {
       state.call = action.payload;
     },
@@ -39,6 +42,7 @@ const callSlice = createSlice({
 });
 
 export const {
+  setIsCaller,
   setStartingCall,
   setStream,
   setCall,

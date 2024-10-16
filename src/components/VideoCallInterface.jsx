@@ -13,6 +13,7 @@ const VideoCallInterface = ({
   callAccepted,
   callEnded,
   call,
+  handleTurnOffPhone,
 }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.userInfo);
@@ -20,6 +21,20 @@ const VideoCallInterface = ({
   const [isVideoOff, setIsVideoOff] = useState(false);
   const myVideoRef = useRef();
   const userVideoRef = useRef();
+
+  const toggleMic = (status) => {
+    const mic = myVideoStream
+      .getTracks()
+      .find((track) => track.kind === "audio");
+    mic.enabled = status;
+  };
+
+  const toggleVideo = (status) => {
+    const video = myVideoStream
+      .getTracks()
+      .find((track) => track.kind === "video");
+    video.enabled = status;
+  };
 
   useEffect(() => {
     if (myVideoRef.current) {
@@ -35,7 +50,7 @@ const VideoCallInterface = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white w-[400px] rounded-lg shadow-xl max-w-4xl p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-4xl p-4">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-black text-xl font-semibold">Video Call</h2>
           <button
@@ -53,7 +68,12 @@ const VideoCallInterface = ({
           {/* Your video */}
           {myVideoStream && (
             <div className="flex-1 relative bg-gray-600 rounded-lg overflow-hidden aspect-video">
-              <video playsInline ref={myVideoRef} autoPlay className="w-full" />
+              <video
+                playsInline
+                ref={myVideoRef}
+                autoPlay
+                className="min-w-[300px]"
+              />
 
               <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-2 py-1 rounded-full text-white text-sm">
                 You
@@ -73,7 +93,7 @@ const VideoCallInterface = ({
                 playsInline
                 ref={userVideoRef}
                 autoPlay
-                className="w-[300px]"
+                className="min-w-[300px]"
               />
 
               <div className="absolute bottom-2 left-2 bg-black bg-opacity-60 px-2 py-1 rounded-full text-white text-sm">
@@ -88,7 +108,10 @@ const VideoCallInterface = ({
         {/* Controls */}
         <div className="flex justify-center space-x-4">
           <button
-            onClick={() => setIsMuted(!isMuted)}
+            onClick={() => {
+              toggleMic(!isMuted);
+              setIsMuted(!isMuted);
+            }}
             className={`p-3 rounded-full transition-colors ${
               isMuted
                 ? "bg-red-600 hover:bg-red-700"
@@ -102,7 +125,10 @@ const VideoCallInterface = ({
             )}
           </button>
           <button
-            onClick={() => setIsVideoOff(!isVideoOff)}
+            onClick={() => {
+              toggleVideo(isVideoOff);
+              setIsVideoOff(!isVideoOff);
+            }}
             className={`p-3 rounded-full transition-colors ${
               isVideoOff
                 ? "bg-red-600 hover:bg-red-700"
@@ -123,8 +149,7 @@ const VideoCallInterface = ({
               size={24}
               className="text-white"
               onClick={() => {
-                dispatch(setCallEnded(true));
-                dispatch(resetCallState());
+                handleTurnOffPhone();
               }}
             />
           </button>

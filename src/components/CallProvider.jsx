@@ -1,61 +1,108 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setCallAccepted } from "../features/call/callSlice";
+import {
+  resetCallState,
+  setCall,
+  setCallAccepted,
+  setReceivingCall,
+} from "../features/call/callSlice";
 import { useStompClient } from "react-stomp-hooks";
 import Peer from "simple-peer";
 import IncomingCall from "./IncomingCall";
 import VideoCallInterface from "./VideoCallInterface";
+import { toast, ToastContainer } from "react-toastify";
 
 const CallProvider = () => {
   const stompClient = useStompClient();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.userInfo);
-  const { startingCall, call, callAccepted, callEnded, receivingCall } =
-    useSelector((state) => state.call);
+  const {
+    isCaller,
+    startingCall,
+    call,
+    callAccepted,
+    callEnded,
+    receivingCall,
+  } = useSelector((state) => state.call);
 
-  const [stream, setStream] = useState();
   const [myVideoStream, setMyVideoStream] = useState();
   const [userVideoStream, setUserVideoStream] = useState();
 
-  // const myVideoRef = useRef();
-  // const userVideoRef = useRef();
   const connectionRef = useRef();
+  const subscriptionDeclineTheCallRef = useRef();
 
   useEffect(() => {
-    if (startingCall?.userId || callAccepted) {
+    if (startingCall?.userId) {
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
         .then((currentStream) => {
           setMyVideoStream(currentStream);
+          callUser(startingCall?.userId, currentStream);
+
+          if (stompClient) {
+            subscriptionDeclineTheCallRef.current = stompClient.subscribe(
+              `/user/${user.info.username}/queue/call-declined`,
+              (message) => {
+                if (connectionRef.current) {
+                  toast.info(message.body, {
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    containerId: "decline-call-toast",
+                  });
+                  currentStream.getTracks().forEach(function (track) {
+                    track.stop();
+                  });
+                  connectionRef.current.destroy();
+                  setTimeout(() => dispatch(resetCallState()), 500);
+                }
+              }
+            );
+          }
         });
     }
 
-    return () => {};
-  }, [dispatch, startingCall, callAccepted]);
+    return () => {
+      subscriptionDeclineTheCallRef.current?.unsubscribe();
+    };
+  }, [dispatch, startingCall]);
 
   useEffect(() => {
     if (startingCall?.userId) {
       console.log(startingCall?.userId);
-      callUser(startingCall?.userId);
-    } else if (callAccepted) {
-      console.log(callAccepted);
-      answerCall();
     }
-  }, [callAccepted, startingCall]);
+  }, [startingCall]);
 
-  useEffect(() => {
-    console.log("callEnded:", callEnded);
-    if (callEnded) {
-      leaveCall();
+  const handleAnswerCall = async () => {
+    try {
+      dispatch(setReceivingCall(false));
+      dispatch(setCallAccepted(true));
+      await answerCall();
+    } catch (error) {
+      console.error("Error while answering call:", error);
     }
-  }, [callEnded]);
+  };
+
+  const handleTurnOffPhone = () => {
+    leaveCall();
+    dispatch(resetCallState());
+  };
+
+  // useEffect(() => {
+  //   console.log("callEnded:", callEnded);
+  //   if (callEnded) {
+  //     leaveCall();
+  //   }
+  // }, [callEnded]);
 
   // *call function
-  const callUser = (id) => {
+  const callUser = (id, currentStream) => {
     const peer = new Peer({
       initiator: true,
       trickle: false,
-      stream: myVideoStream,
+      stream: currentStream,
     });
 
     peer.on("signal", (data) => {
@@ -70,17 +117,15 @@ const CallProvider = () => {
     });
 
     peer.on("stream", (stream) => {
-      // if (userVideoRef.current) {
-      //   userVideoRef.current.srcObject = stream;
-      // }
       setUserVideoStream(stream);
     });
 
     stompClient.subscribe(
-      `/user/${user.info.username}/queue/answer-call`,
+      `/user/${user.info.username}/queue/accept-call`,
       (message) => {
         dispatch(setCallAccepted(true));
-        peer.signal(JSON.parse(message.body));
+        dispatch(setCall(JSON.parse(message.body)));
+        peer.signal(JSON.parse(message.body).signalData);
       }
     );
 
@@ -88,40 +133,50 @@ const CallProvider = () => {
   };
 
   // *answer function
-  const answerCall = () => {
+  const answerCall = async () => {
+    await navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        setMyVideoStream(stream);
+        const peer = new Peer({
+          initiator: false,
+          trickle: false,
+          stream: stream,
+        });
+
+        peer.on("signal", (data) => {
+          stompClient.publish({
+            destination: "/app/answer-call",
+            body: JSON.stringify({
+              fromUsername: call.fromUsername,
+              toUsername: call.toUsername,
+              signalData: data,
+            }),
+          });
+        });
+
+        peer.on("stream", (stream) => {
+          setUserVideoStream(stream);
+        });
+        peer.signal(call.signalData);
+        connectionRef.current = peer;
+      })
+      .catch((err) => console.log(err));
     console.log("answerCall has called!");
-    const peer = new Peer({
-      initiator: false,
-      trickle: false,
-      stream: myVideoStream,
-    });
-
-    peer.on("signal", (data) => {
-      stompClient.publish({
-        destination: "/app/answer-call",
-        body: JSON.stringify({
-          fromUsername: call.fromUsername,
-          toUsername: call.toUsername,
-          signalData: data,
-        }),
-      });
-    });
-
-    peer.on("stream", (stream) => {
-      setUserVideoStream(stream);
-    });
-    peer.signal(call.signalData);
-    connectionRef.current = peer;
   };
 
   const leaveCall = () => {
     console.log(myVideoStream);
     if (myVideoStream) {
       console.log("Stopping tracks...");
-      myVideoStream.getTracks().forEach((track) => {
-        console.log("Stopping track:", track);
-        track.stop();
-      });
+      const videoTrack = myVideoStream
+        .getTracks()
+        .find((track) => track.kind === "video");
+      videoTrack.enable = false;
+      const audioTrack = myVideoStream
+        .getTracks()
+        .find((track) => track.kind === "audio");
+      audioTrack.enable = false;
     }
 
     if (connectionRef.current) {
@@ -131,17 +186,23 @@ const CallProvider = () => {
   };
   return (
     <div>
-      {startingCall?.userId && (
+      {(startingCall?.userId || (callAccepted && !isCaller)) && (
         <VideoCallInterface
           myVideoStream={myVideoStream}
           userVideoStream={userVideoStream}
           callAccepted={callAccepted}
           callEnded={callEnded}
           call={call}
-          stream={stream}
+          handleTurnOffPhone={handleTurnOffPhone}
         ></VideoCallInterface>
       )}
-      {receivingCall && <IncomingCall call={call}></IncomingCall>}
+      {receivingCall && (
+        <IncomingCall call={call} onAccept={handleAnswerCall}></IncomingCall>
+      )}
+      <ToastContainer
+        containerId={"decline-call-toast"}
+        position="top-center"
+      />
     </div>
   );
 };
