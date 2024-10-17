@@ -32,6 +32,7 @@ const callSlice = createSlice({
       state.receivingCall = action.payload;
     },
     resetCallState: (state) => {
+      state.isCaller = false;
       state.startingCall = {};
       state.call = {};
       state.callAccepted = false;

@@ -28,6 +28,8 @@ const CallProvider = () => {
   const [myVideoStream, setMyVideoStream] = useState();
   const [userVideoStream, setUserVideoStream] = useState();
 
+  const [callTimeOut, setCallTimeOut] = useState();
+
   const connectionRef = useRef();
   const subscriptionDeclineTheCallRef = useRef();
 
@@ -38,6 +40,12 @@ const CallProvider = () => {
         .then((currentStream) => {
           setMyVideoStream(currentStream);
           callUser(startingCall?.userId, currentStream);
+
+          const timeout = setTimeout(() => {
+            handleTimeOut();
+          }, 30000);
+
+          setCallTimeOut(timeout);
 
           if (stompClient) {
             subscriptionDeclineTheCallRef.current = stompClient.subscribe(
@@ -52,6 +60,9 @@ const CallProvider = () => {
                     draggable: true,
                     containerId: "decline-call-toast",
                   });
+                  if (callTimeOut) {
+                    clearTimeout(callTimeOut);
+                  }
                   currentStream.getTracks().forEach(function (track) {
                     track.stop();
                   });
@@ -90,12 +101,14 @@ const CallProvider = () => {
     dispatch(resetCallState());
   };
 
-  // useEffect(() => {
-  //   console.log("callEnded:", callEnded);
-  //   if (callEnded) {
-  //     leaveCall();
-  //   }
-  // }, [callEnded]);
+  //* this function use for cancel call if other user doesn't answer
+  const handleTimeOut = () => {
+    myVideoStream.getTracks().forEach(function (track) {
+      track.stop();
+    });
+    connectionRef.current.destroy();
+    dispatch(resetCallState());
+  };
 
   // *call function
   const callUser = (id, currentStream) => {
@@ -123,6 +136,7 @@ const CallProvider = () => {
     stompClient.subscribe(
       `/user/${user.info.username}/queue/accept-call`,
       (message) => {
+        clearTimeout(callTimeout);
         dispatch(setCallAccepted(true));
         dispatch(setCall(JSON.parse(message.body)));
         peer.signal(JSON.parse(message.body).signalData);
@@ -169,14 +183,9 @@ const CallProvider = () => {
     console.log(myVideoStream);
     if (myVideoStream) {
       console.log("Stopping tracks...");
-      const videoTrack = myVideoStream
-        .getTracks()
-        .find((track) => track.kind === "video");
-      videoTrack.enable = false;
-      const audioTrack = myVideoStream
-        .getTracks()
-        .find((track) => track.kind === "audio");
-      audioTrack.enable = false;
+      myVideoStream.getTracks().forEach(function (track) {
+        track.stop();
+      });
     }
 
     if (connectionRef.current) {

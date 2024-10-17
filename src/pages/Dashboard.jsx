@@ -35,6 +35,7 @@ const Dashboard = () => {
   const imageModal = useSelector(
     (state) => state.modal.isImageModalOpen.status
   );
+  const { receivingCall, callAccepted } = useSelector((state) => state.call);
   const user = useSelector((state) => state.auth.userInfo);
 
   const stompClient = useStompClient();
@@ -103,6 +104,11 @@ const Dashboard = () => {
         (message) => {
           dispatch(setCall(JSON.parse(message.body)));
           dispatch(setReceivingCall(true));
+          setTimeout(() => {
+            if (!callAccepted && receivingCall) {
+              dispatch(setReceivingCall(false));
+            }
+          }, 29000);
         }
       );
     }

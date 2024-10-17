@@ -6,7 +6,7 @@ import { FiVideoOff } from "react-icons/fi";
 import { FiMicOff } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-import { resetCallState, setCallEnded } from "../features/call/callSlice";
+
 const VideoCallInterface = ({
   myVideoStream,
   userVideoStream,
@@ -19,6 +19,9 @@ const VideoCallInterface = ({
   const user = useSelector((state) => state.auth.userInfo);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
   const myVideoRef = useRef();
   const userVideoRef = useRef();
 
@@ -35,6 +38,37 @@ const VideoCallInterface = ({
       .find((track) => track.kind === "video");
     video.enabled = status;
   };
+
+  // Timer for call beginning
+  const timeDiff = (startDate) => {
+    const time = Date.now() - new Date(startDate);
+
+    setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
+    setMinutes(Math.floor((time / 1000 / 60) % 60));
+    setSeconds(Math.floor((time / 1000) % 60));
+  };
+
+  const displayTimer = () => {
+    return (
+      <div className="text-center my-2">
+        <span>{hours < 10 ? "0" + hours : hours}</span>
+        <span>:</span>
+        <span>{minutes < 10 ? "0" + minutes : minutes}</span>
+        <span>:</span>
+        <span>{seconds < 10 ? "0" + seconds : seconds}</span>
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    if (userVideoRef.current) {
+      let startDate = Date.now();
+      const time = setInterval(() => {
+        timeDiff(startDate);
+      }, 1000);
+      return () => clearInterval(time);
+    }
+  }, [userVideoRef.current]);
 
   useEffect(() => {
     if (myVideoRef.current) {
@@ -63,7 +97,7 @@ const VideoCallInterface = ({
             />
           </button>
         </div>
-
+        {userVideoRef.current ? displayTimer() : null}
         <div className="flex space-x-4 mb-4">
           {/* Your video */}
           {myVideoStream && (

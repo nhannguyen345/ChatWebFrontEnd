@@ -8,7 +8,7 @@ import InputField from "./InputField";
 import { setUserInfo } from "../../features/auth/authSlice";
 
 const ProfileSettingContent = () => {
-  const jwt = localStorage.getItem("auth-tk-webchat");
+  const jwt = sessionStorage.getItem("auth-tk-webchat");
   const user = useSelector((state) => state.auth.userInfo);
   const dispatch = useDispatch();
 
