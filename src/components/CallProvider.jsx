@@ -11,8 +11,10 @@ import Peer from "simple-peer";
 import IncomingCall from "./IncomingCall";
 import VideoCallInterface from "./VideoCallInterface";
 import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
 
 const CallProvider = () => {
+  const jwt = sessionStorage.getItem("auth-tk-webchat");
   const stompClient = useStompClient();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.userInfo);
@@ -28,7 +30,7 @@ const CallProvider = () => {
   const [myVideoStream, setMyVideoStream] = useState();
   const [userVideoStream, setUserVideoStream] = useState();
 
-  const [callTimeOut, setCallTimeOut] = useState();
+  const callTimeOutRef = useRef();
 
   const connectionRef = useRef();
   const subscriptionDeclineTheCallRef = useRef();
@@ -41,16 +43,14 @@ const CallProvider = () => {
           setMyVideoStream(currentStream);
           callUser(startingCall?.userId, currentStream);
 
-          const timeout = setTimeout(() => {
-            handleTimeOut();
+          callTimeOutRef.current = setTimeout(() => {
+            handleTimeOut(currentStream);
           }, 30000);
-
-          setCallTimeOut(timeout);
 
           if (stompClient) {
             subscriptionDeclineTheCallRef.current = stompClient.subscribe(
               `/user/${user.info.username}/queue/call-declined`,
-              (message) => {
+              async (message) => {
                 if (connectionRef.current) {
                   toast.info(message.body, {
                     autoClose: 3000,
@@ -60,14 +60,20 @@ const CallProvider = () => {
                     draggable: true,
                     containerId: "decline-call-toast",
                   });
-                  if (callTimeOut) {
-                    clearTimeout(callTimeOut);
+                  if (callTimeOutRef.current) {
+                    clearTimeout(callTimeOutRef.current);
                   }
                   currentStream.getTracks().forEach(function (track) {
                     track.stop();
                   });
                   connectionRef.current.destroy();
-                  setTimeout(() => dispatch(resetCallState()), 500);
+                  await postDataToServer(
+                    startingCall.userId,
+                    "DECLINED",
+                    new Date().toISOString(),
+                    new Date().toISOString()
+                  );
+                  dispatch(resetCallState());
                 }
               }
             );
@@ -77,14 +83,47 @@ const CallProvider = () => {
 
     return () => {
       subscriptionDeclineTheCallRef.current?.unsubscribe();
+      if (callTimeOutRef.current) {
+        clearTimeout(callTimeOutRef.current);
+      }
     };
   }, [dispatch, startingCall]);
 
-  useEffect(() => {
-    if (startingCall?.userId) {
-      console.log(startingCall?.userId);
+  // useEffect(() => {
+  //   if (startingCall?.userId) {
+  //     console.log(startingCall?.userId);
+  //   }
+  // }, [startingCall]);
+
+  //* POST DATA TO SERVER
+  const postDataToServer = async (
+    receiverUsername,
+    callStatus,
+    startedAt,
+    endedAt
+  ) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/call/add-new-call",
+        {
+          receiverUsername,
+          callStatus,
+          startedAt,
+          endedAt,
+        },
+        {
+          headers: { Authorization: `Bearer ${jwt}` },
+        }
+      );
+      return response.data;
+    } catch (e) {
+      if (e.response) {
+        console.log(e.response.data);
+      } else {
+        console.log(e.message);
+      }
     }
-  }, [startingCall]);
+  };
 
   const handleAnswerCall = async () => {
     try {
@@ -96,18 +135,51 @@ const CallProvider = () => {
     }
   };
 
-  const handleTurnOffPhone = () => {
+  const handleTurnOffPhone = async (startDate) => {
     leaveCall();
+    if (startingCall?.userId && callAccepted) {
+      stompClient.publish({
+        destination: "/app/call-end",
+        body: startingCall.userId,
+      });
+      await postDataToServer(
+        startingCall.userId,
+        "COMPLETED",
+        startDate.toISOString(),
+        new Date().toISOString()
+      );
+    } else if (callAccepted && !isCaller) {
+      stompClient.publish({
+        destination: "/app/call-end",
+        body: call.fromUsername,
+      });
+    }
     dispatch(resetCallState());
   };
 
   //* this function use for cancel call if other user doesn't answer
-  const handleTimeOut = () => {
-    myVideoStream.getTracks().forEach(function (track) {
-      track.stop();
-    });
-    connectionRef.current.destroy();
-    dispatch(resetCallState());
+  const handleTimeOut = async (currentStream) => {
+    if (currentStream) {
+      toast.info("Receiver doesn't answer!", {
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        containerId: "decline-call-toast",
+      });
+      currentStream.getTracks().forEach(function (track) {
+        track.stop();
+      });
+      connectionRef.current.destroy();
+      await postDataToServer(
+        startingCall.userId,
+        "MISSED",
+        new Date().toISOString(),
+        new Date().toISOString()
+      );
+      dispatch(resetCallState());
+    }
   };
 
   // *call function
@@ -136,7 +208,7 @@ const CallProvider = () => {
     stompClient.subscribe(
       `/user/${user.info.username}/queue/accept-call`,
       (message) => {
-        clearTimeout(callTimeout);
+        clearTimeout(callTimeOutRef.current);
         dispatch(setCallAccepted(true));
         dispatch(setCall(JSON.parse(message.body)));
         peer.signal(JSON.parse(message.body).signalData);
@@ -203,6 +275,7 @@ const CallProvider = () => {
           callEnded={callEnded}
           call={call}
           handleTurnOffPhone={handleTurnOffPhone}
+          postDataToServer={postDataToServer}
         ></VideoCallInterface>
       )}
       {receivingCall && (

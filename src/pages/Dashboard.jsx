@@ -48,6 +48,17 @@ const Dashboard = () => {
   const subscriptionSendMessErrRef = useRef(null);
   const subscribeCallReceiveCallRef = useRef();
 
+  const callAcceptedRef = useRef(callAccepted);
+  const receivingCallRef = useRef(receivingCall);
+
+  useEffect(() => {
+    callAcceptedRef.current = callAccepted;
+  }, [callAccepted]);
+
+  useEffect(() => {
+    receivingCallRef.current = receivingCall;
+  }, [receivingCall]);
+
   useEffect(() => {
     if (stompClient) {
       subscriptionErrorsRef.current = stompClient.subscribe(
@@ -105,7 +116,7 @@ const Dashboard = () => {
           dispatch(setCall(JSON.parse(message.body)));
           dispatch(setReceivingCall(true));
           setTimeout(() => {
-            if (!callAccepted && receivingCall) {
+            if (!callAcceptedRef.current && receivingCallRef.current) {
               dispatch(setReceivingCall(false));
             }
           }, 29000);

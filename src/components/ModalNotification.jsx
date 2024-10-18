@@ -10,7 +10,7 @@ import axios from "axios";
 import { markAllAsRead } from "../features/notification/notificationSlice";
 
 const ModalNotification = () => {
-  const jwt = localStorage.getItem("auth-tk-webchat");
+  const jwt = sessionStorage.getItem("auth-tk-webchat");
   const user =
     useSelector((state) => state.auth.userInfo) ||
     JSON.parse(localStorage.getItem("user-info"));

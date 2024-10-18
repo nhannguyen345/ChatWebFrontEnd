@@ -6,6 +6,7 @@ import { FiVideoOff } from "react-icons/fi";
 import { FiMicOff } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
+import { useStompClient } from "react-stomp-hooks";
 
 const VideoCallInterface = ({
   myVideoStream,
@@ -25,6 +26,42 @@ const VideoCallInterface = ({
   const myVideoRef = useRef();
   const userVideoRef = useRef();
 
+  const stompClient = useStompClient();
+  const subscriptionEndTheCallRef = useRef();
+  const startDate = useRef(null);
+
+  useEffect(() => {
+    if (userVideoRef.current) {
+      startDate.current = Date.now();
+      const time = setInterval(() => {
+        timeDiff(startDate.current);
+      }, 1000);
+      return () => clearInterval(time);
+    }
+  }, [userVideoRef.current]);
+
+  useEffect(() => {
+    if (myVideoRef.current) {
+      myVideoRef.current.srcObject = myVideoStream;
+      if (stompClient) {
+        subscriptionEndTheCallRef.current = stompClient.subscribe(
+          `/user/${user.info.username}/queue/ended-call`,
+          (message) => {
+            handleTurnOffPhone(new Date(startDate.current));
+          }
+        );
+      }
+    }
+
+    return () => subscriptionEndTheCallRef.current?.unsubscribe();
+  }, [myVideoStream]);
+
+  useEffect(() => {
+    if (userVideoRef.current) {
+      userVideoRef.current.srcObject = userVideoStream;
+    }
+  }, [userVideoStream]);
+
   const toggleMic = (status) => {
     const mic = myVideoStream
       .getTracks()
@@ -41,7 +78,7 @@ const VideoCallInterface = ({
 
   // Timer for call beginning
   const timeDiff = (startDate) => {
-    const time = Date.now() - new Date(startDate);
+    const time = Date.now() - startDate;
 
     setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
     setMinutes(Math.floor((time / 1000 / 60) % 60));
@@ -59,28 +96,6 @@ const VideoCallInterface = ({
       </div>
     );
   };
-
-  useEffect(() => {
-    if (userVideoRef.current) {
-      let startDate = Date.now();
-      const time = setInterval(() => {
-        timeDiff(startDate);
-      }, 1000);
-      return () => clearInterval(time);
-    }
-  }, [userVideoRef.current]);
-
-  useEffect(() => {
-    if (myVideoRef.current) {
-      myVideoRef.current.srcObject = myVideoStream;
-    }
-  }, [myVideoStream]);
-
-  useEffect(() => {
-    if (userVideoRef.current) {
-      userVideoRef.current.srcObject = userVideoStream;
-    }
-  }, [userVideoStream]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -183,7 +198,7 @@ const VideoCallInterface = ({
               size={24}
               className="text-white"
               onClick={() => {
-                handleTurnOffPhone();
+                handleTurnOffPhone(new Date(startDate.current));
               }}
             />
           </button>

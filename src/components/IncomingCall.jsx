@@ -9,9 +9,10 @@ import {
 } from "../features/call/callSlice";
 import { useStompClient } from "react-stomp-hooks";
 
-const IncomingCall = ({ onAccept }) => {
+const IncomingCall = ({ onAccept, postDataToServer }) => {
   const stompClient = useStompClient();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.userInfo);
   const { listMess } = useSelector((state) => state.message);
   const { call } = useSelector((state) => state.call);
 
