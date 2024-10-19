@@ -1,6 +1,7 @@
 import React from "react";
 import HeaderOfLeftPanel from "../HeaderOfLeftPanel";
 import CallList from "../CallsPanelComps/CallList";
+import { useSelector } from "react-redux";
 const callData = [
   {
     id: 1,
@@ -42,10 +43,17 @@ const callData = [
 ];
 
 const CallsPanel = () => {
+  const jwt = sessionStorage.getItem("auth-tk-webchat");
+  const { data, loading, error } = useFetchData(
+    `http://localhost:8080/call/get-list-calls`,
+    {
+      headers: { Authorization: `Bearer ${jwt}` },
+    }
+  );
   return (
     <div className="w-full h-screen flex flex-col">
       <HeaderOfLeftPanel />
-      <CallList callData={callData} />
+      <CallList callData={data} loading={loading} error={error} />
     </div>
   );
 };

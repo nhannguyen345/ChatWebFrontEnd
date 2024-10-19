@@ -92,21 +92,16 @@ const ListChat = () => {
       {(status == "idle" || status == "loading") && (
         <div className="flex w-full h-full justify-center items-center">
           <ImSpinner className="animate-spin h-[36px] w-[36px]" />
-          {/* Vòng xoay loading */}
         </div>
       )}
-      {error && (
-        <div className="text-red-500 text-center">
-          {error.message} {/* Hiển thị thông báo lỗi */}
-        </div>
-      )}
+      {error && <div className="text-red-500 text-center">{error.message}</div>}
       {status === "succeeded" &&
         !error &&
         listMess.map((item, idx) => (
           <div
             key={idx}
             className={
-              "py-4 my-3 w-full flex flex-row overflow-hidden justify-evenly border rounded-md shadow-sm transition-all duration-300 ease-in-out hover:border-[#665dfe] cursor-pointer " +
+              "py-4 my-3 w-full flex flex-row overflow-hidden justify-evenly border rounded-md shadow-sm transition-all duration-300 ease-in-out hover:bg-gray-100 cursor-pointer " +
               (selectedConversationId === item.entity.id
                 ? "bg-[#665dfe]"
                 : "bg-[#fff]")
