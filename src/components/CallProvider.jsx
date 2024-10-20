@@ -12,6 +12,7 @@ import IncomingCall from "./IncomingCall";
 import VideoCallInterface from "./VideoCallInterface";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
+import { fetchCalls } from "../features/callList/calListAction";
 
 const CallProvider = () => {
   const jwt = sessionStorage.getItem("auth-tk-webchat");
@@ -74,6 +75,7 @@ const CallProvider = () => {
                     new Date().toISOString()
                   );
                   dispatch(resetCallState());
+                  dispatch(fetchCalls());
                 }
               }
             );
@@ -155,6 +157,7 @@ const CallProvider = () => {
       });
     }
     dispatch(resetCallState());
+    setTimeout(() => dispatch(fetchCalls()), 1500);
   };
 
   //* this function use for cancel call if other user doesn't answer
@@ -179,6 +182,7 @@ const CallProvider = () => {
         new Date().toISOString()
       );
       dispatch(resetCallState());
+      dispatch(fetchCalls());
     }
   };
 

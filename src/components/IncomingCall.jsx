@@ -9,7 +9,7 @@ import {
 } from "../features/call/callSlice";
 import { useStompClient } from "react-stomp-hooks";
 
-const IncomingCall = ({ onAccept, postDataToServer }) => {
+const IncomingCall = ({ onAccept }) => {
   const stompClient = useStompClient();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.userInfo);
@@ -22,12 +22,13 @@ const IncomingCall = ({ onAccept, postDataToServer }) => {
     })?.entity;
   };
 
-  const handleDeclineCall = () => {
+  const handleDeclineCall = async () => {
     stompClient.publish({
       destination: "/app/call-decline",
       body: call.fromUsername,
     });
     dispatch(resetCallState());
+    setTimeout(() => dispatch(fetchCalls()), 1500);
   };
 
   return (

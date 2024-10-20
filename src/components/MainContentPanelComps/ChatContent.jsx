@@ -105,6 +105,7 @@ const ChatContent = () => {
       <MessageContainer
         listChat={getMessagesFromSelectedConversation()}
         setListChat={setListChat}
+        loading={uploading}
       />
       <MessageInputBox
         inputValue={inputValue}

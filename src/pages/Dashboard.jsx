@@ -22,6 +22,7 @@ import VideoCallInterface from "../components/VideoCallInterface";
 import IncomingCall from "../components/IncomingCall";
 import CallProvider from "../components/CallProvider";
 import { setCall, setReceivingCall } from "../features/call/callSlice";
+import { fetchCalls } from "../features/callList/calListAction";
 
 const Dashboard = () => {
   // get redux state
@@ -118,6 +119,7 @@ const Dashboard = () => {
           setTimeout(() => {
             if (!callAcceptedRef.current && receivingCallRef.current) {
               dispatch(setReceivingCall(false));
+              setTimeout(() => dispatch(fetchCalls()), 1500);
             }
           }, 29000);
         }
@@ -150,6 +152,7 @@ const Dashboard = () => {
     if (idUser) {
       dispatch(fetchNotifications(idUser));
       dispatch(fetchMessages(idUser));
+      dispatch(fetchCalls());
     }
   }, [dispatch, user]);
 

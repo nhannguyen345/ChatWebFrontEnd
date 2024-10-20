@@ -8,9 +8,9 @@ const FileMessageLeftSide = ({ item, index }) => {
   return (
     <div className="w-full h-fit text-left my-[36px]">
       <div className="inline-block relative text-left max-w-[400px] bg-[#f5f6fa] text-[#8094ae] text-[14px] ml-[30px] px-[36px] py-[16px] rounded-[20px]">
-        {/* <h6 className="text-[#343a40] text-[14px] mb-[12px] font-[500] leading-[1.2]">
+        <h6 className="text-[#343a40] text-[14px] mb-[12px] font-[500] leading-[1.2]">
           {item?.sender?.username}
-        </h6> */}
+        </h6>
         {item.messageType === "IMAGE" ? (
           <img
             onClick={() =>

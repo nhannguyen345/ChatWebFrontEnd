@@ -7,6 +7,7 @@ import showInfoChatSlice from "../features/showInfoChat/showInfoChatSlice";
 import notificationSlice from "../features/notification/notificationSlice";
 import messageSlice from "../features/message/messageSlice";
 import callSlice from "../features/call/callSlice";
+import callListSlice from "../features/callList/callListSlice";
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     notification: notificationSlice,
     message: messageSlice,
     call: callSlice,
+    callList: callListSlice,
   },
 });
 

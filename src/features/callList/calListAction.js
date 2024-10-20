@@ -1,14 +1,13 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-export const fetchMessages = createAsyncThunk(
-  "message/fetchMessages",
-  async (userId, { rejectWithValue }) => {
+export const fetchCalls = createAsyncThunk(
+  "callList/fetchCalls",
+  async (_, { rejectWithValue }) => {
     const jwt = sessionStorage.getItem("auth-tk-webchat");
-    console.log(userId);
     try {
       const response = await axios.get(
-        "http://localhost:8080/message/get-list-messages",
+        "http://localhost:8080/call/get-list-calls",
         {
           headers: { Authorization: `Bearer ${jwt}` },
         }

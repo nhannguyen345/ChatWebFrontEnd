@@ -7,6 +7,8 @@ const initialState = {
   receivingCall: false,
   callAccepted: false,
   callEnded: false,
+  // this state use for load list call in tab calls
+  loadListCalls: false,
 };
 
 const callSlice = createSlice({
@@ -31,6 +33,9 @@ const callSlice = createSlice({
     setReceivingCall: (state, action) => {
       state.receivingCall = action.payload;
     },
+    setLoadListCalls: (state, action) => {
+      state.loadListCalls = action.payload;
+    },
     resetCallState: (state) => {
       state.isCaller = false;
       state.startingCall = {};
@@ -50,6 +55,7 @@ export const {
   setCallAccepted,
   setCallEnded,
   setReceivingCall,
+  setLoadListCalls,
   resetCallState,
 } = callSlice.actions;
 export default callSlice.reducer;

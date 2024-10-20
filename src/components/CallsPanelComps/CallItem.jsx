@@ -1,3 +1,4 @@
+import { formatDistanceToNow } from "date-fns";
 import React from "react";
 import { BsTelephone } from "react-icons/bs";
 import {
@@ -6,8 +7,11 @@ import {
   BsFillTelephoneXFill,
   BsFillTelephoneMinusFill,
 } from "react-icons/bs";
+import { useDispatch } from "react-redux";
+import { setIsCaller, setStartingCall } from "../../features/call/callSlice";
 
 const CallItem = ({ call, user }) => {
+  const dispatch = useDispatch();
   var info =
     call.caller.username === user.info.username ? call.receiver : call.caller;
 
@@ -22,7 +26,7 @@ const CallItem = ({ call, user }) => {
   const displayIconCall = (callInfo) => {
     if (callInfo?.caller.username === user.info.username) {
       return (
-        <p className={`mt-1 text-xs text-gray-500`}>
+        <p className={`flex items-center mt-2 text-xs text-gray-500`}>
           <span className="inline-block mr-1">
             <BsFillTelephoneOutboundFill />
           </span>
@@ -34,7 +38,7 @@ const CallItem = ({ call, user }) => {
       callInfo?.callStatus === "COMPLETED"
     ) {
       return (
-        <p className={`mt-1 text-xs text-gray-500`}>
+        <p className={`flex items-center mt-2 text-xs text-gray-500`}>
           <span className="inline-block mr-1">
             <BsFillTelephoneInboundFill />
           </span>
@@ -46,7 +50,7 @@ const CallItem = ({ call, user }) => {
       callInfo?.receiver.username === user.info.username
     ) {
       return (
-        <p className={`mt-1 text-xs text-red-500`}>
+        <p className={`flex items-center mt-2 text-xs text-red-500`}>
           <span className="inline-block mr-1">
             <BsFillTelephoneXFill />
           </span>
@@ -58,7 +62,7 @@ const CallItem = ({ call, user }) => {
       callInfo?.receiver.username === user.info.username
     ) {
       return (
-        <p className={`mt-1 text-xs text-red-500`}>
+        <p className={`flex items-center mt-2 text-xs text-red-500`}>
           <span className="inline-block mr-1">
             <BsFillTelephoneMinusFill />
           </span>
@@ -71,7 +75,7 @@ const CallItem = ({ call, user }) => {
     <div className="flex items-center p-4 my-3 hover:bg-gray-100 border">
       <div className="mr-3 flex-shrink-0">
         <img
-          src={info?.avatar}
+          src={info?.avatarUrl}
           alt={info?.username}
           className="w-[52px] h-[52px] rounded-full object-cover"
         />
@@ -80,7 +84,17 @@ const CallItem = ({ call, user }) => {
         <h3 className="font-semibold text-sm mb-1">{info?.username}</h3>
         {displayIconCall(call)}
       </div>
-      <BsTelephone className="text-gray-400 w-5 h-5" />
+      <BsTelephone
+        className="text-gray-400 w-5 h-5"
+        onClick={() => {
+          dispatch(
+            setStartingCall({
+              userId: info?.username,
+            })
+          );
+          dispatch(setIsCaller(true));
+        }}
+      />
     </div>
   );
 };

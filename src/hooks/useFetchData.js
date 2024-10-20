@@ -18,6 +18,7 @@ const useFetchData = (url, options = {}) => {
       });
       setData(response.data);
     } catch (err) {
+      console.log(err);
       if (err.response) {
         setError(err.response.data);
       } else {
