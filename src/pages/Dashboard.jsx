@@ -23,6 +23,7 @@ import IncomingCall from "../components/IncomingCall";
 import CallProvider from "../components/CallProvider";
 import { setCall, setReceivingCall } from "../features/call/callSlice";
 import { fetchCalls } from "../features/callList/calListAction";
+import { setListFriendsOnline } from "../features/connectionStatus/connectionStatusSlice";
 
 const Dashboard = () => {
   // get redux state
@@ -41,7 +42,7 @@ const Dashboard = () => {
 
   const stompClient = useStompClient();
   const dispatch = useDispatch();
-  const subscriptionConnectedRef = useRef(null);
+  const subscriptionGetUsersOnlineRef = useRef(null);
   const subscriptionErrorsRef = useRef(null);
   const subscriptionAddNewNotifRef = useRef(null);
   const subscriptionAddNewMessRef = useRef(null);
@@ -62,6 +63,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (stompClient) {
+      subscriptionGetUsersOnlineRef.current = stompClient.subscribe(
+        "/topic/getUsersOnline",
+        (message) => {
+          dispatch(setListFriendsOnline(JSON.parse(message.body)));
+        }
+      );
+
       subscriptionErrorsRef.current = stompClient.subscribe(
         `/user/${user.info.username}/queue/errors`,
         (message) => {
@@ -124,11 +132,16 @@ const Dashboard = () => {
           }, 29000);
         }
       );
+
+      //! call list users online
+      stompClient.publish({
+        destination: "/app/send-online-signal",
+      });
     }
 
     // Cleanup function để hủy đăng ký
     return () => {
-      subscriptionConnectedRef.current?.unsubscribe();
+      subscriptionGetUsersOnlineRef.current?.unsubscribe();
       subscriptionErrorsRef.current?.unsubscribe();
       subscriptionAddNewNotifRef.current?.unsubscribe();
       subscriptionAddNewMessRef.current?.unsubscribe();

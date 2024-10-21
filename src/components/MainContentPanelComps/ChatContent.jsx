@@ -8,6 +8,7 @@ import { addNewMessageFromSelf } from "../../features/message/messageSlice";
 import { getFileName, getFileSizeInKB } from "../../utils/fileUtils";
 import { generateIdMessage, createNewMessage } from "../../utils/messageUtils";
 import { useStompClient } from "react-stomp-hooks";
+import { TbLoader2 } from "react-icons/tb";
 
 const ChatContent = () => {
   const stompClient = useStompClient();
@@ -20,6 +21,7 @@ const ChatContent = () => {
   const { postToCloudinary, uploading, error } = useCloudinaryUpload();
   const [inputValue, setInputValue] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+
   const [listChat, setListChat] = useState([]);
 
   function SendDataThroughWS(data) {
@@ -97,15 +99,19 @@ const ChatContent = () => {
   return (
     <div
       className={
-        "flex flex-col w-full h-screen max-sm:h-[calc(100vh-64px)] " +
+        "relative flex flex-col w-full h-screen max-sm:h-[calc(100vh-64px)] " +
         (showInfoChat ? "max-sm:hidden" : "")
       }
     >
+      {uploading && (
+        <div className="w-[50px] h-fit flex justify-center items-center absolute top-[74px] left-1/2 transform -translate-x-1/2 bg-gray-200 z-10">
+          <TbLoader2 className="h-[26px] w-[26px] animate-spin" />
+        </div>
+      )}
       <HeaderOfChatContent />
       <MessageContainer
         listChat={getMessagesFromSelectedConversation()}
         setListChat={setListChat}
-        loading={uploading}
       />
       <MessageInputBox
         inputValue={inputValue}

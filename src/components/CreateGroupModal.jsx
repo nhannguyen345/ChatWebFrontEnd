@@ -61,7 +61,7 @@ const users = [
   },
 ];
 
-// Thành phần Create Group Content
+// Create Group Content
 const CreateGroupContent = ({
   groupName,
   setGroupName,
@@ -129,7 +129,7 @@ const CreateGroupContent = ({
   </div>
 );
 
-// Thành phần Add Group Members Content
+// Add Group Members Content
 const AddGroupMembersContent = ({
   searchQuery,
   setSearchQuery,

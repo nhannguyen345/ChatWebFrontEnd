@@ -71,12 +71,13 @@ const chats = [
   },
 ];
 const ListChat = () => {
-  const jwt = localStorage.getItem("auth-tk-webchat");
-  const user = useSelector((state) => state.auth.userInfo);
+  // const jwt = localStorage.getItem("auth-tk-webchat");
+  // const user = useSelector((state) => state.auth.userInfo);
   const dispatch = useDispatch();
   const { selectedConversationId, listMess, status, error } = useSelector(
     (state) => state.message
   );
+  const { onlineFriends } = useSelector((state) => state.connectionStatus);
   // const panelVisibility = useSelector((state) => state.panelVisibility);
 
   const timeAgo = (date) => {
@@ -112,12 +113,20 @@ const ListChat = () => {
             }}
           >
             {/* Avatar */}
-            <div>
+            <div className="relative">
               <img
                 className="h-[52px] w-[52px] shadow object-cover rounded-full"
                 src={item.entity.avatarUrl}
                 alt=""
               />
+              <span
+                className={
+                  "absolute bottom-0 right-1 text-center h-3 w-3 p-px rounded-full text-[10px] font-bold " +
+                  (onlineFriends.includes(item.entity.username)
+                    ? "bg-green-500"
+                    : "bg-gray-300")
+                }
+              ></span>
             </div>
 
             {/* Name & lastMessgae */}

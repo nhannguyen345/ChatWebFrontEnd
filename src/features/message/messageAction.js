@@ -5,7 +5,6 @@ export const fetchMessages = createAsyncThunk(
   "message/fetchMessages",
   async (userId, { rejectWithValue }) => {
     const jwt = sessionStorage.getItem("auth-tk-webchat");
-    console.log(userId);
     try {
       const response = await axios.get(
         "http://localhost:8080/message/get-list-messages",
@@ -13,7 +12,6 @@ export const fetchMessages = createAsyncThunk(
           headers: { Authorization: `Bearer ${jwt}` },
         }
       );
-      console.log(response.data);
       return response.data;
     } catch (error) {
       if (error.response && error.response.data.message) {

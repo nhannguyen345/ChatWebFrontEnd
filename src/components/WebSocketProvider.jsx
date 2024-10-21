@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { StompSessionProvider, useStompClient } from "react-stomp-hooks";
 import { toast, ToastContainer } from "react-toastify";
-import { setSessionSocketId } from "../features/auth/authSlice";
 // eslint-disable-next-line react/prop-types
 const WebSocketProvider = ({ children }) => {
   const dispatch = useDispatch();
