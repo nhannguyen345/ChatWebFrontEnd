@@ -93,7 +93,11 @@ const messageSlice = createSlice({
     },
     addNewMessageFromOther: (state, action) => {
       const selectedConversationIndex = state.listMess.findIndex(
-        (item) => item.entity.id === action.payload.sender.id
+        (item) =>
+          (item.entity.id === action.payload.sender.id &&
+            !action.payload?.group?.id) ||
+          (item.entity.id !== action.payload.sender.id &&
+            item.entity.id === action.payload?.group?.id)
       );
 
       if (selectedConversationIndex !== -1) {

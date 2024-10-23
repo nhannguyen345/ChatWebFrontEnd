@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { closeCreateGroupModal } from "../features/modal/modalSlice";
 import { IoMdClose, IoIosSearch } from "react-icons/io";
 import { toast, ToastContainer } from "react-toastify";
+import useCloudinaryUpload from "../hooks/useCloudinaryUpload";
+import axios from "axios";
+import { addNewGroups } from "../features/auth/authSlice";
 
 // Hằng số cho các bước
 const STEP_CREATE_GROUP = 1;
@@ -131,71 +134,84 @@ const CreateGroupContent = ({
 
 // Add Group Members Content
 const AddGroupMembersContent = ({
+  loading,
   searchQuery,
   setSearchQuery,
   selectedMembers,
   toggleMember,
   handlePrevious,
   handleSubmit,
-}) => (
-  <div>
-    <div className="p-6">
-      <div className="relative mb-4">
-        <input
-          type="text"
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <IoIosSearch className="h-5 w-5 text-gray-400" />
+  friends,
+}) => {
+  return (
+    <div>
+      <div className="p-6">
+        <div className="relative mb-4">
+          <input
+            type="text"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <IoIosSearch className="h-5 w-5 text-gray-400" />
+          </div>
+        </div>
+
+        <div className=" max-h-64 overflow-y-auto no-scrollbar">
+          {friends.map((user) => (
+            <div key={user.id} className="flex items-center my-4">
+              <img
+                src={user.avatarUrl}
+                alt={user.username}
+                className="w-12 h-12 rounded-full"
+              />
+              <div className="flex-grow pl-3">
+                <p className="font-medium">{user.username}</p>
+                <p className="text-sm text-gray-500">{user.status}</p>
+              </div>
+              <input
+                type="checkbox"
+                checked={selectedMembers.includes(user.id)}
+                onChange={() => toggleMember(user.id)}
+                className="h-4 w-4 checked:accent-[#665dfe] border-gray-300 rounded"
+              />
+            </div>
+          ))}
         </div>
       </div>
-
-      <div className=" max-h-64 overflow-y-auto no-scrollbar">
-        {users.map((user) => (
-          <div key={user.id} className="flex items-center my-4">
-            <img
-              src={user.avatar}
-              alt={user.name}
-              className="w-12 h-12 rounded-full"
-            />
-            <div className="flex-grow pl-3">
-              <p className="font-medium">{user.name}</p>
-              <p className="text-sm text-gray-500">{user.status}</p>
-            </div>
-            <input
-              type="checkbox"
-              checked={selectedMembers.includes(user.id)}
-              onChange={() => toggleMember(user.id)}
-              className="h-4 w-4 checked:accent-[#665dfe] border-gray-300 rounded"
-            />
-          </div>
-        ))}
+      <div className="relative flex justify-end space-x-2 p-6 border-t">
+        <button></button>
+        <button
+          onClick={handlePrevious}
+          className="px-4 py-2 border border-gray-300 rounded-md hover:text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Previous
+        </button>
+        <button
+          disabled={loading}
+          onClick={handleSubmit}
+          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          {loading ? (
+            <ImSpinner className="animate-spin h-[18px] w-[18px]" />
+          ) : (
+            "Submit"
+          )}
+        </button>
       </div>
     </div>
-    <div className="relative flex justify-end space-x-2 p-6 border-t">
-      <button></button>
-      <button
-        onClick={handlePrevious}
-        className="px-4 py-2 border border-gray-300 rounded-md hover:text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
-        Previous
-      </button>
-      <button
-        onClick={handleSubmit}
-        className="px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
-        Submit
-      </button>
-    </div>
-  </div>
-);
+  );
+};
 
 const CreateGroupModal = () => {
+  const jwt = sessionStorage.getItem("auth-tk-webchat");
+
   const modal = useSelector((state) => state.modal.isCreateGroupModalOpen);
   const dispatch = useDispatch();
+  const { listMess } = useSelector((state) => state.message);
+  const { onlineFriends } = useSelector((state) => state.connectionStatus);
 
   const [isVisible, setIsVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(STEP_CREATE_GROUP);
@@ -203,7 +219,11 @@ const CreateGroupModal = () => {
   const [groupName, setGroupName] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMembers, setSelectedMembers] = useState([]);
-  const [fileName, setFileName] = useState("Choose file");
+  const [file, setFile] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+
+  const { postToCloudinary, error } = useCloudinaryUpload();
 
   useEffect(() => {
     if (modal) {
@@ -213,9 +233,20 @@ const CreateGroupModal = () => {
     }
   }, [modal]);
 
+  const getUsersList = () => {
+    return listMess.map((item) => {
+      return {
+        ...item.entity,
+        status: onlineFriends.includes(item.entity.username)
+          ? "Online"
+          : "Offline",
+      };
+    });
+  };
+
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) setFileName(file.name);
+    const fileSelected = event.target.files[0];
+    if (fileSelected) setFile(fileSelected);
   };
 
   const toggleMember = (userId) => {
@@ -236,8 +267,37 @@ const CreateGroupModal = () => {
 
   const handlePrevious = () => setCurrentStep(STEP_CREATE_GROUP);
 
-  const handleSubmit = () => {
-    // Thực hiện submit logic
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      if (file) {
+        const url_file = await postToCloudinary(file);
+        const response = await axios.post(
+          "http://localhost:8080/group/create-new-group",
+          {
+            groupName: groupName,
+            urlImage: url_file
+              ? url_file
+              : "https://img.freepik.com/premium-vector/friends-share-laughs-while-chatting-online-using-phones-laptop-lively-atmosphere-group-chat-customizable-cartoon-illustration_538213-154621.jpg?w=996",
+            listUsers: selectedMembers,
+          },
+          {
+            headers: { Authorization: `Bearer ${jwt}` },
+          }
+        );
+        dispatch(addNewGroups(await response.data[0].group));
+        toast.success("Create new group successfully!");
+        setTimeout(() => {
+          dispatch(closeCreateGroupModal());
+        }, 1500);
+      }
+    } catch (err) {
+      toast.error(err?.response ? err.response.data : err.message);
+    } finally {
+      setLoading(false);
+    }
+
+    console.log("name of group: ");
   };
 
   return (
@@ -268,7 +328,7 @@ const CreateGroupModal = () => {
           <CreateGroupContent
             groupName={groupName}
             setGroupName={setGroupName}
-            fileName={fileName}
+            fileName={file ? file.name : "Choosing file"}
             handleFileChange={handleFileChange}
             handleNext={handleNext}
           />
@@ -280,6 +340,7 @@ const CreateGroupModal = () => {
             toggleMember={toggleMember}
             handlePrevious={handlePrevious}
             handleSubmit={handleSubmit}
+            friends={getUsersList()}
           />
         )}
 

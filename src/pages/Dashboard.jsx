@@ -49,6 +49,7 @@ const Dashboard = () => {
   const subscriptionSendMessSuccRef = useRef(null);
   const subscriptionSendMessErrRef = useRef(null);
   const subscribeCallReceiveCallRef = useRef();
+  const subscribeChatGroupsRef = useRef({});
 
   const callAcceptedRef = useRef(callAccepted);
   const receivingCallRef = useRef(receivingCall);
@@ -107,7 +108,6 @@ const Dashboard = () => {
       subscriptionSendMessSuccRef.current = stompClient.subscribe(
         `/user/${user.info.username}/queue/send-mess-success`,
         (message) => {
-          console.log("test call");
           dispatch(updateIdAndStatusMess(JSON.parse(message.body)));
         }
       );
@@ -139,7 +139,6 @@ const Dashboard = () => {
       });
     }
 
-    // Cleanup function để hủy đăng ký
     return () => {
       subscriptionGetUsersOnlineRef.current?.unsubscribe();
       subscriptionErrorsRef.current?.unsubscribe();
@@ -150,6 +149,27 @@ const Dashboard = () => {
       subscribeCallReceiveCallRef?.current?.unsubscribe();
     };
   }, [stompClient]);
+
+  // Subscribe event chat group
+  useEffect(() => {
+    if (stompClient && user?.groupMembers) {
+      user?.groupMembers.forEach((group) => {
+        subscribeChatGroupsRef.current[group.group.id] = stompClient.subscribe(
+          `/topic/group/${group.group.id}_${group.group.name}_${group.group.createdBy}`,
+          (message) => {
+            const newMess = JSON.parse(message.body);
+            dispatch(addNewMessageFromOther(newMess));
+          }
+        );
+      });
+
+      return () => {
+        Object.values(subscribeChatGroupsRef.current).forEach((sub) => {
+          sub.unsubscribe();
+        });
+      };
+    }
+  }, [stompClient, dispatch, user.groupMembers]);
 
   // fetch notifications
   useEffect(() => {

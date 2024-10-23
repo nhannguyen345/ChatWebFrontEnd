@@ -8,7 +8,7 @@ import { registerUser, userLogin } from "./authAction";
 const initialState = {
   loading: false,
   userInfo: {},
-  sessionSocketId: null,
+  // sessionSocketId: null,
   userToken: null,
   error: null,
   success: false,
@@ -22,9 +22,17 @@ const authSlice = createSlice({
       state.success = false;
       state.error = null;
     },
-    setSessionSocketId: (state, action) => {
-      state.sessionSocketId = action.payload;
-      console.log(state.sessionSocketId);
+    // setSessionSocketId: (state, action) => {
+    //   state.sessionSocketId = action.payload;
+    //   console.log(state.sessionSocketId);
+    // },
+    addNewGroups: (state, action) => {
+      const listGroupsNew = [...state.userInfo.groupMembers];
+      listGroupsNew.push(action.payload);
+      state.userInfo = {
+        ...state.userInfo,
+        groupMembers: listGroupsNew,
+      };
     },
     setUserInfo: (state, action) => {
       state.userInfo = {
@@ -73,5 +81,5 @@ const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { resetState, setSessionSocketId, setUserInfo, clearUserInfo } =
+export const { resetState, addNewGroups, setUserInfo, clearUserInfo } =
   authSlice.actions;
