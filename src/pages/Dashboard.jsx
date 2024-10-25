@@ -24,6 +24,7 @@ import CallProvider from "../components/CallProvider";
 import { setCall, setReceivingCall } from "../features/call/callSlice";
 import { fetchCalls } from "../features/callList/calListAction";
 import { setListFriendsOnline } from "../features/connectionStatus/connectionStatusSlice";
+import { addNewGroups } from "../features/auth/authSlice";
 
 const Dashboard = () => {
   // get redux state
@@ -50,6 +51,7 @@ const Dashboard = () => {
   const subscriptionSendMessErrRef = useRef(null);
   const subscribeCallReceiveCallRef = useRef();
   const subscribeChatGroupsRef = useRef({});
+  const subscribeNewChatGroupsRef = useRef();
 
   const callAcceptedRef = useRef(callAccepted);
   const receivingCallRef = useRef(receivingCall);
@@ -83,8 +85,8 @@ const Dashboard = () => {
         (message) => {
           console.log(message);
           const newNotif = JSON.parse(message.body);
-          dispatch(addNewNotification(newNotif));
           if (newNotif.notificationType === "FRIEND_REQUEST_ACCEPTED") {
+            dispatch(addNewNotification(newNotif));
             dispatch(
               addNewConversation({
                 type: "friend",
@@ -93,6 +95,21 @@ const Dashboard = () => {
                 messages: [],
               })
             );
+          } else if (
+            newNotif?.notification?.notificationType === "ADD_NEW_GROUP"
+          ) {
+            dispatch(addNewNotification(newNotif.notification));
+            dispatch(
+              addNewConversation({
+                type: "group",
+                entity: newNotif.groupMember.group,
+                lastMessageTime: null,
+                messages: [],
+              })
+            );
+            dispatch(addNewGroups(newNotif.groupMember));
+          } else {
+            dispatch(addNewNotification(newNotif));
           }
         }
       );
@@ -152,13 +169,23 @@ const Dashboard = () => {
 
   // Subscribe event chat group
   useEffect(() => {
+    console.log(user?.groupMembers);
     if (stompClient && user?.groupMembers) {
       user?.groupMembers.forEach((group) => {
+        console.log(
+          `${group.group.id}_${group.group.name}_${
+            group.group.createdAt.split("+")[0] + "Z"
+          }`
+        );
         subscribeChatGroupsRef.current[group.group.id] = stompClient.subscribe(
-          `/topic/group/${group.group.id}_${group.group.name}_${group.group.createdBy}`,
+          `/topic/group/${group.group.id}_${group.group.name}_${
+            group.group.createdAt.split("+")[0] + "Z"
+          }`,
           (message) => {
             const newMess = JSON.parse(message.body);
-            dispatch(addNewMessageFromOther(newMess));
+            if (newMess.sender.username !== user.info.username) {
+              dispatch(addNewMessageFromOther(newMess));
+            }
           }
         );
       });

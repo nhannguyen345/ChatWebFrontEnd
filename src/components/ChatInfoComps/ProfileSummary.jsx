@@ -9,10 +9,10 @@ const ProfileSummary = ({ userInfo }) => {
         alt=""
       />
       <h5 className="text-[20px] text-[#495057] font-medium leading-[1.2]">
-        {userInfo?.username}
+        {userInfo?.username ? userInfo.username : userInfo.name}
       </h5>
       <button className="flex items-center gap-2 text-[14px] text-white font-medium px-5 py-1 outline-none rounded-sm border border-[#ff337c] bg-[#ff337c] hover:bg-[#c9265f]">
-        Unfriend
+        {userInfo?.username ? "Unfriend" : "Leave Group"}
       </button>
     </div>
   );

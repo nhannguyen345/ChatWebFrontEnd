@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import useCloudinaryUpload from "../hooks/useCloudinaryUpload";
 import axios from "axios";
 import { addNewGroups } from "../features/auth/authSlice";
+import { ImSpinner } from "react-icons/im";
 
 // Hằng số cho các bước
 const STEP_CREATE_GROUP = 1;
@@ -234,14 +235,16 @@ const CreateGroupModal = () => {
   }, [modal]);
 
   const getUsersList = () => {
-    return listMess.map((item) => {
-      return {
-        ...item.entity,
-        status: onlineFriends.includes(item.entity.username)
-          ? "Online"
-          : "Offline",
-      };
-    });
+    return listMess
+      .filter((item) => item.type === "friend")
+      .map((item) => {
+        return {
+          ...item.entity,
+          status: onlineFriends.includes(item.entity.username)
+            ? "Online"
+            : "Offline",
+        };
+      });
   };
 
   const handleFileChange = (event) => {
@@ -270,34 +273,41 @@ const CreateGroupModal = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      if (file) {
-        const url_file = await postToCloudinary(file);
-        const response = await axios.post(
-          "http://localhost:8080/group/create-new-group",
-          {
-            groupName: groupName,
-            urlImage: url_file
-              ? url_file
-              : "https://img.freepik.com/premium-vector/friends-share-laughs-while-chatting-online-using-phones-laptop-lively-atmosphere-group-chat-customizable-cartoon-illustration_538213-154621.jpg?w=996",
-            listUsers: selectedMembers,
-          },
-          {
-            headers: { Authorization: `Bearer ${jwt}` },
-          }
-        );
-        dispatch(addNewGroups(await response.data[0].group));
-        toast.success("Create new group successfully!");
-        setTimeout(() => {
-          dispatch(closeCreateGroupModal());
-        }, 1500);
+      if (selectedMembers.length < 2) {
+        console.log(selectedMembers.length);
+        throw new Error("A group must have more than two people!");
       }
-    } catch (err) {
-      toast.error(err?.response ? err.response.data : err.message);
-    } finally {
+      let url_file = null;
+      if (file) {
+        url_file = await postToCloudinary(file);
+      }
+      const response = await axios.post(
+        "http://localhost:8080/group/create-new-group",
+        {
+          groupName: groupName,
+          urlImage: url_file
+            ? url_file
+            : "https://img.freepik.com/premium-vector/friends-share-laughs-while-chatting-online-using-phones-laptop-lively-atmosphere-group-chat-customizable-cartoon-illustration_538213-154621.jpg?w=996",
+          listUsers: selectedMembers,
+        },
+        {
+          headers: { Authorization: `Bearer ${jwt}` },
+        }
+      );
+      dispatch(addNewGroups(await response.data[response.data.length - 1]));
+      toast.success("Create new group successfully!", {
+        containerId: "notification-for-create-group",
+      });
       setLoading(false);
+      setTimeout(() => {
+        dispatch(closeCreateGroupModal());
+      }, 1500);
+    } catch (err) {
+      setLoading(false);
+      toast.error(err?.response ? err.response.data : err.message, {
+        containerId: "notification-for-create-group",
+      });
     }
-
-    console.log("name of group: ");
   };
 
   return (
@@ -334,6 +344,7 @@ const CreateGroupModal = () => {
           />
         ) : (
           <AddGroupMembersContent
+            loading={loading}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             selectedMembers={selectedMembers}
@@ -344,7 +355,10 @@ const CreateGroupModal = () => {
           />
         )}
 
-        <ToastContainer position="top-center" />
+        <ToastContainer
+          containerId={"notification-for-create-group"}
+          position="top-center"
+        />
       </div>
     </div>
   );

@@ -31,7 +31,7 @@ const useFetchData = (url, options = {}) => {
 
   useEffect(() => {
     fetchData();
-  }, [url, method, body, JSON.stringify(headers)]);
+  }, [url, method, JSON.stringify(body), JSON.stringify(headers)]);
 
   return { data, loading, error };
 };

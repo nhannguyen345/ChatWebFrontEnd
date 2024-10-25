@@ -70,7 +70,7 @@ const authSlice = createSlice({
         state.success = true;
         state.userInfo = payload;
         state.userToken = payload.jwtToken;
-        console.log(state.userToken);
+        console.log(state.userInfo?.groupMembers);
       })
       .addCase(userLogin.rejected, (state, { payload }) => {
         state.loading = false;

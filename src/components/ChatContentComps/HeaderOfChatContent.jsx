@@ -59,7 +59,9 @@ const HeaderOfChatContent = () => {
       {/* Name & text info */}
       <div className="ml-3 w-fit">
         <h4 className="col-span-6 font-semibold text-[#495057]">
-          {getSelectedConversation()?.entity?.username}
+          {getSelectedConversation()?.entity?.username
+            ? getSelectedConversation()?.entity?.username
+            : getSelectedConversation()?.entity?.name}
         </h4>
         <span
           onClick={() => dispatch(setShowInfoChat(true))}
@@ -75,12 +77,18 @@ const HeaderOfChatContent = () => {
         <BsTelephone
           className="text-[18px] my-auto stroke-[0.1] mr-2 text-[#adb5bd] cursor-pointer hover:text-[#495057]"
           onClick={() => {
-            dispatch(
-              setStartingCall({
-                userId: getSelectedConversation()?.entity?.username,
-              })
-            );
-            dispatch(setIsCaller(true));
+            if (getSelectedConversation()?.type === "friend") {
+              dispatch(
+                setStartingCall({
+                  userId: getSelectedConversation()?.entity?.username,
+                })
+              );
+              dispatch(setIsCaller(true));
+            } else {
+              alert(
+                "This feature is used for call one-to-one. In future, i will make feature for group!"
+              );
+            }
           }}
         />
         <div ref={otherRef} className="relative">
