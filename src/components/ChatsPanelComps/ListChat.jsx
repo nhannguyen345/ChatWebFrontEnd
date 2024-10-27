@@ -4,81 +4,27 @@ import { formatDistanceToNow } from "date-fns";
 import { ImSpinner } from "react-icons/im";
 import { setSelectedConversationId } from "../../features/message/messageSlice";
 
-const chats = [
-  {
-    avatarUrl:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-    username: "Martin Helen",
-    time: "Just now",
-    lastMessage: "Hello, you look handsome",
-  },
-  {
-    avatarUrl:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-    username: "Martin Helen",
-    time: "Just now",
-    lastMessage:
-      "Hello, you look handsome Hello, you look handsome Hello, you look handsome",
-  },
-  {
-    avatarUrl:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-    username: "Martin Helen",
-    time: "Just now",
-    lastMessage: "Hello, you look handsome",
-  },
-  {
-    avatarUrl:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-    username: "Martin Helen",
-    time: "Just now",
-    lastMessage: "Hello, you look handsome",
-  },
-  {
-    avatarUrl:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-    username: "Martin Helen",
-    time: "Just now",
-    lastMessage: "Hello, you look handsome",
-  },
-  {
-    avatarUrl:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-    username: "Martin Helen",
-    time: "Just now",
-    lastMessage: "Hello, you look handsome",
-  },
-  {
-    avatarUrl:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-    username: "Martin Helen",
-    time: "Just now",
-    lastMessage: "Hello, you look handsome",
-  },
-  {
-    avatarUrl:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-    username: "Martin Helen",
-    time: "Just now",
-    lastMessage: "Hello, you look handsome",
-  },
-  {
-    avatarUrl:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-    username: "Martin Helen",
-    time: "Just now",
-    lastMessage: "Hello, you look handsome",
-  },
-];
-const ListChat = () => {
-  // const jwt = localStorage.getItem("auth-tk-webchat");
-  // const user = useSelector((state) => state.auth.userInfo);
+const ListChat = ({ selectedFilter, searchString }) => {
   const dispatch = useDispatch();
   const { selectedConversationId, listMess, status, error } = useSelector(
     (state) => state.message
   );
   const { onlineFriends } = useSelector((state) => state.connectionStatus);
   // const panelVisibility = useSelector((state) => state.panelVisibility);
+
+  const filteredList = listMess.filter((conve) => {
+    const matchesFilter =
+      selectedFilter.type === 1 ||
+      (selectedFilter.type === 2 && conve.type === "friend") ||
+      (selectedFilter.type === 3 && conve.type === "group");
+
+    const matchesSearch =
+      searchString === "" ||
+      conve.entity?.username?.includes(searchString) ||
+      conve.entity?.name?.includes(searchString);
+
+    return matchesFilter && matchesSearch;
+  });
 
   const timeAgo = (date) => {
     const distance = formatDistanceToNow(new Date(date), { addSuffix: true });
@@ -98,7 +44,7 @@ const ListChat = () => {
       {error && <div className="text-red-500 text-center">{error.message}</div>}
       {status === "succeeded" &&
         !error &&
-        listMess.map((item, idx) => (
+        filteredList.map((item, idx) => (
           <div
             key={idx}
             className={
@@ -113,7 +59,7 @@ const ListChat = () => {
             }}
           >
             {/* Avatar */}
-            <div className="relative">
+            <div className="relative z-0">
               <img
                 className="h-[52px] w-[52px] shadow object-cover rounded-full"
                 src={item.entity.avatarUrl}

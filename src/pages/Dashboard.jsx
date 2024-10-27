@@ -172,11 +172,6 @@ const Dashboard = () => {
     console.log(user?.groupMembers);
     if (stompClient && user?.groupMembers) {
       user?.groupMembers.forEach((group) => {
-        console.log(
-          `${group.group.id}_${group.group.name}_${
-            group.group.createdAt.split("+")[0] + "Z"
-          }`
-        );
         subscribeChatGroupsRef.current[group.group.id] = stompClient.subscribe(
           `/topic/group/${group.group.id}_${group.group.name}_${
             group.group.createdAt.split("+")[0] + "Z"

@@ -3,7 +3,7 @@ import CallItem from "./CallItem";
 import { useSelector } from "react-redux";
 import { ImSpinner } from "react-icons/im";
 
-const CallList = ({ callData, loading, error }) => {
+const CallList = ({ searchString, callData, loading, error }) => {
   const user = useSelector((state) => state.auth.userInfo);
   return (
     <div className="flex-grow py-3 px-4 overflow-y-scroll no-scrollbar">
@@ -16,9 +16,16 @@ const CallList = ({ callData, loading, error }) => {
       {callData &&
         !loading &&
         !error &&
-        callData.map((call) => (
-          <CallItem key={call.id} call={call} user={user} />
-        ))}
+        callData
+          .filter((call) => {
+            if (searchString === "") return true;
+            let name =
+              call.caller.username === user.info.username
+                ? call.receiver.username
+                : call.caller.username;
+            return name.includes(searchString);
+          })
+          .map((call) => <CallItem key={call.id} call={call} user={user} />)}
     </div>
   );
 };

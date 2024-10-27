@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import HeaderOfLeftPanel from "../HeaderOfLeftPanel";
 import ContactList from "../ContactsPanelComps/ContactList";
 import useFetchData from "../../hooks/useFetchData";
@@ -12,10 +12,31 @@ const ContactsPanel = () => {
       headers: { Authorization: `Bearer ${jwt}` },
     }
   );
+
+  const [searchString, setSearchString] = useState("");
+  const debounceTimeout = useRef(null);
+
+  const handleDebounceSearch = (e) => {
+    const valueInput = e.target.value;
+
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(() => {
+      setSearchString(valueInput);
+    }, 500);
+  };
+
   return (
     <div className="max-w-md w-full flex flex-col bg-white shadow-lg rounded-lg">
-      <HeaderOfLeftPanel />
-      <ContactList contacts={data} loading={loading} error={error} />
+      <HeaderOfLeftPanel handleDebounceSearch={handleDebounceSearch} />
+      <ContactList
+        searchString={searchString}
+        contacts={data}
+        loading={loading}
+        error={error}
+      />
     </div>
   );
 };

@@ -13,7 +13,26 @@ import {
 } from "../features/modal/modalSlice";
 import { useRef, useState } from "react";
 import useClickOutside from "../hooks/useClickOutside";
-const HeaderOfLeftPanel = () => {
+
+const SearchContacts = ({ handleDebounceSearch }) => (
+  <div className="relative w-full">
+    <input
+      type="text"
+      placeholder="Search Contacts.."
+      className="w-full pl-10 pr-4 py-2 text-[15px] border rounded-lg bg-[#f9fafb] focus:outline-none focus:border-blue-500"
+      onChange={handleDebounceSearch}
+    />
+    <div className="absolute top-1/2 left-3 transform -translate-y-1/2 text-[#adb5bd]">
+      <IoIosSearch className="text-[20px]" />
+    </div>
+  </div>
+);
+
+const HeaderOfLeftPanel = ({
+  selectedFilter,
+  setSelectedFilter,
+  handleDebounceSearch,
+}) => {
   // Using to showw/hide menu when click three dots
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -100,30 +119,16 @@ const HeaderOfLeftPanel = () => {
     }
     if (menu === "contacts") {
       return (
-        <button className="p-[6px] -mt-2 rounded-full bg-[#665dfe] text-white hover:bg-[#4237fe]">
-          <GoPlus className="text-[16px]" />
+        <button className="p-[4px] -mt-2 rounded-full bg-[#665dfe] text-white hover:bg-[#4237fe]">
+          <GoPlus className="text-[14px]" />
         </button>
       );
     }
     return null;
   };
 
-  // MAIN COMPONENT
-  const SearchContacts = () => (
-    <div className="relative w-full">
-      <input
-        type="text"
-        placeholder="Search Contacts.."
-        className="w-full pl-10 pr-4 py-2 text-[15px] border rounded-lg bg-[#f9fafb] focus:outline-none focus:border-blue-500"
-      />
-      <div className="absolute top-1/2 left-3 transform -translate-y-1/2 text-[#adb5bd]">
-        <IoIosSearch className="text-[20px]" />
-      </div>
-    </div>
-  );
-
   return (
-    <div className="sticky top-0 w-full px-4 pt-4 pb-4 shadow-sm border-b border-b-[#e0e0e0]">
+    <div className="sticky top-0 w-full px-4 pt-4 pb-4 shadow-sm border-b border-b-[#e0e0e0] z-20">
       {/* Header & notification & setting */}
       <div className="w-full flex flex-row justify-between">
         <h4 className="text-[18px] leading-[1.2] font-semibold text-[#495057]">
@@ -143,13 +148,18 @@ const HeaderOfLeftPanel = () => {
 
       {/* Chat Filter & Search bar */}
       <div className="w-full mt-3 flex flex-row justify-between">
-        {(menu === "chats" || menu === "calls") && (
+        {menu === "chats" && (
           <>
-            <ChatFilter />
-            <SearchBar />
+            <ChatFilter
+              selectedFilter={selectedFilter}
+              setSelectedFilter={setSelectedFilter}
+            />
+            <SearchBar handleDebounceSearch={handleDebounceSearch} />
           </>
         )}
-        {menu === "contacts" && <SearchContacts />}
+        {(menu === "contacts" || menu === "calls") && (
+          <SearchContacts handleDebounceSearch={handleDebounceSearch} />
+        )}
       </div>
     </div>
   );

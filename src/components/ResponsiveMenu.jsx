@@ -39,7 +39,7 @@ const ResponsiveMenu = () => {
             onClick={() => dispatch(setActiveTab("profile"))}
           />
           {/* Tooltip */}
-          <span className="absolute left-9 -top-[3px] z-10 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[70px] max-sm:hidden">
+          <span className="absolute left-9 -top-[3px] z-30 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[70px] max-sm:hidden">
             Profile
           </span>
         </div>
@@ -53,7 +53,7 @@ const ResponsiveMenu = () => {
             onClick={() => dispatch(setActiveTab("chats"))}
           />
           {/* Tooltip */}
-          <span className="absolute left-9 -top-[3px] z-10 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[70px] max-sm:hidden">
+          <span className="absolute left-9 -top-[3px] z-30 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[70px] max-sm:hidden">
             Chats
           </span>
         </div>
@@ -68,7 +68,7 @@ const ResponsiveMenu = () => {
             onClick={() => dispatch(setActiveTab("contacts"))}
           />
           {/* Tooltip */}
-          <span className="absolute left-9 -top-[3px] z-10 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[70px] max-sm:hidden">
+          <span className="absolute left-9 -top-[3px] z-30 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[70px] max-sm:hidden">
             Contacts
           </span>
         </div>
@@ -83,7 +83,7 @@ const ResponsiveMenu = () => {
             onClick={() => dispatch(setActiveTab("calls"))}
           />
           {/* Tooltip */}
-          <span className="absolute left-9 -top-[3px] z-10 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[70px] max-sm:hidden">
+          <span className="absolute left-9 -top-[3px] z-30 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[70px] max-sm:hidden">
             Calls
           </span>
         </div>
@@ -109,7 +109,7 @@ const ResponsiveMenu = () => {
             onClick={() => dispatch(setActiveTab("setting"))}
           />
           {/* Tooltip */}
-          <span className="absolute left-9 -top-[3px] z-10 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[70px] max-sm:hidden">
+          <span className="absolute left-9 -top-[3px] z-30 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[70px] max-sm:hidden">
             Setting
           </span>
         </div>
@@ -121,7 +121,7 @@ const ResponsiveMenu = () => {
             style={{ color: "#aea9fe" }}
           />
           {/* Tooltip */}
-          <span className="absolute left-9 -bottom-[3px] z-10 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[80px] max-sm:hidden">
+          <span className="absolute left-9 -bottom-[3px] z-30 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[80px] max-sm:hidden">
             Dark Mode
           </span>
         </div>
