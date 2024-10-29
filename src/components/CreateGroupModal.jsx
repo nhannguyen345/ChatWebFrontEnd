@@ -12,59 +12,6 @@ import { ImSpinner } from "react-icons/im";
 const STEP_CREATE_GROUP = 1;
 const STEP_ADD_MEMBERS = 2;
 
-// Danh sách bạn bè, có thể được lưu trong store hoặc tải từ API
-const users = [
-  {
-    id: 1,
-    name: "Catherine Richardson",
-    status: "Online",
-    avatar:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-  },
-  {
-    id: 2,
-    name: "Katherine Schneider",
-    status: "Online",
-    avatar:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-  },
-  {
-    id: 3,
-    name: "Brittany K. Williams",
-    status: "Offline",
-    avatar:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-  },
-  {
-    id: 4,
-    name: "Christina Turner",
-    status: "Busy",
-    avatar:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-  },
-  {
-    id: 5,
-    name: "Annie Richardson",
-    status: "Away",
-    avatar:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-  },
-  {
-    id: 6,
-    name: "Christina Turner",
-    status: "Busy",
-    avatar:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-  },
-  {
-    id: 7,
-    name: "Annie Richardson",
-    status: "Away",
-    avatar:
-      "https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg",
-  },
-];
-
 // Create Group Content
 const CreateGroupContent = ({
   groupName,
@@ -136,14 +83,26 @@ const CreateGroupContent = ({
 // Add Group Members Content
 const AddGroupMembersContent = ({
   loading,
-  searchQuery,
-  setSearchQuery,
   selectedMembers,
   toggleMember,
   handlePrevious,
   handleSubmit,
   friends,
 }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const debounceTimeoutRef = useRef();
+
+  const handleDebounceSearch = (e) => {
+    const valueInput = e.target.value;
+
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
+
+    debounceTimeoutRef.current = setTimeout(() => {
+      setSearchQuery(valueInput);
+    }, 500);
+  };
   return (
     <div>
       <div className="p-6">
@@ -152,8 +111,7 @@ const AddGroupMembersContent = ({
             type="text"
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             placeholder="Search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleDebounceSearch}
           />
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <IoIosSearch className="h-5 w-5 text-gray-400" />
@@ -161,25 +119,30 @@ const AddGroupMembersContent = ({
         </div>
 
         <div className=" max-h-64 overflow-y-auto no-scrollbar">
-          {friends.map((user) => (
-            <div key={user.id} className="flex items-center my-4">
-              <img
-                src={user.avatarUrl}
-                alt={user.username}
-                className="w-12 h-12 rounded-full"
-              />
-              <div className="flex-grow pl-3">
-                <p className="font-medium">{user.username}</p>
-                <p className="text-sm text-gray-500">{user.status}</p>
+          {friends
+            .filter((user) => {
+              if (searchQuery === "") return true;
+              return user.username.includes(searchQuery);
+            })
+            .map((user) => (
+              <div key={user.id} className="flex items-center my-4">
+                <img
+                  src={user.avatarUrl}
+                  alt={user.username}
+                  className="w-12 h-12 rounded-full"
+                />
+                <div className="flex-grow pl-3">
+                  <p className="font-medium">{user.username}</p>
+                  <p className="text-sm text-gray-500">{user.status}</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={selectedMembers.includes(user.id)}
+                  onChange={() => toggleMember(user.id)}
+                  className="h-4 w-4 checked:accent-[#665dfe] border-gray-300 rounded"
+                />
               </div>
-              <input
-                type="checkbox"
-                checked={selectedMembers.includes(user.id)}
-                onChange={() => toggleMember(user.id)}
-                className="h-4 w-4 checked:accent-[#665dfe] border-gray-300 rounded"
-              />
-            </div>
-          ))}
+            ))}
         </div>
       </div>
       <div className="relative flex justify-end space-x-2 p-6 border-t">
@@ -218,7 +181,6 @@ const CreateGroupModal = () => {
   const [currentStep, setCurrentStep] = useState(STEP_CREATE_GROUP);
 
   const [groupName, setGroupName] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [file, setFile] = useState(null);
 
@@ -345,8 +307,6 @@ const CreateGroupModal = () => {
         ) : (
           <AddGroupMembersContent
             loading={loading}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
             selectedMembers={selectedMembers}
             toggleMember={toggleMember}
             handlePrevious={handlePrevious}

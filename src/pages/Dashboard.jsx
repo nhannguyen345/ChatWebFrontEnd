@@ -14,6 +14,8 @@ import { fetchMessages } from "../features/message/messageAction";
 import {
   addNewConversation,
   addNewMessageFromOther,
+  deleteConversation,
+  setSelectedConversationId,
   updateIdAndStatusMess,
   updateStatusErrorMess,
 } from "../features/message/messageSlice";
@@ -40,6 +42,9 @@ const Dashboard = () => {
   );
   const { receivingCall, callAccepted } = useSelector((state) => state.call);
   const user = useSelector((state) => state.auth.userInfo);
+  const selectedConversationId = useSelector(
+    (state) => state.message.selectedConversationId
+  );
 
   const stompClient = useStompClient();
   const dispatch = useDispatch();
@@ -83,7 +88,6 @@ const Dashboard = () => {
       subscriptionAddNewNotifRef.current = stompClient.subscribe(
         `/user/${user.info.username}/queue/notification`,
         (message) => {
-          console.log(message);
           const newNotif = JSON.parse(message.body);
           if (newNotif.notificationType === "FRIEND_REQUEST_ACCEPTED") {
             dispatch(addNewNotification(newNotif));
@@ -108,6 +112,11 @@ const Dashboard = () => {
               })
             );
             dispatch(addNewGroups(newNotif.groupMember));
+          } else if (newNotif.notificationType === "UNFRIEND") {
+            dispatch(addNewNotification(newNotif));
+            dispatch(deleteConversation(newNotif.sender.id + "_" + "friend"));
+            if (newNotif.sender.id + "_" + "friend" === selectedConversationId)
+              dispatch(setSelectedConversationId(null));
           } else {
             dispatch(addNewNotification(newNotif));
           }
@@ -169,7 +178,6 @@ const Dashboard = () => {
 
   // Subscribe event chat group
   useEffect(() => {
-    console.log(user?.groupMembers);
     if (stompClient && user?.groupMembers) {
       user?.groupMembers.forEach((group) => {
         subscribeChatGroupsRef.current[group.group.id] = stompClient.subscribe(

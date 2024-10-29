@@ -49,13 +49,15 @@ const ListChat = ({ selectedFilter, searchString }) => {
             key={idx}
             className={
               "py-4 my-3 w-full flex flex-row overflow-hidden justify-evenly border rounded-md shadow-sm transition-all duration-300 ease-in-out hover:bg-gray-100 cursor-pointer " +
-              (selectedConversationId === item.entity.id
+              (selectedConversationId === item.entity.id + "_" + item.type
                 ? "bg-[#665dfe]"
                 : "bg-[#fff]")
             }
             onClick={() => {
               dispatch(setPanelVisibility(true));
-              dispatch(setSelectedConversationId(item.entity.id));
+              dispatch(
+                setSelectedConversationId(item.entity.id + "_" + item.type)
+              );
             }}
           >
             {/* Avatar */}
@@ -81,7 +83,7 @@ const ListChat = ({ selectedFilter, searchString }) => {
                 <h4
                   className={
                     "font-semibold text-base " +
-                    (selectedConversationId === item.entity.id
+                    (selectedConversationId === item.entity.id + "_" + item.type
                       ? "text-[#fff]"
                       : "")
                   }
@@ -93,7 +95,7 @@ const ListChat = ({ selectedFilter, searchString }) => {
                 <span
                   className={
                     "text-sm " +
-                    (selectedConversationId === item.entity.id
+                    (selectedConversationId === item.entity.id + "_" + item.type
                       ? "text-[#fff]"
                       : "text-[#adb5bd]")
                   }
@@ -104,7 +106,7 @@ const ListChat = ({ selectedFilter, searchString }) => {
               <p
                 className={
                   "w-full whitespace-nowrap overflow-hidden overflow-ellipsis text-sm " +
-                  (selectedConversationId === item.entity.id
+                  (selectedConversationId === item.entity.id + "_" + item.type
                     ? "text-[#fff]"
                     : "text-[#adb5bd]")
                 }

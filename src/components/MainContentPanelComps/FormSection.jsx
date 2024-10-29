@@ -28,7 +28,7 @@ const FormSection = ({
         </button>
         <button
           onClick={onSubmit}
-          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#665dfe] hover:bg-[#4237fe] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="inline-flex w-[140px] justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#665dfe] hover:bg-[#4237fe] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {loading ? (
             <ImSpinner className="animate-spin h-[18px] w-[18px]" />

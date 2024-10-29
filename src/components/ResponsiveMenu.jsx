@@ -88,32 +88,6 @@ const ResponsiveMenu = () => {
           </span>
         </div>
 
-        {/* <div className="group relative flex justify-center max-sm:hidden">
-          <MdOutlineBookmarks
-            className="text-[24px] max-sm:text-[22px] cursor-pointer group-hover:fill-white"
-            style={{ color: "#aea9fe" }}
-          /> */}
-        {/* Tooltip */}
-        {/* <span className="absolute left-9 -top-[3px] z-10 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[70px] max-sm:hidden">
-            Bookmark
-          </span>
-        </div> */}
-
-        <div className="group relative flex justify-center max-sm:hidden">
-          <IoSettingsOutline
-            className={
-              "text-[24px] cursor-pointer group-hover:text-white text-[#aea9fe] " +
-              (menu === "setting" ? "text-white" : "")
-            }
-            // style={{ color: "#aea9fe" }}
-            onClick={() => dispatch(setActiveTab("setting"))}
-          />
-          {/* Tooltip */}
-          <span className="absolute left-9 -top-[3px] z-30 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[70px] max-sm:hidden">
-            Setting
-          </span>
-        </div>
-
         <div className="flex-1 max-sm:hidden"></div>
         <div className="group relative flex justify-center">
           <MdOutlineDarkMode

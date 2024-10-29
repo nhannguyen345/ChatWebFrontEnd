@@ -22,8 +22,6 @@ const ChatContent = () => {
   const [inputValue, setInputValue] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
 
-  const [listChat, setListChat] = useState([]);
-
   function SendDataThroughWS(data) {
     stompClient.publish({
       destination: "/app/add-new-message",
@@ -33,14 +31,14 @@ const ChatContent = () => {
 
   function getMessagesFromSelectedConversation() {
     const conve = listMess.filter((conv) => {
-      return conv.entity.id === selectedConversationId;
+      return conv.entity.id + "_" + conv.type === selectedConversationId;
     });
     return conve[0]?.messages;
   }
 
   function getTypeSelectedConversation() {
     return listMess.find((conv) => {
-      return conv.entity.id === selectedConversationId;
+      return conv.entity.id + "_" + conv.type === selectedConversationId;
     })?.type;
   }
 
@@ -56,7 +54,7 @@ const ChatContent = () => {
             tempId,
             user.info.id,
             getTypeSelectedConversation(),
-            selectedConversationId,
+            parseInt(selectedConversationId.split("_")[0]),
             "IMAGE",
             "*IMAGE*",
             url_file
@@ -68,7 +66,7 @@ const ChatContent = () => {
             tempId,
             user.info.id,
             getTypeSelectedConversation(),
-            selectedConversationId,
+            parseInt(selectedConversationId.split("_")[0]),
             "FILE",
             getFileName(file) + "-" + getFileSizeInKB(file),
             url_file
@@ -84,7 +82,7 @@ const ChatContent = () => {
         tempId,
         user.info.id,
         getTypeSelectedConversation(),
-        selectedConversationId,
+        parseInt(selectedConversationId.split("_")[0]),
         "TEXT",
         inputValue,
         ""
@@ -109,10 +107,7 @@ const ChatContent = () => {
         </div>
       )}
       <HeaderOfChatContent />
-      <MessageContainer
-        listChat={getMessagesFromSelectedConversation()}
-        setListChat={setListChat}
-      />
+      <MessageContainer listChat={getMessagesFromSelectedConversation()} />
       <MessageInputBox
         inputValue={inputValue}
         setInputValue={setInputValue}

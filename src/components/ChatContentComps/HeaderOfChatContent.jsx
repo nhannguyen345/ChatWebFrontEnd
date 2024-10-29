@@ -25,7 +25,7 @@ const HeaderOfChatContent = () => {
 
   function getSelectedConversation() {
     const conve = listMess.find((conv) => {
-      return conv.entity.id === selectedConversationId;
+      return conv.entity.id + "_" + conv.type === selectedConversationId;
     });
     return conve;
   }

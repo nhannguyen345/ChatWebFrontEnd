@@ -59,7 +59,6 @@ const messageSlice = createSlice({
               : message
           ),
         };
-        console.log(updatedConversation);
         state.listMess = [
           ...state.listMess.slice(0, conversationIndex),
           updatedConversation,
@@ -68,12 +67,14 @@ const messageSlice = createSlice({
       }
     },
     addNewMessageFromSelf: (state, action) => {
+      console.log(action.payload);
       const conversationIndex = state.listMess.findIndex(
         (conv) =>
-          conv.entity.id === action.payload.receiverId ||
-          conv.entity.id === action.payload.groupId
+          (conv.entity.id === action.payload.receiverId &&
+            !action.payload?.groupId) ||
+          (conv.entity.id === action.payload.groupId &&
+            !action.payload?.receiverId)
       );
-
       if (conversationIndex !== -1) {
         const updatedConversation = {
           ...state.listMess[conversationIndex],
@@ -119,6 +120,18 @@ const messageSlice = createSlice({
         state.listMess = newListMess;
       }
     },
+    deleteConversation: (state, action) => {
+      const selectedConversationIndex = state.listMess.findIndex(
+        (item) => item.entity.id + "_" + item.type === action.payload
+      );
+
+      if (selectedConversationIndex !== -1) {
+        const newListMess = [...state.listMess];
+        newListMess.splice(selectedConversationIndex, 1);
+
+        state.listMess = newListMess;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -128,7 +141,6 @@ const messageSlice = createSlice({
       .addCase(fetchMessages.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.listMess = action.payload;
-        console.log(state.listMess);
       })
       .addCase(fetchMessages.rejected, (state, action) => {
         state.status = "error";
@@ -144,5 +156,6 @@ export const {
   updateIdAndStatusMess,
   addNewMessageFromSelf,
   addNewMessageFromOther,
+  deleteConversation,
 } = messageSlice.actions;
 export default messageSlice.reducer;

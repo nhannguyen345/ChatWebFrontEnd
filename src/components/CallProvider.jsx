@@ -140,6 +140,7 @@ const CallProvider = () => {
   const handleTurnOffPhone = async (startDate) => {
     leaveCall();
     if (startingCall?.userId && callAccepted) {
+      console.log(startingCall?.userId);
       stompClient.publish({
         destination: "/app/call-end",
         body: startingCall.userId,

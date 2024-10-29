@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { FaCheckCircle, FaComment, FaImage, FaUserPlus } from "react-icons/fa";
+import { FaCheckCircle, FaUserMinus, FaUserPlus } from "react-icons/fa";
+import { MdGroupAdd } from "react-icons/md";
 import { ImSpinner } from "react-icons/im";
 import { useDispatch, useSelector } from "react-redux";
 import { useStompClient } from "react-stomp-hooks";
@@ -118,8 +119,10 @@ const NotificationItem = ({ notification, jwt }) => {
             {notification.notificationType === "FRIEND_REQUEST_ACCEPTED" && (
               <FaCheckCircle />
             )}
-            {notification.notificationType === "MESSAGE" && <FaComment />}
-            {notification.notificationType === "profile_update" && <FaImage />}
+            {notification.notificationType === "ADD_NEW_GROUP" && (
+              <MdGroupAdd />
+            )}
+            {notification.notificationType === "UNFRIEND" && <FaUserMinus />}
           </div>
         </div>
 

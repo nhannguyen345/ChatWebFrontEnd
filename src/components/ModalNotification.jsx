@@ -23,6 +23,8 @@ const ModalNotification = () => {
   const [isVisible, setIsVisible] = useState(false); // Quản lý trạng thái hiển thị của modal
   const dispatch = useDispatch();
 
+  const handleClearAll = () => {};
+
   useEffect(() => {
     if (modal) {
       setIsVisible(true); // Bắt đầu hiệu ứng khi modal mở

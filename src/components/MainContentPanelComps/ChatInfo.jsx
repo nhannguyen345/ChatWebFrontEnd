@@ -16,10 +16,10 @@ const ChatInfo = () => {
   const showInfoChat = useSelector((state) => state.showInfoChat);
 
   const selectedConversation = useMemo(() => {
-    return listMess.find((conv) => conv.entity.id === selectedConversationId);
+    return listMess.find(
+      (conv) => conv.entity.id + "_" + conv.type === selectedConversationId
+    );
   }, [selectedConversationId, listMess]);
-
-  console.log(123);
 
   return (
     showInfoChat && (
@@ -31,7 +31,10 @@ const ChatInfo = () => {
         {selectedConversation && (
           <>
             <HeaderOfChatInfo />
-            <ProfileSummary userInfo={selectedConversation.entity} />
+            <ProfileSummary
+              userInfo={selectedConversation.entity}
+              selectedConversationId={selectedConversationId}
+            />
             {selectedConversation.type === "friend" && (
               <UserInformation userInfo={selectedConversation.entity} />
             )}

@@ -7,8 +7,6 @@ const ChatGroupInfo = ({ groupInfo, selectedConversation }) => {
   const jwt = sessionStorage.getItem("auth-tk-webchat");
   const { onlineFriends } = useSelector((state) => state.connectionStatus);
 
-  console.log(selectedConversation);
-
   const { data, loading, error } = useFetchData(
     "http://localhost:8080/group/get-members-group",
     {
