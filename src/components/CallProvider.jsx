@@ -31,6 +31,8 @@ const CallProvider = () => {
   const [myVideoStream, setMyVideoStream] = useState();
   const [userVideoStream, setUserVideoStream] = useState();
 
+  const acceptedCall = useRef(false);
+
   const callTimeOutRef = useRef();
 
   const connectionRef = useRef();
@@ -91,11 +93,9 @@ const CallProvider = () => {
     };
   }, [dispatch, startingCall]);
 
-  // useEffect(() => {
-  //   if (startingCall?.userId) {
-  //     console.log(startingCall?.userId);
-  //   }
-  // }, [startingCall]);
+  useEffect(() => {
+    console.log(callAccepted);
+  }, [callAccepted]);
 
   //* POST DATA TO SERVER
   const postDataToServer = async (
@@ -130,7 +130,8 @@ const CallProvider = () => {
   const handleAnswerCall = async () => {
     try {
       dispatch(setReceivingCall(false));
-      dispatch(setCallAccepted(true));
+      // dispatch(setCallAccepted(true));
+      acceptedCall.current = true;
       await answerCall();
     } catch (error) {
       console.error("Error while answering call:", error);
@@ -139,8 +140,8 @@ const CallProvider = () => {
 
   const handleTurnOffPhone = async (startDate) => {
     leaveCall();
-    if (startingCall?.userId && callAccepted) {
-      console.log(startingCall?.userId);
+    console.log(startingCall?.userId + " - " + acceptedCall.current);
+    if (startingCall?.userId && acceptedCall.current) {
       stompClient.publish({
         destination: "/app/call-end",
         body: startingCall.userId,
@@ -151,18 +152,20 @@ const CallProvider = () => {
         startDate.toISOString(),
         new Date().toISOString()
       );
-    } else if (callAccepted && !isCaller) {
+    } else if (acceptedCall && !isCaller) {
       stompClient.publish({
         destination: "/app/call-end",
         body: call.fromUsername,
       });
     }
+    acceptedCall.current = false;
     dispatch(resetCallState());
     setTimeout(() => dispatch(fetchCalls()), 1500);
   };
 
   //* this function use for cancel call if other user doesn't answer
   const handleTimeOut = async (currentStream) => {
+    console.log("timeout call");
     if (currentStream) {
       toast.info("Receiver doesn't answer!", {
         autoClose: 3000,
@@ -214,7 +217,9 @@ const CallProvider = () => {
       `/user/${user.info.username}/queue/accept-call`,
       (message) => {
         clearTimeout(callTimeOutRef.current);
-        dispatch(setCallAccepted(true));
+        // dispatch(setCallAccepted(true));
+        acceptedCall.current = true;
+        console.log(acceptedCall.current);
         dispatch(setCall(JSON.parse(message.body)));
         peer.signal(JSON.parse(message.body).signalData);
       }
@@ -272,11 +277,11 @@ const CallProvider = () => {
   };
   return (
     <div>
-      {(startingCall?.userId || (callAccepted && !isCaller)) && (
+      {(startingCall?.userId || (acceptedCall.current && !isCaller)) && (
         <VideoCallInterface
           myVideoStream={myVideoStream}
           userVideoStream={userVideoStream}
-          callAccepted={callAccepted}
+          callAccepted={acceptedCall.current}
           callEnded={callEnded}
           call={call}
           handleTurnOffPhone={handleTurnOffPhone}

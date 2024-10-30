@@ -80,7 +80,12 @@ const NotificationItem = ({ notification, jwt }) => {
       return (
         <div className="w-full flex justify-center items-center gap-4 mt-2">
           <button
-            className="h-[36px] align-middle text-[#ff337c] bg-white border border-[#ff337c] hover:bg-[#ff337c] hover:text-white px-3 py-1 rounded"
+            className={
+              "h-[36px] align-middle bg-white border px-3 py-1 rounded " +
+              (notification?.disable
+                ? "border-gray-500 text-gray-500"
+                : "text-[#ff337c] border-[#ff337c] hover:bg-[#ff337c] hover:text-white")
+            }
             disabled={notification.disable}
             onClick={handleClickRejectButton}
           >
@@ -91,7 +96,12 @@ const NotificationItem = ({ notification, jwt }) => {
             )}
           </button>
           <button
-            className="h-[36px] bg-[#665dfe] text-white hover:bg-[#4237fe] px-3 py-1 rounded"
+            className={
+              "h-[36px] text-white  px-3 py-1 rounded " +
+              (notification?.disable
+                ? "bg-gray-500"
+                : "bg-[#665dfe] hover:bg-[#4237fe]")
+            }
             disabled={notification.disable}
             onClick={handleClickAcceptButton}
           >

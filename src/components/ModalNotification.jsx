@@ -7,7 +7,11 @@ import { ImSpinner } from "react-icons/im";
 import NotificationItem from "./NotificationItem";
 import { fetchNotifications } from "../features/notification/notificationAction";
 import axios from "axios";
-import { markAllAsRead } from "../features/notification/notificationSlice";
+import {
+  markAllAsRead,
+  removeAllNotification,
+} from "../features/notification/notificationSlice";
+import { toast, ToastContainer } from "react-toastify";
 
 const ModalNotification = () => {
   const jwt = sessionStorage.getItem("auth-tk-webchat");
@@ -23,7 +27,22 @@ const ModalNotification = () => {
   const [isVisible, setIsVisible] = useState(false); // Quản lý trạng thái hiển thị của modal
   const dispatch = useDispatch();
 
-  const handleClearAll = () => {};
+  const handleClearAll = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:8080/notification/delete-all-notifications`,
+        {
+          headers: { Authorization: `Bearer ${jwt}` },
+        }
+      );
+      dispatch(removeAllNotification());
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.response ? err.response.data : err.message, {
+        containerId: "notification-toast",
+      });
+    }
+  };
 
   useEffect(() => {
     if (modal) {
@@ -53,6 +72,8 @@ const ModalNotification = () => {
         className="fixed inset-0 bg-black opacity-50"
         onClick={() => dispatch(closeNotificationModal())}
       ></div>
+
+      <ToastContainer containerId="notification-toast" position="top-center" />
 
       {/* Modal Notification */}
       <div
@@ -87,7 +108,12 @@ const ModalNotification = () => {
 
         {/* Footer Modal */}
         <div className="w-full p-4 text-center">
-          <p className="text-[#adb5bd] hover:cursor-pointer">Clear all</p>
+          <p
+            onClick={handleClearAll}
+            className="text-[#adb5bd] hover:cursor-pointer"
+          >
+            Clear all
+          </p>
         </div>
       </div>
     </div>

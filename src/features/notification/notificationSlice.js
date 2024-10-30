@@ -23,6 +23,9 @@ const notificationSlice = createSlice({
         (notif) => notif.id !== action.payload
       );
     },
+    removeAllNotification: (state) => {
+      state.notifications = [];
+    },
     disableActionNotification: (state, action) => {
       state.notifications = state.notifications.map((notif) => {
         if (notif.id === action.payload) {
@@ -56,6 +59,7 @@ export const {
   markAllAsRead,
   addNewNotification,
   removeNotification,
+  removeAllNotification,
   disableActionNotification,
 } = notificationSlice.actions;
 export default notificationSlice.reducer;

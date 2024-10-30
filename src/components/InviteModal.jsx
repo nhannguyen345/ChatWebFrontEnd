@@ -7,7 +7,9 @@ import { toast, ToastContainer } from "react-toastify";
 
 const InviteModal = () => {
   const [isVisible, setIsVisible] = useState(false); // Quản lý trạng thái hiển thị của modal
+
   const modal = useSelector((state) => state.modal.isInviteModalOpen);
+  const { listMess } = useSelector((state) => state.message);
   const user =
     useSelector((state) => state.auth.userInfo) ||
     JSON.parse(localStorage.getItem("user-info"));
@@ -18,6 +20,10 @@ const InviteModal = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (listMess.find((conve) => conve.entity.email === email)) {
+      toast.info("You have befriended this user.");
+      return;
+    }
     stompClient.publish({
       destination: "/app/create-friend-request",
       body: JSON.stringify({

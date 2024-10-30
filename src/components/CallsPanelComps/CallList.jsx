@@ -5,7 +5,6 @@ import { ImSpinner } from "react-icons/im";
 
 const CallList = ({ searchString, callData, loading, error }) => {
   const user = useSelector((state) => state.auth.userInfo);
-  console.log(callData);
   return (
     <div className="flex-grow py-3 px-4 overflow-y-scroll no-scrollbar">
       {loading && (

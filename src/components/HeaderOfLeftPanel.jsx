@@ -119,7 +119,10 @@ const HeaderOfLeftPanel = ({
     }
     if (menu === "contacts") {
       return (
-        <button className="p-[4px] -mt-2 rounded-full bg-[#665dfe] text-white hover:bg-[#4237fe]">
+        <button
+          onClick={() => dispatch(openInviteModal())}
+          className="p-[4px] -mt-2 rounded-full bg-[#665dfe] text-white hover:bg-[#4237fe]"
+        >
           <GoPlus className="text-[14px]" />
         </button>
       );

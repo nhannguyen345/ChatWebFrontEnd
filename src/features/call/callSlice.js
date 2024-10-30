@@ -43,6 +43,7 @@ const callSlice = createSlice({
       state.callAccepted = false;
       state.callEnded = false;
       state.receivingCall = false;
+      console.log("call-reset");
     },
   },
 });
