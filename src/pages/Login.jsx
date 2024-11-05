@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import BackgroundImage from "../assets/6764486_3433814.jpg";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,7 +17,13 @@ const Login = () => {
   );
   const dispatch = useDispatch();
 
+  const [checked, setChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const toggleCheckBox = () => {
+    setChecked(!checked);
+  };
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -25,6 +31,7 @@ const Login = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
     reset,
   } = useForm({
@@ -36,8 +43,22 @@ const Login = () => {
   const onSubmitHandler = (data) => {
     console.log({ data });
     dispatch(userLogin(data));
+    localStorage.setItem("remember", checked);
+    if (checked) {
+      localStorage.setItem("email", data.email);
+      localStorage.setItem("password", data.password);
+    }
     reset();
   };
+
+  useEffect(() => {
+    const isRemember = localStorage.getItem("remember");
+    if (isRemember === "true") {
+      setChecked(true);
+      setValue("email", localStorage.getItem("email"));
+      setValue("password", localStorage.getItem("password"));
+    }
+  }, [setValue]);
 
   useEffect(() => {
     if (success) {
@@ -62,7 +83,7 @@ const Login = () => {
         We are Different, We Make You Different.
       </p>
 
-      {/* Biểu mẫu */}
+      {/* Form */}
       <form
         className="mb-6 min-w-[360px] text-[14px] text-[#495057]"
         onSubmit={handleSubmit(onSubmitHandler)}
@@ -106,6 +127,8 @@ const Login = () => {
         <div className="w-full flex justify-between items-center mt-4">
           <label className="flex items-center">
             <input
+              onChange={toggleCheckBox}
+              checked={checked}
               type="checkbox"
               className="outline-none w-[16px] h-[20px] checked:accent-[#665dfe]"
             />
@@ -122,7 +145,10 @@ const Login = () => {
           </Link>
         </div>
 
-        <button className="w-full flex justify-center items-center text-[14px] text-[#fff] bg-[#665dfe] hover:bg-[#4237fe] leading-[1.5] font-semibold py-[14px] px-9 mt-4 outline-none rounded">
+        <button
+          disabled={loading}
+          className="w-full flex justify-center items-center text-[14px] text-[#fff] bg-[#665dfe] hover:bg-[#4237fe] leading-[1.5] font-semibold py-[14px] px-9 mt-4 outline-none rounded"
+        >
           {loading ? (
             <ImSpinner className="animate-spin h-[18px] w-[18px]" />
           ) : (

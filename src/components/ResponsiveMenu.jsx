@@ -103,7 +103,7 @@ const ResponsiveMenu = () => {
         <div className="relative">
           <img
             ref={avatarRef}
-            className="w-[38px] rounded-full max-sm:w-[34px]"
+            className="w-[38px] h-[38px] rounded-full object-cover max-sm:w-[34px]"
             src={user?.info?.avatarUrl}
             alt=""
             onClick={() => {

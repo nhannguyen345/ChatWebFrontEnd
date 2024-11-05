@@ -1,10 +1,63 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { ImSpinner } from "react-icons/im";
+import { useDispatch } from "react-redux";
+import useClickOutside from "../../hooks/useClickOutside";
+import { TbLoader2 } from "react-icons/tb";
+import { toast, ToastContainer } from "react-toastify";
+import {
+  deleteConversation,
+  setSelectedConversationId,
+} from "../../features/message/messageSlice";
 
 const ContactList = ({ searchString, contacts, loading, error }) => {
+  const dispatch = useDispatch();
+  const jwt = sessionStorage.getItem("auth-tk-webchat");
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [loadingUnfriend, setLoadingUnfriend] = useState(false);
+
+  const menuRef = useRef(null);
+  const otherRef = useRef(null);
+
+  useClickOutside([menuRef, otherRef], closeMenu);
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleClick = async (contact) => {
+    const url_api = `/friend/unfriend/${contact.id}`;
+
+    try {
+      setLoadingUnfriend(true);
+      await axios.delete("http://localhost:8080" + url_api, {
+        headers: { Authorization: `Bearer ${jwt}` },
+      });
+      toast.success("Unfriend successfully!", {
+        containerId: "unfriend-toast",
+      });
+
+      setLoadingUnfriend(false);
+      setTimeout(() => {
+        dispatch(deleteConversation(contact.id + "_friend"));
+        dispatch(setSelectedConversationId(null));
+      }, 1500);
+    } catch (err) {
+      setLoadingUnfriend(false);
+      toast.error(err?.response ? err.response.data : err.message, {
+        containerId: "unfriend-toast",
+      });
+    }
+  };
+
   return (
     <div className="flex-grow divide-gray-200 overflow-y-scroll no-scrollbar">
+      <ToastContainer containerId="unfriend-toast" position="top-center" />
       {loading && (
         <div className="flex w-full h-full justify-center items-center">
           <ImSpinner className="animate-spin h-[36px] w-[36px]" />
@@ -38,8 +91,31 @@ const ContactList = ({ searchString, contacts, loading, error }) => {
                     {contact.username}
                   </span>
                 </div>
-                <button className="text-gray-400 hover:text-gray-500">
-                  <BsThreeDotsVertical className="text-[20px]" />
+                <button
+                  onClick={toggleMenu}
+                  ref={otherRef}
+                  className="relative text-gray-400 hover:text-gray-500"
+                >
+                  {loadingUnfriend ? (
+                    <TbLoader2 className="h-[26px] w-[26px] animate-spin" />
+                  ) : (
+                    <BsThreeDotsVertical className="text-[20px]" />
+                  )}
+                  {isMenuOpen && (
+                    <div
+                      ref={menuRef}
+                      className="absolute top-1 right-0 mt-1 w-[140px] bg-white border shadow-lg rounded-lg z-10"
+                    >
+                      <ul className="py-1 text-[14px] text-[#495057cc]">
+                        <li
+                          className="relative px-2 py-2 hover:bg-gray-100 hover:text-[#3d4349] cursor-pointer"
+                          onClick={() => handleClick(contact)}
+                        >
+                          Unfriend
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </button>
               </div>
             </React.Fragment>

@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ResetPassword from "./pages/ResetPassword";
 import NoPage from "./pages/NoPage";
 import WebSocketProvider from "./components/WebSocketProvider";
+import ChangePassword from "./pages/ChangePassword";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           />
         </Route>
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/change-password" element={<ChangePassword />} />
         <Route path="*" element={<NoPage />} />
       </Routes>
     </BrowserRouter>

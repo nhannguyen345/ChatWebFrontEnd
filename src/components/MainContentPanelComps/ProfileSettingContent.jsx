@@ -70,7 +70,7 @@ const ProfileSettingContent = () => {
         phone: accountData.mobileNumber,
         address: accountData.address,
       };
-      const response = await axios.post(
+      const response = await axios.put(
         "http://localhost:8080/auth/update-personal-info",
         {
           userId: user.info.id,
@@ -111,7 +111,7 @@ const ProfileSettingContent = () => {
           instaLink: socialData.instagram,
           twitterLink: socialData.twitter,
         };
-        const response = await axios.post(
+        const response = await axios.put(
           "http://localhost:8080/auth/update-social-info",
           {
             userId: user.info.id,
@@ -152,8 +152,15 @@ const ProfileSettingContent = () => {
           throw new Error(
             "New password field doesn't match with repeat password field!"
           );
+        } else if (
+          passwordData.newPassword.length < 6 ||
+          passwordData.newPassword.length > 32
+        ) {
+          throw new Error(
+            "Password must be at least 6 characters and max length is 32 characters!"
+          );
         }
-        const response = await axios.post(
+        const response = await axios.put(
           "http://localhost:8080/auth/update-password",
           {
             userId: user.info.id,
@@ -175,7 +182,6 @@ const ProfileSettingContent = () => {
           });
         }
       } catch (e) {
-        console.log(e);
         showNotification(e?.response?.data || e.message, "error");
       } finally {
         setPasswordFormLoading(false);
