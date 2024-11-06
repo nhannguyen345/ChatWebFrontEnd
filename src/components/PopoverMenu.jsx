@@ -18,11 +18,9 @@ const PopoverMenu = ({ closeMenu, avatarRef }) => {
   useClickOutside([avatarRef, menuRef], closeMenu);
 
   const handleLogOut = () => {
-    localStorage.removeItem("auth-tk-webchat");
+    sessionStorage.removeItem("auth-tk-webchat");
+    navigate("/login");
     dispatch(clearUserInfo());
-    setTimeout(() => {
-      navigate("/login");
-    }, 500);
     stompClient?.deactivate;
   };
 

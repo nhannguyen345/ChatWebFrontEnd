@@ -7,16 +7,30 @@ import { PiPhoneCallBold } from "react-icons/pi";
 import { MdOutlineBookmarks } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineDarkMode } from "react-icons/md";
+import { MdOutlineLogout } from "react-icons/md";
 import PopoverMenu from "./PopoverMenu";
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveTab } from "../features/menu/menuSlice";
+import { useNavigate } from "react-router-dom";
+import { useStompClient } from "react-stomp-hooks";
+import { clearUserInfo } from "../features/auth/authSlice";
 const ResponsiveMenu = () => {
+  const navigate = useNavigate();
+  const stompClient = useStompClient();
   const dispatch = useDispatch();
   const menu = useSelector((state) => state.menu.activeTab);
   const user = useSelector((state) => state.auth.userInfo);
   const [isMenuOpen, setIsMenuOpen] = useState(false); // state để thực hiện đóng mở menu popover khi click vào avatar
   const avatarRef = useRef(null); // Tạo ref cho avatar, mục đích để giải quyết vấn đề khi click vào bên ngoài menu cụ thể là avatar để đóng menu
+
+  const handleLogOut = () => {
+    sessionStorage.removeItem("auth-tk-webchat");
+    navigate("/login");
+    dispatch(clearUserInfo());
+    stompClient?.deactivate;
+  };
+
   return (
     <div
       className="h-screen w-[90px] bg-[#665dfe] flex flex-col gap-11 items-center justify-center py-4
@@ -90,13 +104,14 @@ const ResponsiveMenu = () => {
 
         <div className="flex-1 max-sm:hidden"></div>
         <div className="group relative flex justify-center">
-          <MdOutlineDarkMode
+          <MdOutlineLogout
+            onClick={handleLogOut}
             className="mt-[40px] text-[26px] max-sm:mt-0 max-sm:text-[22px] group-hover:fill-white cursor-pointer"
             style={{ color: "#aea9fe" }}
           />
           {/* Tooltip */}
           <span className="absolute left-9 -bottom-[3px] z-30 scale-0 rounded bg-gray-900 bg-opacity-95 p-2 text-xs text-center text-white font-semibold group-hover:scale-100 group-hover:min-w-[80px] max-sm:hidden">
-            Dark Mode
+            Log out
           </span>
         </div>
 
