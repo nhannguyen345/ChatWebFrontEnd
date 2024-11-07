@@ -3,16 +3,21 @@ import { createSlice } from "@reduxjs/toolkit";
 // Tạo mới slice
 export const panelVisibilitySlice = createSlice({
   name: "panelVisibility",
-  initialState: false,
+  initialState: {
+    activeProfileMainPanel: false,
+    activeChatsMainPanel: false,
+  },
   reducers: {
-    setPanelVisibility: (state, action) => {
-      return action.payload;
+    setProfileMainPanelVisibility: (state, action) => {
+      state.activeProfileMainPanel = action.payload;
+    },
+    setChatsMainPanelVisibility: (state, action) => {
+      state.activeChatsMainPanel = action.payload;
     },
   },
 });
 
-// Tạo mới dispatch
-export const { setPanelVisibility } = panelVisibilitySlice.actions;
+export const { setProfileMainPanelVisibility, setChatsMainPanelVisibility } =
+  panelVisibilitySlice.actions;
 
-// xuất configureStore
 export default panelVisibilitySlice.reducer;

@@ -24,7 +24,7 @@ const Avatar = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.userInfo);
 
-  const { postToCloudinary, uploading, error } = useCloudinaryUpload();
+  const { postToCloudinary, error } = useCloudinaryUpload();
 
   const closeMenu = () => {
     setIsMenuOpen(false);
@@ -129,6 +129,12 @@ const Avatar = () => {
                   onChange={handleFileChange}
                 />
                 Change Avatar
+              </li>
+              <li
+                className="relative md:hidden px-2 py-2 hover:bg-gray-100 hover:text-[#3d4349] cursor-pointer"
+                onClick={null}
+              >
+                Update your info
               </li>
             </ul>
           </div>

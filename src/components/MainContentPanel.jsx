@@ -15,10 +15,10 @@ const MainContentPanel = () => {
   return (
     <div
       className={
-        "inline-block w-full h-screen max-sm:w-full " +
-        (panelVisibility
-          ? "max-sm:z-10 max-sm:animate-slide-left"
-          : "max-sm:z-10 max-sm:animate-slide-right max-sm:absolute")
+        "inline-block w-full h-screen max-sm:hidden"
+        // (panelVisibility
+        //   ? "max-sm:w-full max-sm:z-10 max-sm:animate-slide-left"
+        //   : "max-sm:w-full max-sm:z-10 max-sm:animate-slide-right max-sm:absolute")
       }
     >
       {menu !== "profile" &&
@@ -30,12 +30,6 @@ const MainContentPanel = () => {
         ) : (
           <WelcomeChatContent />
         ))}
-      {/* {menu !== "profile" && (
-        <div className={"flex"}>
-          <ChatContent />
-          <ChatInfo />
-        </div>
-      )} */}
       {menu === "profile" && <ProfileSettingContent />}
     </div>
   );
