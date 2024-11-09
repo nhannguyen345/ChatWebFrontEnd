@@ -15,6 +15,7 @@ import { setActiveTab } from "../features/menu/menuSlice";
 import { useNavigate } from "react-router-dom";
 import { useStompClient } from "react-stomp-hooks";
 import { clearUserInfo } from "../features/auth/authSlice";
+import { logout } from "../features/auth/authAction";
 const ResponsiveMenu = () => {
   const navigate = useNavigate();
   const stompClient = useStompClient();
@@ -27,7 +28,7 @@ const ResponsiveMenu = () => {
   const handleLogOut = () => {
     sessionStorage.removeItem("auth-tk-webchat");
     navigate("/login");
-    dispatch(clearUserInfo());
+    dispatch(logout());
     stompClient?.deactivate;
   };
 
@@ -87,7 +88,7 @@ const ResponsiveMenu = () => {
           </span>
         </div>
 
-        <div className="group relative flex justify-center max-sm:hidden">
+        <div className="group relative flex justify-center">
           <PiPhoneCallBold
             className={
               "text-[24px] max-sm:text-[22px] cursor-pointer group-hover:fill-white " +
@@ -103,7 +104,7 @@ const ResponsiveMenu = () => {
         </div>
 
         <div className="flex-1 max-sm:hidden"></div>
-        <div className="group relative flex justify-center">
+        <div className="group relative flex justify-center max-sm:hidden">
           <MdOutlineLogout
             onClick={handleLogOut}
             className="mt-[40px] text-[26px] max-sm:mt-0 max-sm:text-[22px] group-hover:fill-white cursor-pointer"
@@ -118,7 +119,7 @@ const ResponsiveMenu = () => {
         <div className="relative">
           <img
             ref={avatarRef}
-            className="w-[38px] h-[38px] rounded-full object-cover max-sm:w-[34px]"
+            className="w-[38px] h-[38px] rounded-full object-cover max-sm:w-[34px] max-sm:h-[34px]"
             src={user?.info?.avatarUrl}
             alt=""
             onClick={() => {

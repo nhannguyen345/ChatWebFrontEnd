@@ -8,6 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserInfo } from "../../features/auth/authSlice";
+import { setProfileMainPanelVisibility } from "../../features/panelVisibility/panelVisibilitySlice";
 
 const Avatar = () => {
   const jwt = sessionStorage.getItem("auth-tk-webchat");
@@ -132,7 +133,7 @@ const Avatar = () => {
               </li>
               <li
                 className="relative md:hidden px-2 py-2 hover:bg-gray-100 hover:text-[#3d4349] cursor-pointer"
-                onClick={null}
+                onClick={() => dispatch(setProfileMainPanelVisibility(true))}
               >
                 Update your info
               </li>

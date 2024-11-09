@@ -19,8 +19,8 @@ const ResponsiveChatsPanel = () => {
       <div
         className={`w-full h-full ${
           selectedConversationId && chatPanelStatus
-            ? "animate-slide-left"
-            : "animate-hidden-page"
+            ? "max-sm:animate-hidden-page max-sm:absolute"
+            : ""
         } sm:animate-none`}
       >
         <ChatsPanel />
@@ -30,8 +30,10 @@ const ResponsiveChatsPanel = () => {
       {selectedConversationId && (
         <div
           className={`flex flex-1 h-full ${
-            chatPanelStatus ? "animate-slide-right" : "animate-slide-left"
-          } sm:flex`}
+            chatPanelStatus
+              ? "max-sm:animate-slide-left"
+              : "max-sm:animate-slide-right"
+          } sm:hidden`}
         >
           <ChatContent />
           <ChatInfo />

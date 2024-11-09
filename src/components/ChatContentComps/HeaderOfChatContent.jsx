@@ -7,10 +7,11 @@ import {
 } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
-import { setPanelVisibility } from "../../features/panelVisibility/panelVisibilitySlice";
+// import { setPanelVisibility } from "../../features/panelVisibility/panelVisibilitySlice";
 import { setShowInfoChat } from "../../features/showInfoChat/showInfoChatSlice";
 import useClickOutside from "../../hooks/useClickOutside";
 import { setIsCaller, setStartingCall } from "../../features/call/callSlice";
+import { setChatsMainPanelVisibility } from "../../features/panelVisibility/panelVisibilitySlice";
 const HeaderOfChatContent = () => {
   const { selectedConversationId, listMess } = useSelector(
     (state) => state.message
@@ -46,7 +47,7 @@ const HeaderOfChatContent = () => {
     <div className="h-[70px] w-full border-b flex items-center pl-8">
       {/* Back */}
       <IoMdArrowBack
-        onClick={() => dispatch(setPanelVisibility(false))}
+        onClick={() => dispatch(setChatsMainPanelVisibility(false))}
         className="h-[28px] w-[34px] text-[#adb5bd] hover:text-[#495057] mr-2 sm:block md:hidden"
       />
       {/* Avatar */}
@@ -65,7 +66,7 @@ const HeaderOfChatContent = () => {
         </h4>
         <span
           onClick={() => dispatch(setShowInfoChat(true))}
-          className="col-span-2 text-sm text-[#adb5bd] cursor-pointer hover:text-[#665dfe] max-sm:text-[11px]"
+          className="col-span-2 text-sm text-[#adb5bd] cursor-pointer hover:text-[#665dfe] max-sm:hidden"
         >
           Click here for more information
         </span>
@@ -107,7 +108,10 @@ const HeaderOfChatContent = () => {
               className="absolute right-0 mt-2 w-[140px] bg-white border shadow-lg rounded-lg z-10"
             >
               <ul className="py-2 text-[14px] text-[#495057cc]">
-                <li className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 hover:text-[#3d4349] group cursor-pointer">
+                <li
+                  onClick={() => dispatch(setShowInfoChat(true))}
+                  className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 hover:text-[#3d4349] group cursor-pointer"
+                >
                   <IoIosInformationCircleOutline className="h-[20px] w-[20px] text-[#adb5bd] group-hover:text-[#3d4349]" />
                   View Info
                 </li>

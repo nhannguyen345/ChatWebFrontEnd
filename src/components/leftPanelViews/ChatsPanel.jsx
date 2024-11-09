@@ -24,7 +24,7 @@ const ChatsPanel = () => {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col">
+    <div className="w-full h-screen flex flex-col max-sm:h-[calc(100vh-64px)]">
       <HeaderOfLeftPanel
         selectedFilter={selectedFilter}
         setSelectedFilter={setSelectedFilter}

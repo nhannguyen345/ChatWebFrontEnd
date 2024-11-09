@@ -1,7 +1,11 @@
 import React from "react";
 
 const InputField = ({ label, value, onChange, type = "text" }) => (
-  <div className={"mb-2 " + (label === "Address" ? "col-span-2" : "")}>
+  <div
+    className={
+      "mb-2 max-sm:col-span-2 " + (label === "Address" ? "col-span-2" : "")
+    }
+  >
     <label className="block text-[15px] leading-[1.5] text-[#495057] mb-[6px]">
       {label}
     </label>

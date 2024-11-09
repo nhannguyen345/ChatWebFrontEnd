@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
-import { setPanelVisibility } from "../../features/panelVisibility/panelVisibilitySlice";
+// import { setPanelVisibility } from "../../features/panelVisibility/panelVisibilitySlice";
 import { formatDistanceToNow } from "date-fns";
 import { ImSpinner } from "react-icons/im";
 import { setSelectedConversationId } from "../../features/message/messageSlice";
+import { setChatsMainPanelVisibility } from "../../features/panelVisibility/panelVisibilitySlice";
 
 const ListChat = ({ selectedFilter, searchString }) => {
   const dispatch = useDispatch();
@@ -54,7 +55,7 @@ const ListChat = ({ selectedFilter, searchString }) => {
                 : "bg-[#fff]")
             }
             onClick={() => {
-              dispatch(setPanelVisibility(true));
+              dispatch(setChatsMainPanelVisibility(true));
               dispatch(
                 setSelectedConversationId(item.entity.id + "_" + item.type)
               );

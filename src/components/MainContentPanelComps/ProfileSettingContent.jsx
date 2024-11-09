@@ -195,7 +195,7 @@ const ProfileSettingContent = () => {
   };
 
   return (
-    <div className="flex flex-col w-full h-screen">
+    <div className="flex flex-col w-full h-screen max-sm:h-[calc(100vh-64px)]">
       <ToastContainer containerId={"form-submit"} position="top-center" />
       <HeaderOfProfileSetting />
       <div className="px-4 overflow-y-scroll no-scrollbar">

@@ -20,11 +20,11 @@ const ContactList = ({ searchString, contacts, loading, error }) => {
   const menuRef = useRef(null);
   const otherRef = useRef(null);
 
-  useClickOutside([menuRef, otherRef], closeMenu);
-
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
+
+  useClickOutside([menuRef, otherRef], closeMenu);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);

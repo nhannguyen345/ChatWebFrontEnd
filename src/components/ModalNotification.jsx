@@ -77,12 +77,12 @@ const ModalNotification = () => {
 
       {/* Modal Notification */}
       <div
-        className={`bg-white flex flex-col max-h-[520px] sm:max-w-[240px] md:max-w-[400px] rounded-lg z-10 transition-opacity duration-500 ${
+        className={`bg-white flex flex-col max-h-[520px] sm:min-w-[240px] md:max-w-[400px] rounded-lg z-10 transition-opacity duration-500 ${
           isVisible ? "opacity-100" : "opacity-0"
         }`}
       >
         {/* Header Modal */}
-        <div className="p-4 flex items-center text-[#495057] border-b">
+        <div className="p-4 flex items-center justify-between text-[#495057] border-b">
           <h5 className="text-[17px] font-medium">Notifications</h5>
           <IoMdClose
             className="h-[22px] w-[22px] md:ml-[250px] sm:ml-[180px] text-[#adb5bd] cursor-pointer hover:text-black"

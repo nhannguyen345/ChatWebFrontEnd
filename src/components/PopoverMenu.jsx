@@ -8,6 +8,8 @@ import { useDispatch } from "react-redux";
 import { clearUserInfo } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useStompClient } from "react-stomp-hooks";
+import { setActiveTab } from "../features/menu/menuSlice";
+import { logout } from "../features/auth/authAction";
 
 const PopoverMenu = ({ closeMenu, avatarRef }) => {
   const menuRef = useRef(null);
@@ -20,7 +22,7 @@ const PopoverMenu = ({ closeMenu, avatarRef }) => {
   const handleLogOut = () => {
     sessionStorage.removeItem("auth-tk-webchat");
     navigate("/login");
-    dispatch(clearUserInfo());
+    dispatch(logout());
     stompClient?.deactivate;
   };
 
@@ -30,6 +32,10 @@ const PopoverMenu = ({ closeMenu, avatarRef }) => {
       className="absolute -top-44 -left-2 z-20 w-[190px] h-fit flex flex-col py-3 bg-white rounded-md shadow-[0_15px_90px_5px_rgba(0,0,0,0.3)] max-sm:left-auto max-sm:right-0 max-sm:-top-40"
     >
       <a
+        onClick={() => {
+          dispatch(setActiveTab("profile"));
+          closeMenu();
+        }}
         className="px-5 py-1 flex flex-row justify-between items-center text-[#495057] text-[15px] max-sm:text-[14px]"
         href="#"
       >

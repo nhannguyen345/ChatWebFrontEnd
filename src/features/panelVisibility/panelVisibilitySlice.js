@@ -14,6 +14,10 @@ export const panelVisibilitySlice = createSlice({
     setChatsMainPanelVisibility: (state, action) => {
       state.activeChatsMainPanel = action.payload;
     },
+    resetStatePanelVisibility: (state, action) => {
+      state.activeChatsMainPanel = false;
+      state.activeProfileMainPanel = false;
+    },
   },
 });
 

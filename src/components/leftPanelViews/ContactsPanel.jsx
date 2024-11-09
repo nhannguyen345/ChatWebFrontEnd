@@ -29,7 +29,7 @@ const ContactsPanel = () => {
   };
 
   return (
-    <div className="max-w-md w-full flex flex-col bg-white shadow-lg rounded-lg">
+    <div className="max-w-md max-sm:h-[calc(100vh-64px)] w-full flex flex-col bg-white shadow-lg rounded-lg">
       <HeaderOfLeftPanel handleDebounceSearch={handleDebounceSearch} />
       <ContactList
         searchString={searchString}

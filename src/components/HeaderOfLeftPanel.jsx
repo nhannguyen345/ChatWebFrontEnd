@@ -137,7 +137,7 @@ const HeaderOfLeftPanel = ({
         <h4 className="text-[18px] leading-[1.2] font-semibold text-[#495057]">
           {getTitle()}
         </h4>
-        <ul className="flex flex-row justify-around items-center gap-4 mr-2">
+        <ul className="flex flex-row justify-around items-center gap-4 mr-2 max-sm:mr-0">
           <li>
             {(menu === "chats" || menu === "contacts" || menu === "calls") && (
               <NotificationIcon />

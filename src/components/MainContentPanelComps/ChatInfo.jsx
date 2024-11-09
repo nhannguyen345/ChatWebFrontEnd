@@ -25,7 +25,7 @@ const ChatInfo = () => {
     showInfoChat && (
       <div
         className={
-          "min-w-[400px] max-sm:w-full max-sm:h-[calc(100vh-64px)] h-screen bg-white border-l overflow-y-scroll no-scrollbar "
+          "min-w-[375px] max-sm:w-full max-sm:h-[calc(100vh-64px)] h-screen bg-white border-l overflow-y-scroll no-scrollbar "
         }
       >
         {selectedConversation && (
