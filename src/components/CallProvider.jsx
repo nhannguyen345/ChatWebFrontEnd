@@ -199,27 +199,27 @@ const CallProvider = () => {
       config: {
         iceServers: [
           {
-            urls: "stun:something.meteredstun.ca:89032",
+            urls: "stun:stun.relay.metered.ca:80",
           },
           {
             urls: "turn:global.relay.metered.ca:80",
-            username: "f6507426c0f4f89d0bda02e2",
-            credential: "7YF0907XexAfvkbL",
+            username: "38d4fe86a8ea47fb875e0f3c",
+            credential: "LcUaXCmTSm2cob7H",
           },
           {
             urls: "turn:global.relay.metered.ca:80?transport=tcp",
-            username: "f6507426c0f4f89d0bda02e2",
-            credential: "7YF0907XexAfvkbL",
+            username: "38d4fe86a8ea47fb875e0f3c",
+            credential: "LcUaXCmTSm2cob7H",
           },
           {
             urls: "turn:global.relay.metered.ca:443",
-            username: "f6507426c0f4f89d0bda02e2",
-            credential: "7YF0907XexAfvkbL",
+            username: "38d4fe86a8ea47fb875e0f3c",
+            credential: "LcUaXCmTSm2cob7H",
           },
           {
             urls: "turns:global.relay.metered.ca:443?transport=tcp",
-            username: "f6507426c0f4f89d0bda02e2",
-            credential: "7YF0907XexAfvkbL",
+            username: "38d4fe86a8ea47fb875e0f3c",
+            credential: "LcUaXCmTSm2cob7H",
           },
         ],
       },
@@ -265,6 +265,31 @@ const CallProvider = () => {
         const peer = new Peer({
           initiator: false,
           trickle: false,
+          iceServers: [
+            {
+              urls: "stun:stun.relay.metered.ca:80",
+            },
+            {
+              urls: "turn:global.relay.metered.ca:80",
+              username: "38d4fe86a8ea47fb875e0f3c",
+              credential: "LcUaXCmTSm2cob7H",
+            },
+            {
+              urls: "turn:global.relay.metered.ca:80?transport=tcp",
+              username: "38d4fe86a8ea47fb875e0f3c",
+              credential: "LcUaXCmTSm2cob7H",
+            },
+            {
+              urls: "turn:global.relay.metered.ca:443",
+              username: "38d4fe86a8ea47fb875e0f3c",
+              credential: "LcUaXCmTSm2cob7H",
+            },
+            {
+              urls: "turns:global.relay.metered.ca:443?transport=tcp",
+              username: "38d4fe86a8ea47fb875e0f3c",
+              credential: "LcUaXCmTSm2cob7H",
+            },
+          ],
           stream: stream,
         });
 
