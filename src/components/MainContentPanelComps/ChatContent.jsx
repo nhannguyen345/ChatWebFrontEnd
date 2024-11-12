@@ -43,6 +43,7 @@ const ChatContent = () => {
   }
 
   const handleSendMessage = async (e) => {
+    if (uploading) return;
     const file = selectedFile;
     const tempId = generateIdMessage();
     if (file) {
