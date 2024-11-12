@@ -1,13 +1,16 @@
+import { useSelector } from "react-redux";
+
 const WelcomeChatContent = () => {
+  const user = useSelector((state) => state.auth.userInfo);
   return (
     <div className="h-screen flex flex-col justify-center items-center">
       <img
         className="h-[74px] w-[74px] shadow object-cover rounded-full mb-3"
-        src="https://doot-light.react.themesbrand.com/static/media/avatar-3.6256d30dbaad2b8f4e60.jpg"
+        src={user.info.avatarUrl}
         alt=""
       />
       <h4 className="text-[20px] font-[500] text-[#495057] mb-3">
-        Welcome, Christina!
+        Welcome, {user.info.username}!
       </h4>
       <h5 className="text-[#adb5bd] mb-4">
         Please select a chat to Start messaging.
