@@ -11,10 +11,7 @@ const PrivateRoute = () => {
 
   useEffect(() => {
     if (!auth?.userInfo?.info?.username) {
-      toast.error("Sorry, You to login again!");
-      setTimeout(() => {
-        navigate("/login");
-      }, 1000);
+      navigate("/login");
     }
   }, [auth]);
 
