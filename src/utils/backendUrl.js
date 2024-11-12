@@ -1,2 +1,2 @@
-export const backendURL = "https://chatwebbackend-latest.onrender.com";
-export const wsBackendURL = "ws://chatwebbackend-latest.onrender.com";
+export const backendURL = "https://backendchatweb.onrender.com";
+export const wsBackendURL = "ws://backendchatweb.onrender.com";
