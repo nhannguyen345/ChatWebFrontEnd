@@ -1,11 +1,22 @@
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 const PrivateRoute = () => {
   const auth = useSelector((state) => state.auth);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (auth?.userInfo?.info?.username) {
+      toast.error("Sorry, You to login again!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+    }
+  }, [auth]);
 
   useEffect(() => {
     let token = sessionStorage.getItem("auth-tk-webchat");

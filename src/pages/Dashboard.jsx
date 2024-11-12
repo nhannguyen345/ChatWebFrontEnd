@@ -62,17 +62,6 @@ const Dashboard = () => {
   const callAcceptedRef = useRef(callAccepted);
   const receivingCallRef = useRef(receivingCall);
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user?.info?.username) {
-      toast.error("Sorry, You to login again!");
-      setTimeout(() => {
-        navigate("/login");
-      }, 1000);
-    }
-  }, [user]);
-
   useEffect(() => {
     callAcceptedRef.current = callAccepted;
   }, [callAccepted]);
