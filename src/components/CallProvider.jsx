@@ -199,17 +199,27 @@ const CallProvider = () => {
       config: {
         iceServers: [
           {
-            url: "stun:stun.l.google.com:19302",
+            urls: "stun:something.meteredstun.ca:89032",
           },
           {
-            url: "turn:192.158.29.39:3478?transport=udp",
-            credential: "JZEOEt2V3Qb0y27GRntt2u2PAYA=",
-            username: "28224511:1379330808",
+            urls: "turn:global.relay.metered.ca:80",
+            username: "f6507426c0f4f89d0bda02e2",
+            credential: "7YF0907XexAfvkbL",
           },
           {
-            url: "turn:192.158.29.39:3478?transport=tcp",
-            credential: "JZEOEt2V3Qb0y27GRntt2u2PAYA=",
-            username: "28224511:1379330808",
+            urls: "turn:global.relay.metered.ca:80?transport=tcp",
+            username: "f6507426c0f4f89d0bda02e2",
+            credential: "7YF0907XexAfvkbL",
+          },
+          {
+            urls: "turn:global.relay.metered.ca:443",
+            username: "f6507426c0f4f89d0bda02e2",
+            credential: "7YF0907XexAfvkbL",
+          },
+          {
+            urls: "turns:global.relay.metered.ca:443?transport=tcp",
+            username: "f6507426c0f4f89d0bda02e2",
+            credential: "7YF0907XexAfvkbL",
           },
         ],
       },
