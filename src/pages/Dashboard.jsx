@@ -27,6 +27,7 @@ import { setCall, setReceivingCall } from "../features/call/callSlice";
 import { fetchCalls } from "../features/callList/calListAction";
 import { setListFriendsOnline } from "../features/connectionStatus/connectionStatusSlice";
 import { addNewGroups } from "../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   // get redux state
@@ -60,6 +61,17 @@ const Dashboard = () => {
 
   const callAcceptedRef = useRef(callAccepted);
   const receivingCallRef = useRef(receivingCall);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user?.info?.username) {
+      toast.error("Sorry, You to login again!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+    }
+  }, [user]);
 
   useEffect(() => {
     callAcceptedRef.current = callAccepted;
