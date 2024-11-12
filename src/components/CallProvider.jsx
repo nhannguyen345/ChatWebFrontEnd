@@ -13,6 +13,7 @@ import VideoCallInterface from "./VideoCallInterface";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { fetchCalls } from "../features/callList/calListAction";
+import { backendURL } from "../utils/backendUrl";
 
 const CallProvider = () => {
   const jwt = sessionStorage.getItem("auth-tk-webchat");
@@ -106,7 +107,7 @@ const CallProvider = () => {
   ) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/call/add-new-call",
+        `${backendURL}/call/add-new-call`,
         {
           receiverUsername,
           callStatus,

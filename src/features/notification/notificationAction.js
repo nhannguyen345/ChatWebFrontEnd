@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { backendURL } from "../../utils/backendUrl";
 
 export const fetchNotifications = createAsyncThunk(
   "notification/fetchNotifications",
@@ -7,7 +8,7 @@ export const fetchNotifications = createAsyncThunk(
     try {
       const jwt = sessionStorage.getItem("auth-tk-webchat");
       const response = await axios.get(
-        `http://localhost:8080/notification/get-list-notifications`,
+        `${backendURL}/notification/get-list-notifications`,
         {
           headers: { Authorization: `Bearer ${jwt}` },
         }

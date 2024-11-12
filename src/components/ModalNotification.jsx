@@ -12,6 +12,7 @@ import {
   removeAllNotification,
 } from "../features/notification/notificationSlice";
 import { toast, ToastContainer } from "react-toastify";
+import { backendURL } from "../utils/backendUrl";
 
 const ModalNotification = () => {
   const jwt = sessionStorage.getItem("auth-tk-webchat");
@@ -30,7 +31,7 @@ const ModalNotification = () => {
   const handleClearAll = async () => {
     try {
       await axios.delete(
-        `http://localhost:8080/notification/delete-all-notifications`,
+        `${backendURL}/notification/delete-all-notifications`,
         {
           headers: { Authorization: `Bearer ${jwt}` },
         }
@@ -50,7 +51,7 @@ const ModalNotification = () => {
       if (unreadCount) {
         async function setReadNotification() {
           await axios.put(
-            `http://localhost:8080/notification/updateReadStatus`,
+            `${backendURL}/notification/updateReadStatus`,
             {},
             {
               headers: { Authorization: `Bearer ${jwt}` },

@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { StompSessionProvider, useStompClient } from "react-stomp-hooks";
 import { toast, ToastContainer } from "react-toastify";
+import { wsBackendURL } from "../utils/backendUrl";
+
 // eslint-disable-next-line react/prop-types
 const WebSocketProvider = ({ children }) => {
   const dispatch = useDispatch();
@@ -22,7 +24,7 @@ const WebSocketProvider = ({ children }) => {
 
   return (
     <StompSessionProvider
-      url="ws://localhost:8080/chat-web-websocket"
+      url={`${wsBackendURL}/chat-web-websocket`}
       onConnect={(frame) => {
         console.log("Connected to Websocket server");
         // Lấy sessionId từ frame nếu có

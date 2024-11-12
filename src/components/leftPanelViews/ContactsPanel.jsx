@@ -3,11 +3,12 @@ import HeaderOfLeftPanel from "../HeaderOfLeftPanel";
 import ContactList from "../ContactsPanelComps/ContactList";
 import useFetchData from "../../hooks/useFetchData";
 import { useSelector } from "react-redux";
+import { backendURL } from "../../utils/backendUrl";
 
 const ContactsPanel = () => {
   const jwt = sessionStorage.getItem("auth-tk-webchat");
   const { data, loading, error } = useFetchData(
-    `http://localhost:8080/friend/get-contacts-list`,
+    `${backendURL}/friend/get-contacts-list`,
     {
       headers: { Authorization: `Bearer ${jwt}` },
     }

@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import FormSection from "./FormSection";
 import InputField from "./InputField";
 import { setUserInfo } from "../../features/auth/authSlice";
+import { backendURL } from "../../utils/backendUrl";
 
 const ProfileSettingContent = () => {
   const jwt = sessionStorage.getItem("auth-tk-webchat");
@@ -71,7 +72,7 @@ const ProfileSettingContent = () => {
         address: accountData.address,
       };
       const response = await axios.put(
-        "http://localhost:8080/auth/update-personal-info",
+        `${backendURL}/auth/update-personal-info`,
         {
           userId: user.info.id,
           ...updateInfo,
@@ -112,7 +113,7 @@ const ProfileSettingContent = () => {
           twitterLink: socialData.twitter,
         };
         const response = await axios.put(
-          "http://localhost:8080/auth/update-social-info",
+          `${backendURL}/auth/update-social-info`,
           {
             userId: user.info.id,
             ...updateInfo,
@@ -161,7 +162,7 @@ const ProfileSettingContent = () => {
           );
         }
         const response = await axios.put(
-          "http://localhost:8080/auth/update-password",
+          `${backendURL}/auth/update-password`,
           {
             userId: user.info.id,
             currentPassword: passwordData.currentPassword,

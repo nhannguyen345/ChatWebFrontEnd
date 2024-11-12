@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { ImSpinner } from "react-icons/im";
+import { backendURL } from "../utils/backendUrl";
+
 const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
 
@@ -24,7 +26,7 @@ const ResetPassword = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:8080/auth/confirm-email",
+        `${backendURL}/auth/confirm-email`,
         {
           email: data.email,
         },

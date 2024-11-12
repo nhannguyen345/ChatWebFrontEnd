@@ -11,6 +11,7 @@ import {
 import { format } from "date-fns";
 import axios from "axios";
 import { addNewConversation } from "../features/message/messageSlice";
+import { backendURL } from "../utils/backendUrl";
 
 const NotificationItem = ({ notification, jwt }) => {
   const [isRejecting, setIsRejecting] = useState(false);
@@ -34,7 +35,7 @@ const NotificationItem = ({ notification, jwt }) => {
       setIsRejecting(true);
       try {
         await axios.delete(
-          `http://localhost:8080/notification/delete-notification/${notification.id}`,
+          `${backendURL}/notification/delete-notification/${notification.id}`,
           { headers: { Authorization: `Bearer ${jwt}` } }
         );
       } catch (e) {

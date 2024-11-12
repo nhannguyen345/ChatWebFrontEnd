@@ -7,6 +7,7 @@ import useCloudinaryUpload from "../hooks/useCloudinaryUpload";
 import axios from "axios";
 import { addNewGroups } from "../features/auth/authSlice";
 import { ImSpinner } from "react-icons/im";
+import { backendURL } from "../utils/backendUrl";
 
 // Hằng số cho các bước
 const STEP_CREATE_GROUP = 1;
@@ -244,7 +245,7 @@ const CreateGroupModal = () => {
         url_file = await postToCloudinary(file);
       }
       const response = await axios.post(
-        "http://localhost:8080/group/create-new-group",
+        `${backendURL}/group/create-new-group`,
         {
           groupName: groupName,
           urlImage: url_file

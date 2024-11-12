@@ -8,6 +8,7 @@ import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { ImSpinner } from "react-icons/im";
+import { backendURL } from "../utils/backendUrl";
 
 const ChangePassword = () => {
   const location = useLocation();
@@ -43,7 +44,7 @@ const ChangePassword = () => {
     try {
       setLoading(true);
       const response = await axios.put(
-        `http://localhost:8080/auth/change-pass/${token}`,
+        `${backendURL}/auth/change-pass/${token}`,
         {
           password: data.password,
         },
@@ -67,7 +68,7 @@ const ChangePassword = () => {
     const checkTokenInResetLink = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/auth/check-token/${token}`
+          `${backendURL}/auth/check-token/${token}`
         );
         if (response.data && Object.keys(response.data).length > 0) {
           setIsValidToken(true);

@@ -9,6 +9,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserInfo } from "../../features/auth/authSlice";
 import { setProfileMainPanelVisibility } from "../../features/panelVisibility/panelVisibilitySlice";
+import { backendURL } from "../../utils/backendUrl";
 
 const Avatar = () => {
   const jwt = sessionStorage.getItem("auth-tk-webchat");
@@ -49,7 +50,7 @@ const Avatar = () => {
         const url_file = await postToCloudinary(fileSelected);
         if (error) throw new Error(error);
         const response = await axios.put(
-          `http://localhost:8080/auth/update-avatar?avatarUrl=${url_file}`,
+          `${backendURL}/auth/update-avatar?avatarUrl=${url_file}`,
           null,
           {
             headers: {

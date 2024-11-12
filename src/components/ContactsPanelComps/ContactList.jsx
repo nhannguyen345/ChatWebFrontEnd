@@ -9,6 +9,7 @@ import {
   deleteConversation,
   setSelectedConversationId,
 } from "../../features/message/messageSlice";
+import { backendURL } from "../../utils/backendUrl";
 
 const ContactList = ({ searchString, contacts, loading, error }) => {
   const dispatch = useDispatch();
@@ -35,7 +36,7 @@ const ContactList = ({ searchString, contacts, loading, error }) => {
 
     try {
       setLoadingUnfriend(true);
-      await axios.delete("http://localhost:8080" + url_api, {
+      await axios.delete(backendURL + url_api, {
         headers: { Authorization: `Bearer ${jwt}` },
       });
       toast.success("Unfriend successfully!", {

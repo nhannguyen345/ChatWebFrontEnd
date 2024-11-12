@@ -7,6 +7,7 @@ import {
   setSelectedConversationId,
 } from "../../features/message/messageSlice";
 import { ImSpinner } from "react-icons/im";
+import { backendURL } from "../../utils/backendUrl";
 
 const ProfileSummary = ({ userInfo, selectedConversationId }) => {
   const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const ProfileSummary = ({ userInfo, selectedConversationId }) => {
 
     try {
       setLoading(true);
-      await axios.delete("http://localhost:8080" + url_api, {
+      await axios.delete(backendURL + url_api, {
         headers: { Authorization: `Bearer ${jwt}` },
       });
       userInfo?.username

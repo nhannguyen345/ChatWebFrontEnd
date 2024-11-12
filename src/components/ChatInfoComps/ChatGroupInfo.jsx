@@ -2,13 +2,14 @@ import React, { useEffect } from "react";
 import { FaUserGroup } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import useFetchData from "../../hooks/useFetchData";
+import { backendURL } from "../../utils/backendUrl";
 
 const ChatGroupInfo = ({ groupInfo, selectedConversation }) => {
   const jwt = sessionStorage.getItem("auth-tk-webchat");
   const { onlineFriends } = useSelector((state) => state.connectionStatus);
 
   const { data, loading, error } = useFetchData(
-    "http://localhost:8080/group/get-members-group",
+    `${backendURL}/group/get-members-group`,
     {
       method: "POST",
       body: {
