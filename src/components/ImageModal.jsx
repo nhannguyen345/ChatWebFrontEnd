@@ -21,6 +21,8 @@ const ImageModal = () => {
           className="absolute top-0 left-1/2 -translate-x-1/2"
           href={imageState.imageUrl}
           download={`${imageState.imageUrl.split("/").pop()}`}
+          target="_blank"
+          rel="noreferrer"
         >
           <button className=" flex items-center gap-2 text-white hover:text-gray-300">
             <FiDownload className="h-6 w-6" />

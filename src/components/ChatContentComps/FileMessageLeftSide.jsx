@@ -5,6 +5,17 @@ import { useDispatch } from "react-redux";
 import { openImageModal } from "../../features/modal/modalSlice";
 const FileMessageLeftSide = ({ item, index }) => {
   const dispatch = useDispatch();
+
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.href = item.fileUrl;
+    link.download = `${item.fileUrl.split("/").pop()}`;
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="w-full h-fit text-left my-[36px]">
       <div className="inline-block relative text-left max-w-[400px] bg-[#f5f6fa] text-[#8094ae] text-[14px] ml-[30px] px-[36px] py-[16px] rounded-[20px]">
@@ -20,7 +31,10 @@ const FileMessageLeftSide = ({ item, index }) => {
             src={item?.fileUrl}
           />
         ) : (
-          <div className="flex justify-center items-center">
+          <div
+            className="flex justify-center items-center"
+            onClick={handleDownload}
+          >
             <div className="h-[48px] w-[48px] flex justify-center items-center bg-[#4e44fe] rounded-full mr-[12px] cursor-pointer">
               <GoFile className="h-[24px] w-[24px] text-[#f8f9fa] stroke-1" />
             </div>
